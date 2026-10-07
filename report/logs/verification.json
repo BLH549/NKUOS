@@ -1,0 +1,15 @@
+{
+  "timestamp": "2026-10-07T15:58:17.799773+08:00",
+  "build": "passed",
+  "qemu": "passed",
+  "gdb_checks": [
+    "reset_pc",
+    "firmware_entry",
+    "kernel_entry",
+    "stack_pointer",
+    "tail_jump"
+  ],
+  "course_grade": "not_run: Lab1 verification covers startup and GDB exercises",
+  "kernel_sha256": "ce1c3b8423eaa3efd293507d9e1db87ab2fed85fa9c310ba0a7485affce9592c",
+  "image_sha256": "a21c11243b36836e7c42ffa13b0539a1cd2ee712386bd0b4cd60468b1c3467fd"
+}
