@@ -1,0 +1,9 @@
+PASS local links: report/fragments/A-构建链接与镜像.md
+PASS local links: report/A-构建链接交接.md
+PASS local links: report/prompt.md
+PASS implementation SHA-256 unchanged: 22 tracked files
+PASS final ELF/image hashes match verified products
+PASS no QEMU process remains; inspected full /proc command lines
+PASS GDB port 1234 is available
+PASS code diff empty; branch lab1
+PASS main report template preserved for final integration

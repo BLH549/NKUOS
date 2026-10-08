@@ -1,0 +1,57 @@
+$ riscv64-unknown-elf-ld -m elf64lriscv -nostdlib --gc-sections -T tools/kernel.ld -Map=/home/liu/projects/nku-os/labs/report/evidence/build-link-20261008/kernel.map --print-gc-sections --trace -o /tmp/nku-lab1-A-_h2g8agp/kernel obj/kern/init/entry.o obj/kern/init/init.o obj/kern/libs/stdio.o obj/kern/driver/console.o obj/libs/printfmt.o obj/libs/readline.o obj/libs/sbi.o obj/libs/string.o
+obj/kern/init/entry.o
+obj/kern/init/init.o
+obj/kern/libs/stdio.o
+obj/kern/driver/console.o
+obj/libs/printfmt.o
+obj/libs/readline.o
+obj/libs/sbi.o
+obj/libs/string.o
+riscv64-unknown-elf-ld: removing unused section '.text.vcprintf' in file 'obj/kern/libs/stdio.o'
+riscv64-unknown-elf-ld: removing unused section '.text.cputchar' in file 'obj/kern/libs/stdio.o'
+riscv64-unknown-elf-ld: removing unused section '.text.cputs' in file 'obj/kern/libs/stdio.o'
+riscv64-unknown-elf-ld: removing unused section '.text.getchar' in file 'obj/kern/libs/stdio.o'
+riscv64-unknown-elf-ld: removing unused section '.text.kbd_intr' in file 'obj/kern/driver/console.o'
+riscv64-unknown-elf-ld: removing unused section '.text.serial_intr' in file 'obj/kern/driver/console.o'
+riscv64-unknown-elf-ld: removing unused section '.text.cons_init' in file 'obj/kern/driver/console.o'
+riscv64-unknown-elf-ld: removing unused section '.text.cons_getc' in file 'obj/kern/driver/console.o'
+riscv64-unknown-elf-ld: removing unused section '.text.sprintputch' in file 'obj/libs/printfmt.o'
+riscv64-unknown-elf-ld: removing unused section '.text.snprintf' in file 'obj/libs/printfmt.o'
+riscv64-unknown-elf-ld: removing unused section '.text.vsnprintf' in file 'obj/libs/printfmt.o'
+riscv64-unknown-elf-ld: removing unused section '.rodata.readline.str1.8' in file 'obj/libs/readline.o'
+riscv64-unknown-elf-ld: removing unused section '.text.readline' in file 'obj/libs/readline.o'
+riscv64-unknown-elf-ld: removing unused section '.bss.buf' in file 'obj/libs/readline.o'
+riscv64-unknown-elf-ld: removing unused section '.debug_info' in file 'obj/libs/readline.o'
+riscv64-unknown-elf-ld: removing unused section '.debug_abbrev' in file 'obj/libs/readline.o'
+riscv64-unknown-elf-ld: removing unused section '.debug_loclists' in file 'obj/libs/readline.o'
+riscv64-unknown-elf-ld: removing unused section '.debug_aranges' in file 'obj/libs/readline.o'
+riscv64-unknown-elf-ld: removing unused section '.debug_rnglists' in file 'obj/libs/readline.o'
+riscv64-unknown-elf-ld: removing unused section '.debug_line' in file 'obj/libs/readline.o'
+riscv64-unknown-elf-ld: removing unused section '.debug_str' in file 'obj/libs/readline.o'
+riscv64-unknown-elf-ld: removing unused section '.debug_line_str' in file 'obj/libs/readline.o'
+riscv64-unknown-elf-ld: removing unused section '.comment' in file 'obj/libs/readline.o'
+riscv64-unknown-elf-ld: removing unused section '.debug_frame' in file 'obj/libs/readline.o'
+riscv64-unknown-elf-ld: removing unused section '.riscv.attributes' in file 'obj/libs/readline.o'
+riscv64-unknown-elf-ld: removing unused section '.text.sbi_call' in file 'obj/libs/sbi.o'
+riscv64-unknown-elf-ld: removing unused section '.text.sbi_set_timer' in file 'obj/libs/sbi.o'
+riscv64-unknown-elf-ld: removing unused section '.sdata.SBI_SHUTDOWN' in file 'obj/libs/sbi.o'
+riscv64-unknown-elf-ld: removing unused section '.sdata.SBI_REMOTE_SFENCE_VMA_ASID' in file 'obj/libs/sbi.o'
+riscv64-unknown-elf-ld: removing unused section '.sdata.SBI_REMOTE_SFENCE_VMA' in file 'obj/libs/sbi.o'
+riscv64-unknown-elf-ld: removing unused section '.sdata.SBI_REMOTE_FENCE_I' in file 'obj/libs/sbi.o'
+riscv64-unknown-elf-ld: removing unused section '.sdata.SBI_SEND_IPI' in file 'obj/libs/sbi.o'
+riscv64-unknown-elf-ld: removing unused section '.sdata.SBI_CLEAR_IPI' in file 'obj/libs/sbi.o'
+riscv64-unknown-elf-ld: removing unused section '.sdata.SBI_CONSOLE_GETCHAR' in file 'obj/libs/sbi.o'
+riscv64-unknown-elf-ld: removing unused section '.sbss.SBI_SET_TIMER' in file 'obj/libs/sbi.o'
+riscv64-unknown-elf-ld: removing unused section '.text.strlen' in file 'obj/libs/string.o'
+riscv64-unknown-elf-ld: removing unused section '.text.strcpy' in file 'obj/libs/string.o'
+riscv64-unknown-elf-ld: removing unused section '.text.strncpy' in file 'obj/libs/string.o'
+riscv64-unknown-elf-ld: removing unused section '.text.strcmp' in file 'obj/libs/string.o'
+riscv64-unknown-elf-ld: removing unused section '.text.strncmp' in file 'obj/libs/string.o'
+riscv64-unknown-elf-ld: removing unused section '.text.strchr' in file 'obj/libs/string.o'
+riscv64-unknown-elf-ld: removing unused section '.text.strfind' in file 'obj/libs/string.o'
+riscv64-unknown-elf-ld: removing unused section '.text.strtol' in file 'obj/libs/string.o'
+riscv64-unknown-elf-ld: removing unused section '.text.memmove' in file 'obj/libs/string.o'
+riscv64-unknown-elf-ld: removing unused section '.text.memcpy' in file 'obj/libs/string.o'
+riscv64-unknown-elf-ld: removing unused section '.text.memcmp' in file 'obj/libs/string.o'
+
+Exit code: 0

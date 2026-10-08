@@ -1,0 +1,3 @@
+$ riscv64-unknown-elf-nm -u bin/kernel
+
+Exit code: 0

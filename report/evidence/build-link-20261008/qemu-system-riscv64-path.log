@@ -1,0 +1,4 @@
+$ bash -c 'command -v "$1"' bash qemu-system-riscv64
+/home/liu/.local/bin/qemu-system-riscv64
+
+Exit code: 0

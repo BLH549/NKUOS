@@ -1,0 +1,55 @@
+/home/liu/.local/opt/riscv-elf-toolchains/share/info/ld.info, lines 3597-3618:
+
+3.4.1 Setting the Entry Point
+-----------------------------
+
+The first instruction to execute in a program is called the "entry
+point".  You can use the 'ENTRY' linker script command to set the entry
+point.  The argument is a symbol name:
+     ENTRY(SYMBOL)
+
+   There are several ways to set the entry point.  The linker will set
+the entry point by trying each of the following methods in order, and
+stopping when one of them succeeds:
+   * the '-e' ENTRY command-line option;
+   * the 'ENTRY(SYMBOL)' command in a linker script;
+   * the value of a target-specific symbol, if it is defined; For many
+     targets this is 'start', but PE- and BeOS-based systems for example
+     check a list of possible entry symbols, matching the first one
+     found.
+   * the address of the first byte of the code section, if present and
+     an executable is being created - the code section is usually
+     '.text', but can be something else;
+   * The address '0'.
+
+/home/liu/.local/opt/riscv-elf-toolchains/share/info/ld.info, lines 1699-1718:
+'--gc-sections'
+'--no-gc-sections'
+     Enable garbage collection of unused input sections.  It is ignored
+     on targets that do not support this option.  The default behaviour
+     (of not performing this garbage collection) can be restored by
+     specifying '--no-gc-sections' on the command line.  Note that
+     garbage collection for COFF and PE format targets is supported, but
+     the implementation is currently considered to be experimental.
+
+     '--gc-sections' decides which input sections are used by examining
+     symbols and relocations.  The section containing the entry symbol
+     and all sections containing symbols undefined on the command-line
+     will be kept, as will sections containing symbols referenced by
+     dynamic objects.  Note that when building shared libraries, the
+     linker must assume that any visible symbol is referenced.  Once
+     this initial set of sections has been determined, the linker
+     recursively marks as used any section referenced by their
+     relocations.  See '--entry', '--undefined', and
+     '--gc-keep-exported'.
+
+
+/home/liu/.local/opt/riscv-elf-toolchains/share/info/binutils.info, lines 1140-1147:
+of 'srec' (e.g., use '-O srec').
+
+   'objcopy' can be used to generate a raw binary file by using an
+output target of 'binary' (e.g., use '-O binary').  When 'objcopy'
+generates a raw binary file, it will essentially produce a memory dump
+of the contents of the input object file.  All symbols and relocation
+information will be discarded.  The memory dump will start at the load
+address of the lowest section copied into the output file.

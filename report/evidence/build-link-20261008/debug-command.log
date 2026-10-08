@@ -1,0 +1,9 @@
+$ make -n debug
+qemu-system-riscv64 \
+	-machine virt \
+	-nographic \
+	-bios default \
+	-kernel bin/ucore.img\
+	-s -S
+
+Exit code: 0

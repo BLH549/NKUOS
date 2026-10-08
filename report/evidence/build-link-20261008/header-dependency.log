@@ -1,0 +1,10 @@
+$ make -n -W kern/mm/mmu.h
+echo + cc kern/init/entry.S
+riscv64-unknown-elf-gcc -Ikern/init/ -mcmodel=medany -std=gnu99 -Wno-unused -Werror -fno-builtin -Wall -O2 -nostdinc  -fno-stack-protector -ffunction-sections -fdata-sections -g -Ilibs -Ikern/debug/ -Ikern/driver/ -Ikern/trap/ -Ikern/libs/ -Ikern/mm/ -Ikern/arch/ -c kern/init/entry.S -o obj/kern/init/entry.o
+echo + ld bin/kernel
+riscv64-unknown-elf-ld -m elf64lriscv -nostdlib --gc-sections -T tools/kernel.ld -o bin/kernel obj/kern/init/entry.o obj/kern/init/init.o obj/kern/libs/stdio.o obj/kern/driver/console.o obj/libs/printfmt.o obj/libs/readline.o obj/libs/sbi.o obj/libs/string.o
+riscv64-unknown-elf-objdump -S bin/kernel > obj/kernel.asm
+riscv64-unknown-elf-objdump -t bin/kernel | sed '1,/SYMBOL TABLE/d; s/ .* / /; /^$/d' > obj/kernel.sym
+riscv64-unknown-elf-objcopy bin/kernel --strip-all -O binary bin/ucore.img
+
+Exit code: 0

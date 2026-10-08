@@ -1,0 +1,18 @@
+$ riscv64-unknown-elf-gdb -q -nx -batch bin/kernel -ex 'set pagination off' -ex 'set architecture riscv:rv64' -ex 'target remote localhost:1234' -ex 'info registers pc' -ex 'x/3i 0x80200000' -ex 'dump binary memory /tmp/nku-lab1-A-_h2g8agp/loaded.img 0x80200000 0x80203008' -ex 'hbreak *0x80200000' -ex continue -ex 'info registers pc' -ex 'x/3i $pc' -ex detach
+The target architecture is set to "riscv:rv64".
+0x0000000000001000 in ?? ()
+pc             0x1000	0x1000
+   0x80200000 <kern_entry>:	auipc	sp,0x3
+   0x80200004 <kern_entry+4>:	mv	sp,sp
+   0x80200008 <kern_entry+8>:	j	0x8020000a <kern_init>
+Hardware assisted breakpoint 1 at 0x80200000: file kern/init/entry.S, line 7.
+
+Breakpoint 1, kern_entry () at kern/init/entry.S:7
+7	    la sp, bootstacktop
+pc             0x80200000	0x80200000 <kern_entry>
+=> 0x80200000 <kern_entry>:	auipc	sp,0x3
+   0x80200004 <kern_entry+4>:	mv	sp,sp
+   0x80200008 <kern_entry+8>:	j	0x8020000a <kern_init>
+[Inferior 1 (process 1) detached]
+
+Exit code: 0

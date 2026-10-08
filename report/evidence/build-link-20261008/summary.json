@@ -1,0 +1,89 @@
+{
+  "date": "2026-10-08T20:58:24.967597+08:00",
+  "code_commit": "55fd23080d86f0612db463a1ac417ea2dbadfc09",
+  "tools": [
+    {
+      "tool": "make",
+      "path": "/usr/bin/make",
+      "version": "GNU Make 4.3"
+    },
+    {
+      "tool": "riscv64-unknown-elf-gcc",
+      "path": "/home/liu/.local/opt/riscv-elf-toolchains/bin/riscv64-unknown-elf-gcc",
+      "version": "riscv64-unknown-elf-gcc (g1b306039ac4) 15.1.0"
+    },
+    {
+      "tool": "riscv64-unknown-elf-ld",
+      "path": "/home/liu/.local/opt/riscv-elf-toolchains/bin/riscv64-unknown-elf-ld",
+      "version": "GNU ld (GNU Binutils) 2.45"
+    },
+    {
+      "tool": "riscv64-unknown-elf-objcopy",
+      "path": "/home/liu/.local/opt/riscv-elf-toolchains/bin/riscv64-unknown-elf-objcopy",
+      "version": "GNU objcopy (GNU Binutils) 2.45"
+    },
+    {
+      "tool": "riscv64-unknown-elf-gdb",
+      "path": "/home/liu/.local/opt/riscv-elf-toolchains/bin/riscv64-unknown-elf-gdb",
+      "version": "GNU gdb (GDB) 16.3.90.20250610-git"
+    },
+    {
+      "tool": "qemu-system-riscv64",
+      "path": "/home/liu/.local/bin/qemu-system-riscv64",
+      "version": "QEMU emulator version 7.0.0"
+    }
+  ],
+  "elf_size": 44904,
+  "image_size": 12296,
+  "entry": "0x80200000",
+  "sections": [
+    {
+      "name": ".text",
+      "address": 2149580800,
+      "size": 1186,
+      "offset": 4096,
+      "align": 2
+    },
+    {
+      "name": ".rodata",
+      "address": 2149581992,
+      "size": 624,
+      "offset": 5288,
+      "align": 8
+    },
+    {
+      "name": ".data",
+      "address": 2149584896,
+      "size": 8192,
+      "offset": 8192,
+      "align": 4096
+    },
+    {
+      "name": ".sdata",
+      "address": 2149593088,
+      "size": 8,
+      "offset": 16384,
+      "align": 8
+    }
+  ],
+  "symbols": {
+    "kern_entry": "0x80200000",
+    "kern_init": "0x8020000a",
+    "bootstack": "0x80201000",
+    "bootstacktop": "0x80203000",
+    "edata": "0x80203008",
+    "end": "0x80203008"
+  },
+  "elf_sha256": "1f1a202ccea24f60828fa714d8ec4f0ccc7d2b4a9106141b6f6c58f2265093eb",
+  "image_sha256": "ac486354d148e98079ffeca22efe89c7b3cbcd4c9fa05a9ee2a4039d8080a8bf",
+  "image_section_bytes_match": true,
+  "diagnostic_link_and_objcopy_match": true,
+  "reset_memory_matches_image": true,
+  "entry_breakpoint_reached": true,
+  "source_hashes_unchanged": true,
+  "boot_output_observed": true,
+  "boot_timeout_exit": 124,
+  "boot_screenshot": "images/A-boot-20261008.png",
+  "build_screenshot": "images/A-build-20261008.png",
+  "first_boot_capture_missing_output": true
+}

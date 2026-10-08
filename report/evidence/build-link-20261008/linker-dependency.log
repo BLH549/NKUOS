@@ -1,0 +1,8 @@
+$ make -n -W tools/kernel.ld
+echo + ld bin/kernel
+riscv64-unknown-elf-ld -m elf64lriscv -nostdlib --gc-sections -T tools/kernel.ld -o bin/kernel obj/kern/init/entry.o obj/kern/init/init.o obj/kern/libs/stdio.o obj/kern/driver/console.o obj/libs/printfmt.o obj/libs/readline.o obj/libs/sbi.o obj/libs/string.o
+riscv64-unknown-elf-objdump -S bin/kernel > obj/kernel.asm
+riscv64-unknown-elf-objdump -t bin/kernel | sed '1,/SYMBOL TABLE/d; s/ .* / /; /^$/d' > obj/kernel.sym
+riscv64-unknown-elf-objcopy bin/kernel --strip-all -O binary bin/ucore.img
+
+Exit code: 0

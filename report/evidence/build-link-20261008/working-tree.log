@@ -1,0 +1,7 @@
+$ git status --short --branch
+## lab1
+?? ../report/evidence/
+?? ../report/images/A-boot-20261008.png
+?? ../report/images/A-build-20261008.png
+
+Exit code: 0
