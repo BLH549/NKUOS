@@ -1,0 +1,6 @@
+# Generated build and debugging artifacts
+/bin/
+/obj/
+/.gdb.in
+/.qemu.out
+/proj*-handin.tar.gz
