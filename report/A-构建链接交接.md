@@ -1,107 +1,170 @@
-# Lab 1：A 模块交接
+# Lab 1 交接：操作、QEMU 问题与报告分工
 
-负责人：刘华彬，2411238。验证日期：2026-10-08（北京时间）。
+更新：2026-10-11。本页集中维护当前实验所需的环境、操作、问题说明和交接安排。
 
-## 交接结果
+## 1. 当前状态与分工
 
-构建、链接、镜像模块已独立完成分析和验证。`code/` 的所有受版本管理文件 SHA-256 前后相同，内核源码、Makefile 和链接脚本均未改动。当前生成目录来自本轮 `make clean` 后的完整构建，正常入口和内核输出已实测，下一位可以直接运行或调试。
+Lab1 以两道练习为主体：解释入口指令，以及用 GDB 跟踪复位到内核入口。全员完整体验流程并理解两题，按章节主笔。
 
-内层仓库分支为 `lab1`，验证基准提交为 `55fd23080d86f0612db463a1ac417ea2dbadfc09`。本轮新增报告、记录和截图尚未提交；没有配置远程或执行 push。外层原有修改不属于本轮交付。
+| 成员 | 状态 | 报告职责 |
+|---|---|---|
+| A：刘华彬，2411238 | 本人已确认完整阅读手册和体验操作，已有前期验证材料 | 公共章节、验证汇总、总结和整合 |
+| B：姓名学号待补 | 尚未开始 | 练习 1：两条入口指令的操作、目的和观察 |
+| C：姓名学号待补 | 尚未开始 | 练习 2：启动跟踪、最初指令的位置和功能 |
 
-## 直接使用
+B/C 可分别开始，无须顺序等待。报告见 [report.md](report.md)，主要提示词按 Lab0.5 四段式整理到 [prompt.md](prompt.md)，补充追问可用自然语言。本人操作记录与 AI 自动验证分别注明，完成后再填写实践状态。
+
+## 2. 环境与准备
+
+已验证环境：Ubuntu 22.04.5 LTS（WSL）、Make 4.3、RISC-V GCC 15.1.0、Binutils 2.45、GDB 16.3 开发构建、QEMU 7.0.0、OpenSBI 1.0。精确版本和工具路径见 [历史验证汇总](evidence/build-link-20261008/summary.json)。
+
+本机终端执行：
 
 ```bash
 source /home/liu/projects/nku-os/scripts/env.sh
 cd /home/liu/projects/nku-os/labs/code
+```
+
+`env.sh` 将已有工具链和 QEMU 加入 PATH，本机 `.bashrc` 已配置加载它。其他成员按指导书准备工具，在自己的 Linux/WSL 终端设置实际工具路径，并进入实验仓库的 `code/`：
+
+```bash
+export RISCV="/实际安装路径/riscv-elf-toolchains"
+export PATH="$RISCV/bin:$PATH"
+command -v make riscv64-unknown-elf-gcc riscv64-unknown-elf-gdb qemu-system-riscv64
+```
+
+如 QEMU 安装在自选目录，也将其可执行文件目录加入 PATH。外层 `_book` 和环境脚本不随内层 `labs` 仓库克隆，资料需另行取得。
+
+`tools/kernel.ld` 按手册示例使用；本实验没有新增内核功能。当前缺少 `tools/grade.sh`，不执行 `make grade`，也不声称评分通过。
+
+## 3. 每个人完整操作一遍
+
+### 构建与运行
+
+在 `code/` 执行：
+
+```bash
 make
 make qemu
 ```
 
-内核会显示 `(THU.CST) os is loading ...` 并进入死循环。退出 QEMU：`Ctrl+a`，松开后按 `x`。
+构建生成 `bin/kernel`（带调试信息的 ELF）和 `bin/ucore.img`（运行用裸镜像）。应看到 `(THU.CST) os is loading ...`，然后无限循环。退出 QEMU：按 Ctrl+A，松开后按 X。
 
-调试时，第一个终端：
+如需观察完整重建，可先 `make clean` 再 `make`。调试时 ELF 和加载镜像必须来自同一轮构建；重新编译后重新启动 QEMU。
 
-```bash
-source /home/liu/projects/nku-os/scripts/env.sh
-cd /home/liu/projects/nku-os/labs/code
-make debug
+### 启动跟踪与入口单步
+
+两个终端均进入同一份 `code/`，终端 1 执行 `make debug`，终端 2 执行 `make gdb`。初始无输出是 `-S` 暂停 CPU 的结果；`-s` 开放默认调试端口 1234。
+
+在 GDB 中：
+
+```gdb
+set pagination off
+info registers pc
+x/6i $pc
+x/3i 0x80200000
 ```
 
-第二个终端同样加载环境、进入 `labs/code`，执行 `make gdb`。默认调试端口为 1234，需要空闲。
+本机预期初始 PC 为 `0x1000`。阅读六条复位指令，解释它们如何准备参数和跳转地址，再逐条执行：
+
+```gdb
+si
+si
+si
+si
+si
+si
+info registers pc a0 a1 a2
+```
+
+本机六条指令执行后预期 PC 为 `0x80000000`，进入 OpenSBI。不同环境以实际指令和结果为准。
 
 ```gdb
 break *0x80200000
 continue
+info registers pc sp
 x/3i $pc
+p/x &bootstack
+p/x &bootstacktop
 ```
 
-当前 Makefile 已使用 `-kernel bin/ucore.img`，沿用它即可。不要根据教材旧示例改回 loader 参数。`bin/kernel` 用于 GDB 符号，`bin/ucore.img` 用于运行，两者不能混淆。
+应停在 `kern_entry` 第一条指令前。继续逐条 `si`，每次用 `info registers pc sp` 观察 SP 何时成为 `bootstacktop`，以及何时跳到 `kern_init`。伪指令不一定只对应一条机器指令。
 
-## 本轮基准产物
-
-| 项目 | 本轮值 |
-|---|---|
-| ELF 大小 | 44904 字节 |
-| 镜像大小 | 12296 字节，`0x3008` |
-| ELF 入口、镜像首指令地址 | `0x80200000` |
-| `kern_init` | `0x8020000a` |
-| 内核栈范围 | `[0x80201000, 0x80203000)`，8192 字节 |
-| `edata`、`end` | 均为 `0x80203008`，当前 BSS 为空 |
-
-```text
-SHA-256 bin/kernel
-1f1a202ccea24f60828fa714d8ec4f0ccc7d2b4a9106141b6f6c58f2265093eb
-
-SHA-256 bin/ucore.img
-ac486354d148e98079ffeca22efe89c7b3cbcd4c9fa05a9ee2a4039d8080a8bf
+```gdb
+p/x &edata
+p/x &end
+break cprintf
+continue
+x/s $a0
+x/s $a1
+continue
 ```
 
-地址、大小和哈希只对应本轮源码、工具和构建目录；修改代码、编译选项或工具后应重新验证。`bin/`、`obj/` 是被忽略的生成目录，不需要提交。
+本机预期在 `cprintf` 看到格式字符串与启动消息参数，继续后在 QEMU 终端看到输出。需要结束时先在 GDB 终端按 Ctrl+C，再执行 `detach`、`quit`；QEMU 终端用 Ctrl+A、松开后 X 退出。
 
-## 已完成的验证
+### 保存必要记录
 
-- 清理后完整构建成功，退出码 0；再次 make 不重复构建。
-- ELF64 小端、RISC-V、入口正确，最终无未解析符号和剩余重定位。
-- map 验证 `entry.o` 的 `.text` 位于最前；诊断链接与正常 ELF 全字节相同。
-- 根据 ELF 可加载段内容和间隙重建的裸镜像与实际镜像全字节相同；重复 objcopy 转换也一致。
-- 在 `make debug` 的初始暂停处，PC 为 `0x1000`，镜像范围内存已与文件一致；继续运行后命中 `0x80200000` 入口断点。
-- 普通启动显示 OpenSBI 1.0、Next Address `0x80200000`、S-mode 和内核信息。
-- 本轮创建的 QEMU 和取证 xterm 已关闭，调试端口已释放；未终止其他进程。
+每人新建 `report/evidence/<成员>-<日期>/`，记录环境、关键命令、观察与疑问；真实截图放 `report/images/`。在 GDB 开始观察前可执行以下命令，路径替换为已创建的个人目录：
 
-证据目录：[evidence/build-link-20261008](evidence/build-link-20261008/summary.json)。保留了原始构建、ELF、对象重定位、链接 map、段删除、入口 GDB、启动及失败尝试日志。
+```gdb
+set logging file ../report/evidence/<成员>-<日期>/gdb.log
+set logging enabled on
+```
 
-真实截图：[编译截图](images/A-build-20261008.png)、[运行截图](images/A-boot-20261008.png)。报告片段：[A-构建链接与镜像](fragments/A-构建链接与镜像.md)。实际提示词：[prompt.md](prompt.md#记录-1a1-构建链接与镜像)。
+结束时 `set logging enabled off`。报告使用代表性截图即可，不必重复粘贴三套相同输出。
 
-## 给 B / C 的事实与边界
+<a id="qemu"></a>
 
-| 下一成员 | 可以使用的工程事实 | 应自行完成的部分 |
+## 4. QEMU 为什么需要调整启动参数
+
+### 现象与修改
+
+手册使用 `-bios default` 配合：
+
+```make
+-device loader,file=$(UCOREIMG),addr=0x80200000
+```
+
+本机能够看到 OpenSBI，但 Next Address 为 0，没有进入内核。因此 Makefile 的 `qemu`、`debug` 两个目标统一使用：
+
+```make
+-kernel $(UCOREIMG)
+```
+
+这属于本机启动环境适配。普通运行与调试保持同一加载方式，`debug` 额外保留 `-s -S`。
+
+### 根本原因：默认固件不同
+
+启动需要同时满足“镜像已放入内存”和“固件知道下一阶段入口”。`-device loader` 中的 `addr` 只指定本例裸镜像放置位置，不能自动成为动态固件的交接地址。
+
+| 配置 | 默认 RV64 固件 | 内核入口来源 |
 |---|---|---|
-| B：入口与初始化 | 栈范围、入口符号、反汇编、`edata=end` | 单步验证 `la` 实际展开、SP 变化、跳转与 C 初始化，回答练习 1 |
-| C：固件与输出 | 复位暂停时镜像已加载、入口可命中、输出可运行 | 分析复位首批指令，跟踪 OpenSBI 阶段，完整回答练习 2，核对 SBI 输出链 |
+| 手册安装示例对应的上游 QEMU 4.1.1 | `fw_jump` | 构建时预设；旧 qemu/virt 的 RV64 配置为 `0x80200000` |
+| 本机 QEMU 7.0.0 | `fw_dynamic` | 启动时接收前一阶段提供的信息 |
 
-当前入口实际指令为 `auipc sp,0x3`、`mv sp,sp`、跳转至 `kern_init`。这只是当前构建结果，不应当作所有工具链下的固定展开。
+旧组合的固件已知道跳转位置；本机则需要 QEMU 传入入口。QEMU 7.0 的 virt 启动流程在没有 `-kernel` 时将 `kernel_entry` 设为 0，随后把该值写入固件动态信息；使用 `-kernel` 后会加载镜像并提供正确入口。相同的 `-bios default` 在不同版本下不一定选择相同固件。
 
-`ENTRY(kern_entry)` 指定 ELF 元数据中的入口，但不自动重排函数；当前镜像第一条指令正确还依赖实际段布局与对象顺序。若修改链接输入，必须复核。`cons_getc` 对未实现输入服务的引用被未使用段删除，本轮只证明当前启动和输出路径可用。
+依据：[QEMU 4.1.1 默认固件](https://github.com/qemu/qemu/blob/v4.1.1/hw/riscv/virt.c#L43-L47)、[旧 RV64 跳转地址](https://github.com/riscv-software-src/opensbi/blob/v0.4/platform/qemu/virt/config.mk#L23-L32)、[QEMU 7.0 默认固件](https://github.com/qemu/qemu/blob/v7.0.0/include/hw/riscv/boot.h#L24-L25)、[内核入口选择](https://github.com/qemu/qemu/blob/v7.0.0/hw/riscv/virt.c#L1224-L1246)、[固件入口传递](https://github.com/qemu/qemu/blob/v7.0.0/hw/riscv/boot.c#L228-L259)。
 
-## 验证辅助脚本与真实问题
+Lab0 展示 OpenSBI 0.4，Lab1 展示 0.6，示例并未锁定一套完整配置。以上旧版结论来自源码核对，未在本机重装实跑旧 QEMU；不能把本机适配理解成所有环境都必须修改。保留本机现有配置时，继续使用已经验证的 `-kernel`。
 
-`evidence/build-link-20261008/` 下保存了本轮 `build-terminal.sh`、`verify.py` 和 `boot-terminal.sh`。它们是证据辅助文件，不是内核实现或正式评分脚本。脚本路径固定到当前工作区，重跑会覆盖相同名字的日志；保存新一轮证据时先另设目录并更新路径，不覆盖本轮记录。
+### 同镜像验证结果
 
-首次取证脚本使用 `timeout ... make qemu | tee ...`，只有超时终止消息，没有启动信息，判为失败并保留。随后加 `< /dev/null` 明确非交互输入，成功取得输出和截图。不能只凭 124 说测试通过，也不能把终端输入问题写成内核修复。本轮未获取首次停止信号，具体终端原因仍为推断。
+2026-10-11 重新构建后，使用同一镜像、相同平台和默认固件，仅替换加载参数：
 
-日常交互运行用普通 `make qemu`。需要自动保存输出时可用：
+| 参数 | Next Address | 内核输出 |
+|---|---|---|
+| loader | `0x0000000000000000` | 无 |
+| `-kernel` | `0x0000000080200000` | 有 |
 
-```bash
-set -o pipefail
-timeout -k 2s 5s make qemu < /dev/null 2>&1 | tee /tmp/lab1-boot.log
-```
+证据：[构建](evidence/boot-parameters-20261011/build.log)、[loader 运行](evidence/boot-parameters-20261011/loader.log)、[kernel 运行](evidence/boot-parameters-20261011/kernel.log)、[汇总](evidence/boot-parameters-20261011/summary.json)。两次均由 `timeout` 结束，124 只是超时码，判断依据是入口信息和内核输出。
 
-该命令预期超时码为 124；仍须检查内核输出。它没有执行评分测试。
+练习 2 中也要区分加载与执行：本机初始 PC 为 `0x1000` 时镜像已在内存，写监视点可能不触发，应以初始内存检查和执行断点验证启动过程。
 
-## 待完成
+## 5. 剩余交付
 
-A 的技术模块、真实日志和两张截图已完成，并经负责人审阅后整合到 [主报告](report.md)。主报告保留 B/C 模块、正式练习、验证与总结的待填写位置；环境、构建和调试方法见 [代码 README](../code/README.md)。B/C 仍需取得自己的证据并完成报告，最后共同整合。原始片段的 `../images/...`、`../evidence/...` 链接保留，主报告中的链接已经按所在目录调整。
+B 在主报告第 3 节补练习 1 的实际观察与结论；C 在第 4 节补启动记录及最初指令解释。A 汇总环境与证据，全组补齐姓名学号、AI 工具模型、实践日期和个人收获，核对两题并准备答辩。
 
-当前 `tools/grade.sh` 缺失，不执行 `make grade`：该目标会先清理生成目录，再调用缺失脚本。没有评分通过截图。公开远程仓库和最终提交、推送仍待小组交付阶段处理。
+已有证据仅保留关键构建、布局、入口、运行和失败记录，以及 QEMU 参数对照；旧模块分析、独立启动说明和环境流水记录已合并清理。历史提示词中的旧路径说明当时任务，当前操作以本页为准。
 
-本次整合只修改文档，未重新执行实验。`evidence/build-link-20261008/SHA256SUMS` 保留 A 取证完成时的历史快照；其中 `prompt.md` 和本交接文档的哈希属于更新前版本，原始证据和图片不改写。
+提交前核对：两题答全、成员状态真实、图片日志可访问，所有成员能解释全流程。Git 提交与推送尚需按小组最终交付安排执行。

@@ -1,4 +1,0 @@
-$ bash -c 'command -v "$1"' bash make
-/usr/bin/make
-
-Exit code: 0

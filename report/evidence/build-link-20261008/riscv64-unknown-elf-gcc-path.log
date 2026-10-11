@@ -1,4 +1,0 @@
-$ bash -c 'command -v "$1"' bash riscv64-unknown-elf-gcc
-/home/liu/.local/opt/riscv-elf-toolchains/bin/riscv64-unknown-elf-gcc
-
-Exit code: 0
