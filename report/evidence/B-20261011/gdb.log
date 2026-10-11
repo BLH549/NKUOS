@@ -1,0 +1,68 @@
+pc             0x1000	0x1000
+=> 0x1000:	auipc	t0,0x0
+   0x1004:	addi	a1,t0,32
+   0x1008:	csrr	a0,mhartid
+   0x100c:	ld	t0,24(t0)
+   0x1010:	jr	t0
+Hardware assisted breakpoint 1 at 0x80200000: file kern/init/entry.S, line 7.
+Continuing.
+
+Breakpoint 1, kern_entry () at kern/init/entry.S:7
+7	    la sp, bootstacktop
+pc             0x80200000	0x80200000 <kern_entry>
+sp             0x8001bd80	0x8001bd80
+ra             0x80000a02	0x80000a02
+=> 0x80200000 <kern_entry>:	auipc	sp,0x3
+   0x80200004 <kern_entry+4>:	mv	sp,sp
+   0x80200008 <kern_entry+8>:	j	0x8020000a <kern_init>
+$1 = 0x80201000
+$2 = 0x80203000
+$3 = 8192
+0x0000000080200004 in kern_entry () at kern/init/entry.S:7
+7	    la sp, bootstacktop
+9	    tail kern_init
+pc             0x80200008	0x80200008 <kern_entry+8>
+sp             0x80203000	0x80203000 <SBI_CONSOLE_PUTCHAR>
+ra             0x80000a02	0x80000a02
+=> 0x80200008 <kern_entry+8>:	j	0x8020000a <kern_init>
+$4 = 0x80203000
+$5 = 1
+$6 = 0x0
+Temporary breakpoint 2 at 0x8020000a: file kern/init/init.c, line 8.
+Continuing.
+
+Temporary breakpoint 2, kern_init () at kern/init/init.c:8
+8	    memset(edata, 0, end - edata);
+pc             0x8020000a	0x8020000a <kern_init>
+sp             0x80203000	0x80203000 <SBI_CONSOLE_PUTCHAR>
+ra             0x80000a02	0x80000a02
+$7 = 1
+=> 0x8020000a <kern_init>:	auipc	a0,0x3
+   0x8020000e <kern_init+4>:	addi	a0,a0,-2
+   0x80200012 <kern_init+8>:	auipc	a2,0x3
+   0x80200016 <kern_init+12>:	addi	a2,a2,-10
+   0x8020001a <kern_init+16>:	addi	sp,sp,-16
+   0x8020001c <kern_init+18>:	li	a1,0
+$8 = 0x80203008
+$9 = 0x80203008
+$10 = 0
+Temporary breakpoint 3 at 0x802004b6: file libs/string.c, line 275.
+Continuing.
+
+Temporary breakpoint 3, memset (s=0x80203008, c=c@entry=0 '\000', n=0) at libs/string.c:275
+275	    while (n -- > 0) {
+pc             0x802004b6	0x802004b6 <memset>
+a0             0x80203008	2149593096
+a1             0x0	0
+a2             0x0	0
+$11 = 1
+$12 = 1
+$13 = 1
+$14 = 0
+Run till exit from #0  memset (s=0x80203008, c=c@entry=0 '\000', n=0) at libs/string.c:275
+kern_init () at kern/init/init.c:11
+11	    cprintf("%s\n\n", message);
+Value returned is $15 = (void *) 0x80203008
+pc             0x80200026	0x80200026 <kern_init+28>
+sp             0x80202ff0	0x80202ff0
+=> 0x80200026 <kern_init+28>:	auipc	a1,0x0

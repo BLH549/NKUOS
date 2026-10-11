@@ -1,0 +1,30 @@
+2026-10-11T22:30:59+08:00
+/home/kyc/project/os/NKUOS/code
+## lab1...origin/lab1
+ M tools/kernel.ld
+ M ../report/prompt.md
+ M ../report/report.md
+?? "../report/B-\347\273\203\344\271\240\344\270\200\345\217\226\350\257\201\346\214\207\345\215\227.md"
+?? ../report/evidence/B-20261011/
+/usr/bin/make
+/home/kyc/.local/bin/riscv64-unknown-elf-gcc
+/home/kyc/.local/bin/riscv64-unknown-elf-gdb
+/home/kyc/.local/bin/qemu-system-riscv64
+GNU Make 4.3
+Built for x86_64-pc-linux-gnu
+Copyright (C) 1988-2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+riscv64-unknown-elf-gcc (SiFive GCC-Metal 10.2.0-2020.12.8) 10.2.0
+Copyright (C) 2020 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+GNU gdb (SiFive GDB-Metal 10.1.0-2020.12.7) 10.1
+Copyright (C) 2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+QEMU emulator version 4.1.1
+Copyright (c) 2003-2019 Fabrice Bellard and the QEMU Project developers
