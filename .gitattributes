@@ -1,0 +1,28 @@
+* text=auto
+
+.gitignore text eol=lf
+.gitattributes text eol=lf
+Makefile text eol=lf
+*.c text eol=lf
+*.h text eol=lf
+*.S text eol=lf
+*.ld text eol=lf
+*.mk text eol=lf
+*.sh text eol=lf
+*.py text eol=lf
+*.gdb text eol=lf
+*.md text eol=lf
+*.json text eol=lf
+
+# Keep experiment logs in their original byte format
+report/evidence/**/*.log -text
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.img binary
+*.o binary
+*.a binary

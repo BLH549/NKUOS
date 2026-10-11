@@ -1,0 +1,21 @@
+# Local copy of the textbook
+/_book/
+
+# Build output
+/code/bin/
+/code/obj/
+
+# Python cache and local environments
+__pycache__/
+*.py[cod]
+.venv/
+
+# Editor and operating-system files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+Desktop.ini
