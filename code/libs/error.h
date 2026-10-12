@@ -1,3 +1,7 @@
+/*
+ * 内核错误编号。宏值为正，函数可以返回负编号；格式化器的 %e 接受正负编号。
+ * 这里只提供常量，不实现错误处理；printfmt.c 的 error_string 按这些值索引。
+ */
 #ifndef __LIBS_ERROR_H__
 #define __LIBS_ERROR_H__
 

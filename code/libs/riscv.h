@@ -1,8 +1,18 @@
+/*
+ * RISC-V 架构常量和底层辅助接口，保留了旧版模板及自动生成的编码表。
+ * Lab1 格式化输出使用 do_div；多数 CSR、页表、指令编码定义没有进入启动路径。
+ * H 模式、sptbr、PUM 等名称属于模板中的历史定义，不代表当前机器实际启用这些机制。
+ * 自动生成表按指令匹配值/掩码、CSR 编号、异常原因分组，下方说明各组用途。
+ */
 // See LICENSE for license details.
 
 #ifndef __LIBS_RISCV_H__
 #define __LIBS_RISCV_H__
 
+/*
+ * 依据目标寄存器位宽选择存取指令和寄存器字节数；此项目目标为 RV64。
+ * 这些宏也可被汇编代码使用，故用可由预处理器移除的块注释说明。
+ */
 #if __riscv_xlen == 64
 # define SLL32    sllw
 # define STORE    sd
@@ -18,6 +28,10 @@
 #endif
 #define REGBYTES (1 << LOG_REGBYTES)
 
+/*
+ * 旧模板的机器状态寄存器位掩码，包含中断使能、先前特权级和扩展状态等。
+ * 常量描述位位置，定义它们本身不会修改 CSR；一些位属于历史版本。
+ */
 #define MSTATUS_UIE         0x00000001
 #define MSTATUS_SIE         0x00000002
 #define MSTATUS_HIE         0x00000004
@@ -38,6 +52,9 @@
 #define MSTATUS32_SD        0x80000000
 #define MSTATUS64_SD        0x8000000000000000
 
+/*
+ * 监督者状态寄存器的相关位掩码；Lab1 没有用它们建立完整中断控制。
+ */
 #define SSTATUS_UIE         0x00000001
 #define SSTATUS_SIE         0x00000002
 #define SSTATUS_UPIE        0x00000010
@@ -49,6 +66,9 @@
 #define SSTATUS32_SD        0x80000000
 #define SSTATUS64_SD        0x8000000000000000
 
+/*
+ * 调试控制与状态寄存器字段、调试进入原因：供底层调试支持代码使用。
+ */
 #define DCSR_XDEBUGVER      (3U<<30)
 #define DCSR_NDRESET        (1<<29)
 #define DCSR_FULLRESET      (1<<28)
@@ -71,6 +91,10 @@
 #define DCSR_CAUSE_STEP     4
 #define DCSR_CAUSE_HALT     5
 
+/*
+ * 硬件触发器控制字段：描述匹配类型、动作、权限和访问类别。
+ * TYPE/DMODE/MASKMAX 宏的 xlen 参数用于把字段定位到寄存器高位。
+ */
 #define MCONTROL_TYPE(xlen)    (0xfULL<<((xlen)-4))
 #define MCONTROL_DMODE(xlen)   (1ULL<<((xlen)-5))
 #define MCONTROL_MASKMAX(xlen) (0x3fULL<<((xlen)-11))
@@ -104,6 +128,9 @@
 #define MCONTROL_MATCH_MASK_LOW  4
 #define MCONTROL_MATCH_MASK_HIGH 5
 
+/*
+ * 中断挂起位由 IRQ 编号移位得到，SIP 的相应项复用同一位位置。
+ */
 #define MIP_SSIP            (1 << IRQ_S_SOFT)
 #define MIP_HSIP            (1 << IRQ_H_SOFT)
 #define MIP_MSIP            (1 << IRQ_M_SOFT)
@@ -117,6 +144,10 @@
 #define SIP_SSIP MIP_SSIP
 #define SIP_STIP MIP_STIP
 
+/*
+ * 模板中的特权级与虚拟内存模式编号；H 项为历史定义。
+ * 当前实验跟踪的是固件 M 模式到内核 S 模式的交接。
+ */
 #define PRV_U 0
 #define PRV_S 1
 #define PRV_H 2
@@ -129,6 +160,9 @@
 #define VM_SV39  9
 #define VM_SV48  10
 
+/*
+ * 软件、定时器、外部等中断编号，用于构造挂起/使能位掩码。
+ */
 #define IRQ_U_SOFT   0
 #define IRQ_S_SOFT   1
 #define IRQ_H_SOFT   2
@@ -144,6 +178,10 @@
 #define IRQ_COP      12
 #define IRQ_HOST     13
 
+/*
+ * 模板默认地址常量，包括复位向量和 DRAM 基址。
+ * 实际 QEMU 平台的加载与复位布局应以运行环境和 GDB 观察为准。
+ */
 #define DEFAULT_RSTVEC     0x00001000
 #define DEFAULT_NMIVEC     0x00001004
 #define DEFAULT_MTVEC      0x00001010
@@ -152,6 +190,10 @@
 #define DRAM_BASE          0x80000000
 
 // page table entry (PTE) fields
+/*
+ * 页表项标志位：有效、读、写、执行、用户权限、全局、访问及脏位。
+ * PTE_SOFT 预留给软件；PTE_PPN_SHIFT 表示物理页号字段的起始位。
+ */
 #define PTE_V     0x001 // Valid
 #define PTE_R     0x002 // Read
 #define PTE_W     0x004 // Write
@@ -164,6 +206,10 @@
 
 #define PTE_PPN_SHIFT 10
 
+/*
+ * PTE_TABLE(PTE)：当 V 为 1 且 R/W/X 全为 0 时判断该项指向下级页表。
+ * 这是位模式判断宏，Lab1 尚未构造或遍历页表。
+ */
 #define PTE_TABLE(PTE) (((PTE) & (PTE_V | PTE_R | PTE_W | PTE_X)) == PTE_V)
 
 #ifdef __riscv
@@ -184,16 +230,28 @@
 
 #ifdef __GNUC__
 
+/*
+ * read_csr(reg)：读取编译期指定的 CSR，返回 unsigned long 值。
+ * #reg 把寄存器名转成汇编文本；GNU 语句表达式的最后一项作为宏的结果。
+ */
 #define read_csr(reg) ({ unsigned long __tmp; \
   asm volatile ("csrr %0, " #reg : "=r"(__tmp)); \
   __tmp; })
 
+/*
+ * write_csr(reg,val)：向 CSR 写入 val，无供调用者使用的返回值。
+ * 若 val 为小于 32 的编译期常量，使用立即数约束，否则使用通用寄存器。
+ */
 #define write_csr(reg, val) ({ \
   if (__builtin_constant_p(val) && (unsigned long)(val) < 32) \
     asm volatile ("csrw " #reg ", %0" :: "i"(val)); \
   else \
     asm volatile ("csrw " #reg ", %0" :: "r"(val)); })
 
+/*
+ * swap_csr(reg,val)：原子地用 val 替换 CSR 内容，并返回替换前的值。
+ * 常量与寄存器路径分别选择合适的汇编操作数约束。
+ */
 #define swap_csr(reg, val) ({ unsigned long __tmp; \
   if (__builtin_constant_p(val) && (unsigned long)(val) < 32) \
     asm volatile ("csrrw %0, " #reg ", %1" : "=r"(__tmp) : "i"(val)); \
@@ -201,6 +259,10 @@
     asm volatile ("csrrw %0, " #reg ", %1" : "=r"(__tmp) : "r"(val)); \
   __tmp; })
 
+/*
+ * set_csr(reg,bit)：把 bit 指定的 CSR 位设为 1，返回修改前的 CSR 值。
+ * bit 是掩码，不是位编号；操作由一条 CSR 读置位指令完成。
+ */
 #define set_csr(reg, bit) ({ unsigned long __tmp; \
   if (__builtin_constant_p(bit) && (unsigned long)(bit) < 32) \
     asm volatile ("csrrs %0, " #reg ", %1" : "=r"(__tmp) : "i"(bit)); \
@@ -208,6 +270,10 @@
     asm volatile ("csrrs %0, " #reg ", %1" : "=r"(__tmp) : "r"(bit)); \
   __tmp; })
 
+/*
+ * clear_csr(reg,bit)：清除 bit 掩码指定的 CSR 位，返回修改前的值。
+ * 使用 CSR 读清位指令，不是先在 C 中读取再写回。
+ */
 #define clear_csr(reg, bit) ({ unsigned long __tmp; \
   if (__builtin_constant_p(bit) && (unsigned long)(bit) < 32) \
     asm volatile ("csrrc %0, " #reg ", %1" : "=r"(__tmp) : "i"(bit)); \
@@ -215,12 +281,22 @@
     asm volatile ("csrrc %0, " #reg ", %1" : "=r"(__tmp) : "r"(bit)); \
   __tmp; })
 
+/*
+ * rdtime()/rdcycle()/rdinstret()：分别读取时间、周期、已退休指令计数 CSR。
+ * 无参数；返回 read_csr 的 unsigned long 结果；能否读取取决于特权和平台配置。
+ */
 #define rdtime() read_csr(time)
 #define rdcycle() read_csr(cycle)
 #define rdinstret() read_csr(instret)
 
 #endif
 
+/*
+ * do_div(n,base)：同时取得整数除法的商和余数。
+ * 参数 n 必须是可赋值表达式，执行后变为商；base 必须非零；宏结果为 int 余数。
+ * 本实现把 n 转为 unsigned long，在 RV64 下为 64 位，base 转为 unsigned。
+ * 参数在展开中可能求值多次，应避免带自增等副作用；printnum 用它拆分数位。
+ */
 #define do_div(n, base)                              \
     ({                                               \
         int __res;                                   \
@@ -229,8 +305,19 @@
         __res;                                       \
     })
 
+/*
+ * barrier()：无参数，执行 RISC-V fence 并声明 memory 破坏项。
+ * 同时限制硬件内存操作顺序及编译器跨越该位置的内存访问优化，无返回值。
+ */
 #define barrier() __asm__ __volatile__ ("fence" ::: "memory")
 
+/*
+ * lcr3：旧版 RISC-V 模板中的页表基址设置辅助函数。
+ * 参数 cr3：unsigned int 类型的地址；返回值：无。
+ * 把地址右移 RISCV_PGSHIFT 得到页号，写入旧名称 sptbr 对应的 CSR。
+ * 这不是 x86 的 CR3 指令；当前 RV64 Lab1 不调用它，既有参数宽度也不能
+ * 表达任意 64 位地址。保留旧模板定义，不将其解释为已实现的分页管理。
+ */
 static inline void
 lcr3(unsigned int cr3) {
     write_csr(sptbr, cr3 >> RISCV_PGSHIFT);
@@ -244,6 +331,11 @@ lcr3(unsigned int cr3) {
 /* Automatically generated by parse-opcodes */
 #ifndef RISCV_ENCODING_H
 #define RISCV_ENCODING_H
+/*
+ * 自动生成的指令编码表：MATCH_* 为匹配值，MASK_* 选出需要检查的位。
+ * 常见识别方式为 (instruction & MASK_XXX)==MATCH_XXX。
+ * 表中覆盖整数、分支、访存、浮点、原子与压缩指令，不是可执行函数。
+ */
 #define MATCH_BEQ 0x63
 #define MASK_BEQ  0x707f
 #define MATCH_BNE 0x1063
@@ -702,6 +794,10 @@ lcr3(unsigned int cr3) {
 #define MASK_CUSTOM3_RD_RS1  0x707f
 #define MATCH_CUSTOM3_RD_RS1_RS2 0x707b
 #define MASK_CUSTOM3_RD_RS1_RS2  0x707f
+/*
+ * 自动生成的 CSR 编号表：CSR_* 是汇编 CSR 指令使用的寄存器编号。
+ * 包含用户/监督者/机器态、计数器及调试寄存器；编号常量不授予访问权限。
+ */
 #define CSR_FFLAGS 0x1
 #define CSR_FRM 0x2
 #define CSR_FCSR 0x3
@@ -893,6 +989,10 @@ lcr3(unsigned int cr3) {
 #define CSR_MHPMCOUNTER29H 0xb9d
 #define CSR_MHPMCOUNTER30H 0xb9e
 #define CSR_MHPMCOUNTER31H 0xb9f
+/*
+ * 同步异常原因编号，例如取指/访存故障、非法指令和各特权级 ecall。
+ * 编号用于解释异常原因，Lab1 没有用此表建立内核异常分发。
+ */
 #define CAUSE_MISALIGNED_FETCH 0x0
 #define CAUSE_FAULT_FETCH 0x1
 #define CAUSE_ILLEGAL_INSTRUCTION 0x2
@@ -906,6 +1006,11 @@ lcr3(unsigned int cr3) {
 #define CAUSE_HYPERVISOR_ECALL 0xa
 #define CAUSE_MACHINE_ECALL 0xb
 #endif
+/*
+ * 可选指令清单展开接口：若包含者定义 DECLARE_INSN，
+ * 每一行调用该宏传入名字、匹配值和掩码，可用于生成解码表。
+ * 这些条目是宏调用清单，不是各自独立的 C 函数；默认未定义时不展开。
+ */
 #ifdef DECLARE_INSN
 DECLARE_INSN(beq, MATCH_BEQ, MASK_BEQ)
 DECLARE_INSN(bne, MATCH_BNE, MASK_BNE)
@@ -1137,6 +1242,10 @@ DECLARE_INSN(custom3_rd, MATCH_CUSTOM3_RD, MASK_CUSTOM3_RD)
 DECLARE_INSN(custom3_rd_rs1, MATCH_CUSTOM3_RD_RS1, MASK_CUSTOM3_RD_RS1)
 DECLARE_INSN(custom3_rd_rs1_rs2, MATCH_CUSTOM3_RD_RS1_RS2, MASK_CUSTOM3_RD_RS1_RS2)
 #endif
+/*
+ * 可选 CSR 清单展开接口：包含者定义 DECLARE_CSR 后，
+ * 用名称和 CSR 编号生成所需表项；默认不产生额外代码。
+ */
 #ifdef DECLARE_CSR
 DECLARE_CSR(fflags, CSR_FFLAGS)
 DECLARE_CSR(frm, CSR_FRM)
@@ -1330,6 +1439,10 @@ DECLARE_CSR(mhpmcounter29h, CSR_MHPMCOUNTER29H)
 DECLARE_CSR(mhpmcounter30h, CSR_MHPMCOUNTER30H)
 DECLARE_CSR(mhpmcounter31h, CSR_MHPMCOUNTER31H)
 #endif
+/*
+ * 可选异常原因清单展开接口：包含者定义 DECLARE_CAUSE 后，
+ * 可由描述字符串和原因编号生成诊断映射表；默认不展开。
+ */
 #ifdef DECLARE_CAUSE
 DECLARE_CAUSE("misaligned fetch", CAUSE_MISALIGNED_FETCH)
 DECLARE_CAUSE("fault fetch", CAUSE_FAULT_FETCH)
