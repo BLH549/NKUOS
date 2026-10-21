@@ -1,5 +1,0 @@
-本轮为 Codex 自动验证，不代表 B/C 本人实践。
-日期：2026-10-11（北京时间）
-QEMU: qemu-system-riscv64 -machine virt -nographic -bios default -kernel bin/ucore.img -S -gdb tcp:127.0.0.1:12345
-GDB: riscv64-unknown-elf-gdb -q -nx -batch bin/kernel -x /home/liu/projects/nku-os/labs/report/evidence/report-copy-20261011/verify.gdb
-镜像 SHA256: ac486354d148e98079ffeca22efe89c7b3cbcd4c9fa05a9ee2a4039d8080a8bf
