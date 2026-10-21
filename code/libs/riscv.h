@@ -95,8 +95,11 @@
  * 硬件触发器控制字段：描述匹配类型、动作、权限和访问类别。
  * TYPE/DMODE/MASKMAX 宏的 xlen 参数用于把字段定位到寄存器高位。
  */
+/* 逐行：xlen 指定位宽；将 4 位触发器类型掩码移到寄存器最高 4 位，返回掩码而非访问寄存器。 */
 #define MCONTROL_TYPE(xlen)    (0xfULL<<((xlen)-4))
+/* 逐行：将单个调试模式控制位定位到距最高位第 5 位的位置，1ULL 保持无符号宽度。 */
 #define MCONTROL_DMODE(xlen)   (1ULL<<((xlen)-5))
+/* 逐行：将 6 位掩码移动到与 xlen 对应的字段位置，只计算常量表达式。 */
 #define MCONTROL_MASKMAX(xlen) (0x3fULL<<((xlen)-11))
 
 #define MCONTROL_SELECT     (1<<19)
@@ -210,6 +213,7 @@
  * PTE_TABLE(PTE)：当 V 为 1 且 R/W/X 全为 0 时判断该项指向下级页表。
  * 这是位模式判断宏，Lab1 尚未构造或遍历页表。
  */
+/* 逐行：仅检查 V/R/W/X 四类标志：V=1 且 R/W/X=0 时为下一级页表项，宏只返回真假不读取页表。 */
 #define PTE_TABLE(PTE) (((PTE) & (PTE_V | PTE_R | PTE_W | PTE_X)) == PTE_V)
 
 #ifdef __riscv
@@ -234,6 +238,11 @@
  * read_csr(reg)：读取编译期指定的 CSR，返回 unsigned long 值。
  * #reg 把寄存器名转成汇编文本；GNU 语句表达式的最后一项作为宏的结果。
  */
+/* 逐行解读 read_csr（按下面代码行的顺序）：
+ * 第1行：开始语句表达式并声明 unsigned long 临时结果，CSR 名 reg 由调用处指定。
+ * 第2行：csrr 把 CSR 值写入输出操作数 %0；#reg 把名称拼成文本，=r 表示寄存器输出。
+ * 第3行：以 __tmp 为表达式结果，结束宏并返回刚读取的 CSR 值。
+ */
 #define read_csr(reg) ({ unsigned long __tmp; \
   asm volatile ("csrr %0, " #reg : "=r"(__tmp)); \
   __tmp; })
@@ -241,6 +250,13 @@
 /*
  * write_csr(reg,val)：向 CSR 写入 val，无供调用者使用的返回值。
  * 若 val 为小于 32 的编译期常量，使用立即数约束，否则使用通用寄存器。
+ */
+/* 逐行解读 write_csr（按下面代码行的顺序）：
+ * 第1行：开始向 CSR 写入的语句表达式，寄存器名称与值分别由 reg、val 指定。
+ * 第2行：判断 val 是否为编译期常量且小于 32，以决定能否使用 CSR 的小立即数形式。
+ * 第3行：常量分支使用 i 约束，把 val 作为立即数输入；无输出操作数所以有两个冒号。
+ * 第4行：不满足常量条件时进入寄存器输入分支。
+ * 第5行：使用 r 约束通过通用寄存器传入 val，执行 CSR 写入并结束宏。
  */
 #define write_csr(reg, val) ({ \
   if (__builtin_constant_p(val) && (unsigned long)(val) < 32) \
@@ -251,6 +267,14 @@
 /*
  * swap_csr(reg,val)：原子地用 val 替换 CSR 内容，并返回替换前的值。
  * 常量与寄存器路径分别选择合适的汇编操作数约束。
+ */
+/* 逐行解读 swap_csr（按下面代码行的顺序）：
+ * 第1行：声明接收旧值的临时变量，并开始 CSR 原子交换宏。
+ * 第2行：检查新值是否能用小立即数编码。
+ * 第3行：用 csrrw 将输入写入 CSR，并把旧 CSR 值写到 =r 输出；本分支输入采用 i。
+ * 第4行：大值或运行期值改走通用寄存器分支。
+ * 第5行：用 r 输入替换 CSR 内容，同样把旧值保存到 __tmp。
+ * 第6行：返回修改前的 CSR 值，而不是传入的新值。
  */
 #define swap_csr(reg, val) ({ unsigned long __tmp; \
   if (__builtin_constant_p(val) && (unsigned long)(val) < 32) \
@@ -263,6 +287,14 @@
  * set_csr(reg,bit)：把 bit 指定的 CSR 位设为 1，返回修改前的 CSR 值。
  * bit 是掩码，不是位编号；操作由一条 CSR 读置位指令完成。
  */
+/* 逐行解读 set_csr（按下面代码行的顺序）：
+ * 第1行：声明旧值临时变量，开始按 bit 掩码置位 CSR 的宏。
+ * 第2行：检查 bit 掩码是否为可编码的小立即数。
+ * 第3行：csrrs 把掩码中的 1 位设置到 CSR，输出旧值，掩码使用立即数输入。
+ * 第4行：其他掩码走通用寄存器分支。
+ * 第5行：把运行期掩码放在寄存器中执行读置位，仍记录旧值。
+ * 第6行：以旧值作为宏结果，结束语句表达式。
+ */
 #define set_csr(reg, bit) ({ unsigned long __tmp; \
   if (__builtin_constant_p(bit) && (unsigned long)(bit) < 32) \
     asm volatile ("csrrs %0, " #reg ", %1" : "=r"(__tmp) : "i"(bit)); \
@@ -273,6 +305,14 @@
 /*
  * clear_csr(reg,bit)：清除 bit 掩码指定的 CSR 位，返回修改前的值。
  * 使用 CSR 读清位指令，不是先在 C 中读取再写回。
+ */
+/* 逐行解读 clear_csr（按下面代码行的顺序）：
+ * 第1行：声明旧值临时变量，开始按 bit 掩码清除 CSR 位的宏。
+ * 第2行：检查掩码是否可以用小立即数表达。
+ * 第3行：csrrc 清除掩码中为 1 的位，记录旧 CSR 值，输入采用立即数约束。
+ * 第4行：运行期或较大掩码走另一个分支。
+ * 第5行：通过通用寄存器传入掩码，执行读清位并记录旧值。
+ * 第6行：返回修改前的值，结束宏。
  */
 #define clear_csr(reg, bit) ({ unsigned long __tmp; \
   if (__builtin_constant_p(bit) && (unsigned long)(bit) < 32) \
@@ -285,8 +325,11 @@
  * rdtime()/rdcycle()/rdinstret()：分别读取时间、周期、已退休指令计数 CSR。
  * 无参数；返回 read_csr 的 unsigned long 结果；能否读取取决于特权和平台配置。
  */
+/* 逐行：无参宏读取 time CSR 并返回计时值；计时单位由平台确定，不是直接的秒数。 */
 #define rdtime() read_csr(time)
+/* 逐行：无参宏读取周期计数 CSR，返回当前计数，能否访问取决于运行特权配置。 */
 #define rdcycle() read_csr(cycle)
+/* 逐行：无参宏读取已退休指令数 CSR，不是按源码行数计数。 */
 #define rdinstret() read_csr(instret)
 
 #endif
@@ -296,6 +339,15 @@
  * 参数 n 必须是可赋值表达式，执行后变为商；base 必须非零；宏结果为 int 余数。
  * 本实现把 n 转为 unsigned long，在 RV64 下为 64 位，base 转为 unsigned。
  * 参数在展开中可能求值多次，应避免带自增等副作用；printnum 用它拆分数位。
+ */
+/* 逐行解读 do_div（按下面代码行的顺序）：
+ * 第1行：定义原地除法宏，n 会被更新为商，表达式结果是余数。
+ * 第2行：开始 GNU 语句表达式，可包含局部声明与多条语句。
+ * 第3行：声明 int 余数变量；调用处应选择可以由它表示的余数范围。
+ * 第4行：对转换后的无符号 n 取模得到余数；base 非零，在 RV64 下 unsigned long 为 64 位。
+ * 第5行：对同一数值做无符号整除，并把商写回 n；参数可能求值多次，避免副作用。
+ * 第6行：以 __res 为最后表达式，使宏返回余数。
+ * 第7行：结束语句表达式，后续 C 代码继续执行。
  */
 #define do_div(n, base)                              \
     ({                                               \
@@ -309,6 +361,7 @@
  * barrier()：无参数，执行 RISC-V fence 并声明 memory 破坏项。
  * 同时限制硬件内存操作顺序及编译器跨越该位置的内存访问优化，无返回值。
  */
+/* 逐行：无输出、无输入，执行 fence 并列出 memory 破坏项，同时约束硬件与编译器内存顺序。 */
 #define barrier() __asm__ __volatile__ ("fence" ::: "memory")
 
 /*
@@ -318,9 +371,13 @@
  * 这不是 x86 的 CR3 指令；当前 RV64 Lab1 不调用它，既有参数宽度也不能
  * 表达任意 64 位地址。保留旧模板定义，不将其解释为已实现的分页管理。
  */
+/* 逐行：把后续函数声明为文件内可见的内联 void 函数，内联只是编译器处理方式。 */
 static inline void
+/* 逐行：接收旧模板的 32 位页表地址参数，开始页表基址辅助函数；当前 Lab1 不调用它。 */
 lcr3(unsigned int cr3) {
+    /* 逐行：把地址右移 12 位转换成页号，写到旧名称 sptbr 的 CSR；保留模板的历史接口。 */
     write_csr(sptbr, cr3 >> RISCV_PGSHIFT);
+/* 逐行：结束 lcr3 的函数体，无返回结果。 */
 }
 
 #endif
