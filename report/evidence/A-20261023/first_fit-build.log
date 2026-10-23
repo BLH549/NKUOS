@@ -1,0 +1,16 @@
+$ make -j2 PMM=first_fit GCCPREFIX=/Users/khy/.local/share/nkuos-tools/xpack-riscv-none-elf-gcc-15.2.0-1/bin/riscv-none-elf-
++ cc kern/init/entry.S
++ cc kern/init/init.c
++ cc kern/libs/stdio.c
++ cc kern/debug/panic.c
++ cc kern/driver/console.c
++ cc kern/driver/dtb.c
++ cc kern/mm/best_fit_pmm.c
++ cc kern/mm/default_pmm.c
++ cc libs/printfmt.c
++ cc libs/readline.c
++ cc libs/sbi.c
++ cc libs/string.c
++ cc kern/mm/pmm.c
++ ld bin/kernel
+/Users/khy/.local/share/nkuos-tools/xpack-riscv-none-elf-gcc-15.2.0-1/bin/riscv-none-elf-objcopy bin/kernel --strip-all -O binary bin/ucore.img

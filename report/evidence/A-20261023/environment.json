@@ -1,0 +1,19 @@
+{
+  "os": "macOS-26.6-arm64-arm-64bit",
+  "machine": "arm64",
+  "host_sdk": "/Library/Developer/CommandLineTools/SDKs/MacOSX26.5.sdk",
+  "verified_packages": [
+    {
+      "filename": "xpack-riscv-none-elf-gcc-15.2.0-1-darwin-arm64.tar.gz",
+      "sha256": "6588e8351455fad8aca37551f0e5a5543f3346bfa9a837cf03cbd3bdd4989f8f",
+      "release": "https://github.com/xpack-dev-tools/riscv-none-elf-gcc-xpack/releases/tag/v15.2.0-1"
+    },
+    {
+      "filename": "xpack-qemu-riscv-9.2.4-1-darwin-arm64.tar.gz",
+      "sha256": "afe4910a2ccf023fee1ce01fb3cf497563fd5e92d786b7fff08cb139da1ac281",
+      "release": "https://github.com/xpack-dev-tools/qemu-riscv-xpack/releases/tag/v9.2.4-1"
+    }
+  ],
+  "initial_entry_source": "git show 7d2100d:code/kern/init/entry.S",
+  "final_source_manifest": "summary.json"
+}

@@ -1,9 +1,54 @@
-# Lab2 起始代码
+# Lab2：物理内存初始化与页分配
 
-本分支从保存后的 `lab1` 创建，`code/` 导入用户提供的 `lab2.zip` 中的 `lab2_new/`，共 39 个文件。导入时已逐文件核对，内容与压缩包一致。
+源码在 `code/`，报告入口为 [report.md](../report/report.md)。A 部分由匡航逸（2412235）完成：DTB 内存初始化、First-Fit 分析与修复、Best-Fit、独立测试和运行证据。
 
-压缩包 SHA-256：`48402e9b2dba7cf4726060a0bda3fa0c57e4f7be66f76ecf11851e181f546d6c`。
+## 构建、运行和管理器选择
 
-当前为原始起始版本，尚未完成练习，也未进行构建、运行或评分验证。Makefile 的启动参数保留原样，环境适配需在后续实验中核查。
+需要 GNU Make、RISC-V 裸机 GCC/binutils 和 QEMU。进入本目录执行：
 
-`../report/` 暂为空，待 Lab2 完成后再编写报告和提示词记录。Lab1 的代码、报告、截图及验证材料完整保存在 `lab1` 分支，可用 `git switch lab1` 切回。
+```sh
+make                         # 默认 Best-Fit
+make qemu                    # Ctrl+A 后松开，再按 X 退出
+make PMM=first_fit qemu       # 原始 First-Fit 检查
+make PMM=best_fit qemu        # 切回 Best-Fit，不需要手工 clean
+make grade                   # 教师检查，默认内存 128 MiB
+make debug                   # QEMU 暂停，监听 localhost:1234
+make gdb                     # 另一终端运行
+```
+
+成功时输出 `memory management: best_fit_pmm_manager` 和 `check_alloc_page() succeeded!`，之后无限循环。First-Fit 的管理器名为 `default_pmm_manager`。`make grade` 在临时副本注入教师测试，串口输出保存在 `.qemu.out`，不改工作区测试或内核源文件。
+
+默认工具前缀为 `riscv64-unknown-elf-`，可用环境变量或 make 参数覆盖 `GCCPREFIX`、`QEMU`，或用 make 参数覆盖 `GDB`。编译明确使用 RV64、`lp64` 和 `-msmall-data-limit=0`；本启动入口没有初始化 `gp`。
+
+## 本次 macOS arm64 环境
+
+本次实测 GNU Make 3.81、xPack GCC 15.2.0 / binutils 2.45、xPack QEMU 9.2.4（自带 OpenSBI 1.5.1）。工具位于仓库外的 `~/.local/share/nkuos-tools/`；通过 [GCC 发布页](https://github.com/xpack-dev-tools/riscv-none-elf-gcc-xpack/releases/tag/v15.2.0-1) 和 [QEMU 发布页](https://github.com/xpack-dev-tools/qemu-riscv-xpack/releases/tag/v9.2.4-1) 下载对应 `darwin-arm64.tar.gz`，对照同页 `.sha` 校验后解压即可。
+
+```sh
+export GCCPREFIX="$HOME/.local/share/nkuos-tools/xpack-riscv-none-elf-gcc-15.2.0-1/bin/riscv-none-elf-"
+export QEMU="$HOME/.local/share/nkuos-tools/xpack-qemu-riscv-9.2.4-1/bin/qemu-system-riscv64"
+make
+make qemu
+make grade
+```
+
+工具目录和下载包不提交 Git。没有修改系统 PATH 或安装包管理器。
+
+## 独立测试与证据重现
+
+```sh
+make check-host              # 系统 C 编译器，ASan + UBSan，无需交叉工具链
+python3 tools/check_qemu.py   # 真实重编译两个管理器，并运行 5 组 QEMU 启动
+```
+
+本机系统 SDK 的默认选择与链接器不匹配，主机检查需指定已装的兼容 SDK：
+
+```sh
+SDKROOT=/Library/Developer/CommandLineTools/SDKs/MacOSX26.5.sdk make check-host
+```
+
+其他系统按其正常工具链配置运行即可。主机检查直接编译实际分配器和 `page_init()`，只替换 DTB 输入、内存映射缓冲区与注册回调。QEMU 脚本接受 `GCCPREFIX`、`QEMU`、`MAKE` 环境变量，默认将日志和源码/镜像校验值写入 `../report/evidence/A-20261023/`，可用 `--output PATH` 指定新目录。
+
+当前实现管理首段 RAM `[0x80000000, min(DTB_END, 0x88000000))`。256 MiB RAM 的启动验证覆盖截断行为；教师评分脚本的 `npage` 断言只适用于未被截断的默认配置。DTB 解析器沿用实验简化版本，通用多段 RAM 与任意 reserved-memory 解析不在本次实现范围内。B 的 Buddy/SLUB 及 C 的 QEMU 源码调试仍按 [任务分工](../report/Lab2-任务分工.md) 接续。
+
+起始代码来源：`lab2.zip` 的 `lab2_new/`，压缩包 SHA-256 为 `48402e9b2dba7cf4726060a0bda3fa0c57e4f7be66f76ecf11851e181f546d6c`。Lab1 的材料保存在 `lab1` 分支。

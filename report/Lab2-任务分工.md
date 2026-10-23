@@ -8,7 +8,7 @@
 
 | 成员 | 姓名 / 学号 | 主要任务 | 公共责任 |
 | --- | --- | --- | --- |
-| A | 待填写 | 物理内存初始化、内存范围获取 Challenge、First-Fit 分析、Best-Fit 实现与测试 | 代码整合与最终回归验证 |
+| A | 匡航逸 2412235 | 物理内存初始化、内存范围获取 Challenge、First-Fit 分析、Best-Fit 实现与测试 | 代码整合与最终回归验证 |
 | B | 待填写 | Buddy System 实现与测试、SLUB Challenge 实现与测试 | 整理实验知识点与 OS 原理的对应关系 |
 | C | 刘华彬 2411238 | QEMU 调试环境、页表翻译与 TLB 调试、分页前后访存比较 | 报告整合、截图与证据目录整理 |
 
@@ -44,48 +44,60 @@ QEMU 调试分支从模拟器内部观察虚拟地址翻译、页表遍历和 TL
 
 主要文件：`code/kern/mm/pmm.c`。参考 `dtb.c`、`pmm.h`、`memlayout.h` 和 `riscv.h`。
 
-- [ ] 编写 spec 和 prompt，借助 AI 实现 `static void page_init(void)`。
-- [ ] 读取设备树中的物理内存起点和大小，检查信息有效性；无效时终止初始化。
-- [ ] 正确设置 `va_pa_offset`、`npage` 和 `pages`。
-- [ ] 处理可管理地址上界与页面对齐，在内核镜像之后安排描述符数组。
-- [ ] 将描述符初始化为保留状态，排除 OpenSBI、内核和描述符数组占用的页面。
-- [ ] 仅将剩余完整页面交给 `init_memmap()`；没有可用完整页面时不调用。
-- [ ] 输出物理内存范围，先使用现有 First-Fit 运行检查，交付可用基线。
+- [x] 编写 spec 和 prompt，借助 AI 实现 `static void page_init(void)`。
+- [x] 读取设备树中的物理内存起点和大小，检查信息有效性；无效时终止初始化。
+- [x] 正确设置 `va_pa_offset`、`npage` 和 `pages`。
+- [x] 处理可管理地址上界与页面对齐，在内核镜像之后安排描述符数组。
+- [x] 将描述符初始化为保留状态，排除 OpenSBI、内核和描述符数组占用的页面。
+- [x] 仅将剩余完整页面交给 `init_memmap()`；没有可用完整页面时不调用。
+- [x] 输出物理内存范围，先使用现有 First-Fit 运行检查，交付可用基线。
 
 说明：`npage` 是可管理物理页号的上界，描述符覆盖范围为 `[nbase, npage)`，不能直接把它当作可用页数。
 
 ### 3.2 内存范围获取 Challenge
 
-- [ ] 回答：OS 事先不知道硬件的可用物理内存范围时，可以通过哪些机制获取？
-- [ ] 说明本实验设备树方案中的信息来源、传递方式和内核读取过程。
-- [ ] 区分物理地址空间、RAM 区域、设备映射和保留区域，解释为何不能把所有地址都当作可分配内存。
-- [ ] 完成报告解答并准备答辩。
+- [x] 回答：OS 事先不知道硬件的可用物理内存范围时，可以通过哪些机制获取？
+- [x] 说明本实验设备树方案中的信息来源、传递方式和内核读取过程。
+- [x] 区分物理地址空间、RAM 区域、设备映射和保留区域，解释为何不能把所有地址都当作可分配内存。
+- [x] 完成报告解答。
+- [ ] 负责人亲自复现并完成答辩准备（尚未经本人确认）。
 
 ### 3.3 First-Fit 分析
 
 主要文件：`code/kern/mm/default_pmm.c`。
 
-- [ ] 阅读 `default_init()`、`default_init_memmap()`、`default_alloc_pages()` 和 `default_free_pages()`。
-- [ ] 解释空闲链表、块首页面 `property`、状态标志和空闲页计数。
-- [ ] 用自己的话说明初始化、分配、拆分、回收及相邻空闲块合并的过程。
-- [ ] 回答 First-Fit 的进一步改进空间。
+- [x] 阅读 `default_init()`、`default_init_memmap()`、`default_alloc_pages()` 和 `default_free_pages()`。
+- [x] 解释空闲链表、块首页面 `property`、状态标志和空闲页计数。
+- [x] 用自己的话说明初始化、分配、拆分、回收及相邻空闲块合并的过程。
+- [x] 回答 First-Fit 的进一步改进空间。
 
 ### 3.4 Best-Fit 实现与接入
 
 主要文件：`code/kern/mm/best_fit_pmm.c`、`best_fit_pmm.h`、`pmm.c`。
 
-- [ ] 编写 spec 和 prompt，实现完整 Best-Fit 模块及 `best_fit_pmm_manager` 注册结构。
-- [ ] 从所有满足请求的空闲块中选择最小块，正确维护拆分、回收、合并及计数。
-- [ ] 保持现有 `basic_check()` 和 `best_fit_check()` 不变，并通过它们的检查。
-- [ ] 在 `init_pmm_manager()` 中接入 Best-Fit，确认启动输出中的管理器名称。
-- [ ] 回答 Best-Fit 的进一步改进空间，提交实际使用的 prompt。
+- [x] 编写 spec 和 prompt，实现完整 Best-Fit 模块及 `best_fit_pmm_manager` 注册结构。
+- [x] 从所有满足请求的空闲块中选择最小块，正确维护拆分、回收、合并及计数。
+- [x] 保持现有 `basic_check()` 和 `best_fit_check()` 不变，并通过它们的检查。
+- [x] 在 `init_pmm_manager()` 中接入 Best-Fit，确认启动输出中的管理器名称。
+- [x] 回答 Best-Fit 的进一步改进空间，提交实际使用的 prompt。
 
 ### 3.5 A 的交付与验收
 
-- [ ] 可运行的初始化与 Best-Fit 代码。
-- [ ] First-Fit 基线和 Best-Fit 的真实运行结果。
-- [ ] 初始化、First-Fit、Best-Fit 和内存范围 Challenge 的报告正文。
-- [ ] spec、prompt、实际问题与修复记录。
+- [x] 可运行的初始化与 Best-Fit 代码。
+- [x] First-Fit 基线和 Best-Fit 的真实运行结果。
+- [x] 初始化、First-Fit、Best-Fit 和内存范围 Challenge 的报告正文。
+- [x] spec、prompt、实际问题与修复记录。
+
+A 的独立代码、分析报告、spec、prompt 与运行验证于 2026-10-23 完成，负责人为匡航逸（2412235），见 [报告入口](report.md)。First-Fit 基线、Best-Fit 原始检查和教师评分 20/20 均已通过。以下公共责任及本人验收仍未完成，不能将 A 的全部职责标记为结束。
+
+### 3.6 A 的后续公共责任与本人验收
+
+- [ ] B 提供 Buddy/SLUB 后，整合管理器选择及接口。
+- [ ] C 提供环境调整后，合并并核对可复现配置。
+- [ ] 分别运行 First-Fit、Best-Fit、Buddy 和 SLUB 的最终整合回归。
+- [ ] 汇总最终测试结果，与 B/C 交叉检查并完成完整流程演示。
+
+当前仓库没有 Buddy/SLUB 实现，以上整合回归尚无条件完成。负责人亲自复现和答辩准备须由本人确认；提交与推送状态见第 8 节。
 
 ## 4. B：Buddy System 与 SLUB
 
@@ -215,8 +227,8 @@ report/
 
 ## 8. 最终验收与提交
 
-- [ ] `page_init()` 正确建立页描述符与可用物理页范围。
-- [ ] First-Fit 原理说明完整，Best-Fit 接入并通过原有测试。
+- [x] `page_init()` 正确建立页描述符与可用物理页范围。
+- [x] First-Fit 原理说明完整，Best-Fit 接入并通过原有测试。
 - [ ] Buddy 接入并通过自建测试，SLUB 接入并通过对象分配测试。
 - [ ] QEMU 调试流程可复现，地址翻译和 TLB 分析有实际证据。
 - [ ] 内存范围获取 Challenge 已作答，SLUB Challenge 的代码、测试和两份 prompt 齐全。

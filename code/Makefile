@@ -5,9 +5,7 @@ SLASH	:= /
 
 V       := @
 
-#ifndef GCCPREFIX
-GCCPREFIX := riscv64-unknown-elf-
-#endif
+GCCPREFIX ?= riscv64-unknown-elf-
 
 ifndef QEMU
 QEMU := qemu-system-riscv64
@@ -34,6 +32,16 @@ CFLAGS  := -mcmodel=medany -std=gnu99 -Wno-unused -Werror
 CFLAGS	+= -fno-builtin -Wall -O2 -nostdinc $(DEFS)
 CFLAGS	+= -fno-stack-protector -ffunction-sections -fdata-sections
 CFLAGS	+= -g
+ARCH    ?= rv64imac_zicsr_zifencei
+ABI     ?= lp64
+CFLAGS  += -march=$(ARCH) -mabi=$(ABI) -msmall-data-limit=0
+
+PMM     ?= best_fit
+ifeq ($(PMM),first_fit)
+CFLAGS  += -DPMM_FIRST_FIT
+else ifneq ($(PMM),best_fit)
+$(error Unsupported PMM '$(PMM)'; use first_fit or best_fit)
+endif
 CFLAGS2 = $(CFLAGS) -D ucore_test
 CTYPE	:= c S
 LD      := $(GCCPREFIX)ld
@@ -143,6 +151,21 @@ $(call create_target,ucore.img)
 
 $(call finish_all)
 
+# A manager switch must rebuild pmm.c even when no source file changed.
+PMM_CONFIG := $(OBJDIR)/.pmm-$(PMM)
+$(PMM_CONFIG): | $(OBJDIR)/
+	@$(RM) $(OBJDIR)/.pmm-*
+	@touch $@
+$(call toobj,kern/mm/pmm.c): $(PMM_CONFIG)
+$(kernel) $(UCOREIMG): $(PMM_CONFIG)
+ifeq ($(wildcard $(PMM_CONFIG)),)
+# Make 3.81 compares timestamps at one-second precision. Force the entire
+# output chain on a switch, even if the new stamp has the same timestamp.
+.PHONY: pmm-switch
+pmm-switch:
+$(call toobj,kern/mm/pmm.c) $(kernel) $(UCOREIMG): pmm-switch
+endif
+
 IGNORE_ALLDEPS	= clean \
 				  dist-clean \
 				  grade \
@@ -159,34 +182,26 @@ endif
 TARGETS: $(TARGETS)
 
 .DEFAULT_GOAL := TARGETS
-.PHONY: qemu spike test
+QEMUOPTS = -machine virt -nographic -bios default -kernel $(UCOREIMG)
+
+.PHONY: qemu spike test debug gdb check-host
 qemu: $(UCOREIMG) $(SWAPIMG) $(SFSIMG)
-	$(V)$(QEMU) \
-		-machine virt \
-		-nographic \
-		-bios default \
-		-device loader,file=$(UCOREIMG),addr=0x80200000
+	$(V)$(QEMU) $(QEMUOPTS)
 
 debug: $(UCOREIMG) $(SWAPIMG) $(SFSIMG)
-	$(V)$(QEMU) \
-		-machine virt \
-		-nographic \
-		-bios default \
-		-device loader,file=$(UCOREIMG),addr=0x80200000\
-		-s -S
+	$(V)$(QEMU) $(QEMUOPTS) -s -S
 
 gdb:
-	riscv64-unknown-elf-gdb \
+	$(GDB) \
     -ex 'file bin/kernel' \
     -ex 'set arch riscv:rv64' \
     -ex 'target remote localhost:1234'
 
 test: $(UCOREIMG) $(SWAPIMG) $(SFSIMG)
-	$(V)$(QEMU) \
-		-machine virt \
-		-nographic \
-		-bios default \
-		-device loader,file=$(UCOREIMG),addr=0x80200000
+	$(V)$(QEMU) $(QEMUOPTS)
+
+check-host:
+	python3 tools/check_host.py
 spike: $(UCOREIMG) $(SWAPIMG) $(SFSIMG)
 	$(V)$(SPIKE) $(UCOREIMG)
 
@@ -208,8 +223,11 @@ grade:
 	$(V)$(MKDIR) $(GRADE_TMP)
 	$(V)tar -C . --exclude=.git --exclude=.vscode --exclude=vcs -cf - . | tar -C $(GRADE_TMP) -xf -
 	$(V)python3 tools/inject.py $(GRADE_TMP)
-	$(V)cd $(GRADE_TMP) && $(SH) tools/grade.sh
-	$(V)$(RM) -rf $(GRADE_TMP)
+	$(V)status=0; (cd $(GRADE_TMP) && $(SH) tools/grade.sh) || status=$$?; \
+		if [ -f $(GRADE_TMP)/$(GRADE_QEMU_OUT) ]; then \
+			$(COPY) $(GRADE_TMP)/$(GRADE_QEMU_OUT) $(GRADE_QEMU_OUT); \
+		fi; \
+		$(RM) -rf $(GRADE_TMP); exit $$status
 
 touch:
 	$(V)$(foreach f,$(TOUCH_FILES),$(TOUCH) $(f))

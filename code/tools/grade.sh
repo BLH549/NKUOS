@@ -130,6 +130,7 @@ run_qemu() {
         exec $qemu -nographic $qemuopts -serial file:$qemu_out -monitor null -no-reboot $qemuextra
     ) > $out 2> $err &
     pid=$!
+    trap 'kill "$pid" > /dev/null 2>&1; wait "$pid" 2>/dev/null || true' 0
 
     sleep 1
 
@@ -222,7 +223,7 @@ osimg=$(make_print ucoreimg)
 swapimg=$(make_print swapimg)
 
 ## qemu-options
-qemuopts="-machine virt -nographic -bios default -device loader,file=bin/ucore.img,addr=0x80200000"
+qemuopts="$(make_print QEMUOPTS)"
 
 ## the lab2 kernel only while(1) after entering kernel mode and never calls readline,
 ## so no break function is needed and brkfun stays empty

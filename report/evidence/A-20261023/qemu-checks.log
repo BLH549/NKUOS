@@ -1,0 +1,6 @@
+first_fit 128 MiB: PASS (31929 free pages)
+best_fit 16 MiB: PASS (3537 free pages)
+best_fit 64 MiB: PASS (15705 free pages)
+best_fit 128 MiB: PASS (31929 free pages)
+best_fit 256 MiB: PASS (31929 free pages)
+QEMU checks: PASS; default build restored to Best-Fit

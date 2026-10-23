@@ -1,0 +1,6 @@
+Source and image hashes: PASS
+Original allocator checks and teacher test sources unchanged: PASS
+New report links: PASS
+Teacher grade: 20/20
+Host ASan/UBSan checks: PASS
+QEMU runs: 5/5 PASS
