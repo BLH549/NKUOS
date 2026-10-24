@@ -1,0 +1,25 @@
+python3 tools/check_b.py
+[Buddy] rounding/alignment/split/merge/count: PASS
+[Buddy host] unaligned 63-page arena/exhaustion: PASS
+[Buddy host] rounded release/multi-level merge/non-buddies: PASS
+[Buddy host] out-of-order adjacent bank registration: PASS
+[Buddy host] 20000 independent bitmap-model operations: PASS
+[SLUB] classes/alignment/data independence: PASS
+[SLUB] multi-slab/reuse/invalid input/page return: PASS
+[SLUB] all checks passed; free pages restored: 256
+[SLUB host] 5000 object operations/data/overlap/OOM/recovery: PASS
+buddy_pmm_manager + SLUB: PASS (ASan + UBSan)
+[SLUB] classes/alignment/data independence: PASS
+[SLUB] multi-slab/reuse/invalid input/page return: PASS
+[SLUB] all checks passed; free pages restored: 256
+[SLUB host] 5000 object operations/data/overlap/OOM/recovery: PASS
+best_fit_pmm_manager + SLUB: PASS (ASan + UBSan)
+[SLUB] classes/alignment/data independence: PASS
+[SLUB] multi-slab/reuse/invalid input/page return: PASS
+[SLUB] all checks passed; free pages restored: 256
+[SLUB host] 5000 object operations/data/overlap/OOM/recovery: PASS
+default_pmm_manager + SLUB: PASS (ASan + UBSan)
+Buddy invalid free size: PASS (expected panic)
+Buddy invalid free tail: PASS (expected panic)
+Buddy invalid free double: PASS (expected panic)
+B host checks: PASS (ASan + UBSan)

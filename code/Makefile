@@ -39,8 +39,10 @@ CFLAGS  += -march=$(ARCH) -mabi=$(ABI) -msmall-data-limit=0
 PMM     ?= best_fit
 ifeq ($(PMM),first_fit)
 CFLAGS  += -DPMM_FIRST_FIT
+else ifeq ($(PMM),buddy)
+CFLAGS  += -DPMM_BUDDY
 else ifneq ($(PMM),best_fit)
-$(error Unsupported PMM '$(PMM)'; use first_fit or best_fit)
+$(error Unsupported PMM '$(PMM)'; use first_fit, best_fit or buddy)
 endif
 CFLAGS2 = $(CFLAGS) -D ucore_test
 CTYPE	:= c S
@@ -184,7 +186,7 @@ TARGETS: $(TARGETS)
 .DEFAULT_GOAL := TARGETS
 QEMUOPTS = -machine virt -nographic -bios default -kernel $(UCOREIMG)
 
-.PHONY: qemu spike test debug gdb check-host
+.PHONY: qemu spike test debug gdb check-host check-b
 qemu: $(UCOREIMG) $(SWAPIMG) $(SFSIMG)
 	$(V)$(QEMU) $(QEMUOPTS)
 
@@ -202,6 +204,8 @@ test: $(UCOREIMG) $(SWAPIMG) $(SFSIMG)
 
 check-host:
 	python3 tools/check_host.py
+check-b:
+	python3 tools/check_b.py
 spike: $(UCOREIMG) $(SWAPIMG) $(SFSIMG)
 	$(V)$(SPIKE) $(UCOREIMG)
 

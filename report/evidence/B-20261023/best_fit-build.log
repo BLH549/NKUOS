@@ -1,0 +1,4 @@
+$ make -j2 PMM=best_fit ARCH=rv64imac GCCPREFIX=riscv64-unknown-elf- QEMU=qemu-system-riscv64
++ cc kern/mm/pmm.c
++ ld bin/kernel
+riscv64-unknown-elf-objcopy bin/kernel --strip-all -O binary bin/ucore.img
