@@ -1,0 +1,125 @@
+
+(guest) set pagination off
+
+(guest) set confirm off
+
+(guest) set print thread-events off
+
+(guest) file bin/kernel
+Reading symbols from bin/kernel...
+
+(guest) set architecture riscv:rv64
+The target architecture is set to "riscv:rv64".
+
+(guest) target remote :1236
+Remote debugging using :1236
+0x0000000000001000 in ?? ()
+
+(guest) hbreak *0x80200008
+Hardware assisted breakpoint 1 at 0x80200008
+
+(guest) continue
+Continuing.
+
+Breakpoint 1, 0x0000000080200008 in ?? ()
+
+(guest) info registers pc satp t0 a0
+pc             0x80200008	0x80200008
+satp           0x0	0
+t0             0x80206000	2149605376
+a0             0x0	0
+
+(guest) x/i $pc
+=> 0x80200008:	sd	a0,0(t0)
+
+(guest) si
+0x000000008020000c in ?? ()
+
+(guest) delete breakpoints
+
+(guest) hbreak *0xffffffffc0200102
+Hardware assisted breakpoint 2 at 0xffffffffc0200102: file kern/init/init.c, line 29.
+
+(guest) continue
+Continuing.
+
+Breakpoint 2, 0xffffffffc0200102 in kern_init () at kern/init/init.c:29
+29	int kern_init(void) {
+
+(guest) info registers pc satp sp ra
+pc             0xffffffffc0200102	0xffffffffc0200102 <kern_init+22>
+satp           0x8000000000080205	-9223372036854251003
+sp             0xffffffffc0204ff0	0xffffffffc0204ff0
+ra             0x80000a02	0x80000a02
+
+(guest) x/gx (char *)&boot_page_table_sv39+16
+0xffffffffc0205010:	0x0000000000000000
+
+(guest) x/gx (char *)&boot_page_table_sv39+4088
+0xffffffffc0205ff8:	0x00000000200000cf
+
+(guest) x/i $pc
+=> 0xffffffffc0200102 <kern_init+22>:	sd	ra,8(sp)
+
+(guest) si
+0xffffffffc0200104	31	    memset(edata, 0, end - edata);
+
+(guest) delete breakpoints
+
+(guest) hbreak *0xffffffffc0200274
+Hardware assisted breakpoint 3 at 0xffffffffc0200274: file kern/driver/dtb.c, line 110.
+
+(guest) continue
+Continuing.
+
+Breakpoint 3, dtb_init () at kern/driver/dtb.c:110
+110	    cprintf("DTB Address: 0x%lx\n", boot_dtb);
+
+(guest) info registers pc satp s0
+pc             0xffffffffc0200274	0xffffffffc0200274 <dtb_init+46>
+satp           0x8000000000080205	-9223372036854251003
+s0             0xffffffffc0206008  0xffffffffc0206008
+
+(guest) x/i $pc
+=> 0xffffffffc0200274 <dtb_init+46>:	ld	a1,0(s0)
+
+(guest) set $pc = 0xffffffffc020004e
+
+(guest) si
+45	    lui sp, %hi(bootstacktop)
+
+(guest) set $pc = 0xffffffffc0200274
+
+(guest) si
+0xffffffffc0200276	110	    cprintf("DTB Address: 0x%lx\n", boot_dtb);
+
+(guest) p/x $a1
+$1 = 0x82200000
+
+(guest) set $pc = 0xffffffffc0200274
+
+(guest) si
+0xffffffffc0200276	110	    cprintf("DTB Address: 0x%lx\n", boot_dtb);
+
+(guest) p/x $a1
+$2 = 0x82200000
+
+(guest) delete breakpoints
+
+(guest) hbreak *0xffffffffc020012c
+Hardware assisted breakpoint 4 at 0xffffffffc020012c: file kern/init/init.c, line 47.
+
+(guest) continue
+Continuing.
+
+Breakpoint 4, kern_init () at kern/init/init.c:47
+47	    while (1)
+
+(guest) info registers pc satp
+pc             0xffffffffc020012c	0xffffffffc020012c <kern_init+64>
+satp           0x8000000000080205	-9223372036854251003
+
+(guest) detach
+Detaching from program: /home/liu/projects/nku-os/labs/code/bin/kernel, process 1
+Ending remote debugging.
+[Inferior 1 (process 1) detached]

@@ -1,0 +1,39 @@
+
+(host) set pagination off
+
+(host) set confirm off
+
+(host) set print thread-events off
+
+(host) file /home/liu/.local/src/qemu-4.1.1/build-debug/riscv64-softmmu/qemu-system-riscv64
+Reading symbols from /home/liu/.local/src/qemu-4.1.1/build-debug/riscv64-softmmu/qemu-system-riscv64...
+
+(host) handle SIGPIPE nostop noprint pass
+Signal        Stop	Print	Pass to program	Description
+SIGPIPE       No	No	Yes		Broken pipe
+
+(host) set args -machine virt -m 128 -nographic -monitor none -serial file:/home/liu/projects/nku-os/labs/report/evidence/C-20261024/dual-qemu-serial.log -L /home/liu/.local/src/qemu-4.1.1/pc-bios -bios default -kernel bin/ucore.img -S -gdb tcp:127.0.0.1:1236
+
+(host) break riscv_cpu_tlb_fill if address == 0x80206000 && access_type == 1
+Breakpoint 1 at 0x3cdbad: file /home/liu/.local/src/qemu-4.1.1/target/riscv/cpu_helper.c, line 438.
+
+(host) break riscv_cpu_tlb_fill if address == 0xffffffffc0204ff8 && access_type == 1
+Note: breakpoint 1 also set at pc 0x3cdbad.
+Breakpoint 2 at 0x3cdbad: file /home/liu/.local/src/qemu-4.1.1/target/riscv/cpu_helper.c, line 438.
+
+(host) break riscv_cpu_tlb_fill if address == 0xffffffffc0206008 && access_type == 0
+Note: breakpoints 1 and 2 also set at pc 0x3cdbad.
+Breakpoint 3 at 0x3cdbad: file /home/liu/.local/src/qemu-4.1.1/target/riscv/cpu_helper.c, line 438.
+
+(host) disable 2 3
+
+(host) run
+Starting program: /home/liu/.local/src/qemu-4.1.1/build-debug/riscv64-softmmu/qemu-system-riscv64 -machine virt -m 128 -nographic -monitor none -serial file:/home/liu/projects/nku-os/labs/report/evidence/C-20261024/dual-qemu-serial.log -L /home/liu/.local/src/qemu-4.1.1/pc-bios -bios default -kernel bin/ucore.img -S -gdb tcp:127.0.0.1:1236
+/home/liu/.local/src/qemu-4.1.1/build-debug/riscv64-softmmu/qemu-system-riscv64: error while loading shared libraries: libtinfow.so.6: cannot open shared object file: No such file or directory
+[Inferior 1 (process 23209) exited with code 0177]
+
+(host) bt 8
+No stack.
+
+(host) set $cenv = (CPURISCVState *)cs->env_ptr
+No symbol "cs" in current context.

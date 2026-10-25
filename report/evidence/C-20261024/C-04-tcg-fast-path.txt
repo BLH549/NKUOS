@@ -1,0 +1,48 @@
+C / Liu Huabin 2411238 / 2026-10-24
+Recorded session excerpt
+Source: host-mmu-gdb.log / generated x86-64 code for guest ld
+
+(host) x/28i itb->tc.ptr
+   0x7ffff49e9100 <code_gen_buffer+211>:	mov    -0x10(%rbp),%ebx
+   0x7ffff49e9103 <code_gen_buffer+214>:	test   %ebx,%ebx
+   0x7ffff49e9105 <code_gen_buffer+216>:	jl     0x7ffff49e9159 <code_gen_buffer+300>
+   0x7ffff49e910b <code_gen_buffer+222>:	mov    0x40(%rbp),%rbx
+   0x7ffff49e910f <code_gen_buffer+226>:	mov    %rbx,%rdi
+   0x7ffff49e9112 <code_gen_buffer+229>:	shr    $0x7,%rdi
+   0x7ffff49e9116 <code_gen_buffer+233>:	and    -0x40(%rbp),%rdi
+   0x7ffff49e911a <code_gen_buffer+237>:	add    -0x38(%rbp),%rdi
+   0x7ffff49e911e <code_gen_buffer+241>:	lea    0x7(%rbx),%rsi
+   0x7ffff49e9122 <code_gen_buffer+245>:	and    $0xfffffffffffff000,%rsi
+   0x7ffff49e9129 <code_gen_buffer+252>:	cmp    (%rdi),%rsi
+   0x7ffff49e912c <code_gen_buffer+255>:	mov    %rbx,%rsi
+   0x7ffff49e912f <code_gen_buffer+258>:	jne    0x7ffff49e9165 <code_gen_buffer+312>
+   0x7ffff49e9135 <code_gen_buffer+264>:	add    0x18(%rdi),%rsi
+   0x7ffff49e9139 <code_gen_buffer+268>:	mov    (%rsi),%rbx
+   0x7ffff49e913c <code_gen_buffer+271>:	mov    %rbx,0x58(%rbp)
+   0x7ffff49e9140 <code_gen_buffer+275>:	movq   $0xffffffffc0200276,0x200(%rbp)
+   0x7ffff49e914b <code_gen_buffer+286>:	mov    %rbp,%rdi
+   0x7ffff49e914e <code_gen_buffer+289>:	mov    $0x10002,%esi
+   0x7ffff49e9153 <code_gen_buffer+294>:	call   *0x2f(%rip)        # 0x7ffff49e9188 <code_gen_buffer+347>
+   0x7ffff49e9159 <code_gen_buffer+300>:	lea    -0x11d(%rip),%rax        # 0x7ffff49e9043 <code_gen_buffer+22>
+   0x7ffff49e9160 <code_gen_buffer+307>:	jmp    0x7ffff49e9018
+   0x7ffff49e9165 <code_gen_buffer+312>:	mov    %rbp,%rdi
+   0x7ffff49e9168 <code_gen_buffer+315>:	mov    $0x31,%edx
+   0x7ffff49e916d <code_gen_buffer+320>:	lea    -0x38(%rip),%rcx        # 0x7ffff49e913c <code_gen_buffer+271>
+   0x7ffff49e9174 <code_gen_buffer+327>:	call   *0x16(%rip)        # 0x7ffff49e9190 <code_gen_buffer+355>
+   0x7ffff49e917a <code_gen_buffer+333>:	mov    %rax,%rbx
+   0x7ffff49e917d <code_gen_buffer+336>:	jmp    0x7ffff49e913c <code_gen_buffer+271>
+
+(host) list 1268,1280
+1268	    }
+1269	
+1270	    /* If the TLB entry is for a different page, reload and try again.  */
+1271	    if (!tlb_hit(tlb_addr, addr)) {
+1272	        if (!victim_tlb_hit(env, mmu_idx, index, tlb_off,
+1273	                            addr & TARGET_PAGE_MASK)) {
+1274	            tlb_fill(env_cpu(env), addr, size,
+1275	                     access_type, mmu_idx, retaddr);
+1276	            index = tlb_index(env, mmu_idx, addr);
+1277	            entry = tlb_entry(env, mmu_idx, addr);
+1278	        }
+1279	        tlb_addr = code_read ? entry->addr_code : entry->addr_read;
+1280	    }

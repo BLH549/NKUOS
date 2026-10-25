@@ -1,0 +1,42 @@
+C / Liu Huabin 2411238 / 2026-10-24
+Recorded session excerpt
+Sources: regression/best_fit-128M-boot.log / regression/grade.log
+
+DTB Init
+HartID: 0
+DTB Address: 0x82200000
+Physical Memory from DTB:
+  Base: 0x0000000080000000
+  Size: 0x0000000008000000 (128 MB)
+  End:  0x0000000087ffffff
+DTB init completed
+(THU.CST) os is loading ...
+Special kernel symbols:
+  entry  0xffffffffc02000ec (virtual)
+  etext  0xffffffffc0201ee0 (virtual)
+  edata  0xffffffffc0206018 (virtual)
+  end    0xffffffffc0206180 (virtual)
+Kernel executable memory footprint: 25KB
+memory management: best_fit_pmm_manager
+physical memory: [0x0000000080000000, 0x0000000088000000)
+managed memory:  [0x0000000080000000, 0x0000000088000000)
+page descriptors: [0x0000000080207000, 0x0000000080347000), 32768 entries
+free memory:     [0x0000000080347000, 0x0000000088000000), 31929 pages
+check_alloc_page() succeeded!
+satp virtual address: 0xffffffffc0205000
+satp physical address: 0x0000000080205000
+[SLUB] classes/alignment/data independence: PASS
+[SLUB] multi-slab/reuse/invalid input/page return: PASS
+[SLUB] all checks passed; free pages restored: 31929
+qemu-system-riscv64: terminating on signal 15 from pid 23944 (python3)
+
+  -check page init:                          OK
+  -check best fit:                           OK
+Total Score: 20/20
+
+first_fit + SLUB, 128 MiB: PASS
+buddy + SLUB, 64 MiB: PASS
+buddy + SLUB, 128 MiB: PASS
+buddy + SLUB, 256 MiB: PASS
+best_fit + SLUB, 128 MiB: PASS
+Teacher grade: 20/20; B QEMU checks: PASS; default restored to Best-Fit

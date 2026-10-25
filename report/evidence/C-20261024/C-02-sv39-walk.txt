@@ -1,0 +1,39 @@
+C / Liu Huabin 2411238 / 2026-10-24
+Recorded session excerpt
+Source: host-mmu-gdb.log / real stack store VA=0xffffffffc0204ff8
+
+(host) p vm
+$14 = 8
+
+(host) p levels
+$15 = 3
+
+(host) p/x base
+$16 = 0x80205000
+
+(host) p/x i
+$17 = 0x0
+
+(host) p/x ptshift
+$18 = 0x12
+
+(host) p/x idx
+$19 = 0x1ff
+
+(host) p/x pte_addr
+$20 = 0x80205ff8
+
+(host) p/x pte
+$21 = 0x200000cf
+
+(host) p/x ppn
+$22 = 0x80000
+
+(host) p/x *physical
+$24 = 0x80204000
+
+(host) p/x *physical | (addr & 0xfff)
+$25 = 0x80204ff8
+
+(host) p prot
+$28 = 7

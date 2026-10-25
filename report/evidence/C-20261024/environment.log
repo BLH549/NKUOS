@@ -1,0 +1,22 @@
+2026-10-24T20:05:27+08:00
+Linux DESKTOP-NG07LM2 6.6.87.2-microsoft-standard-WSL2 #1 SMP PREEMPT_DYNAMIC Thu Jun  5 18:30:46 UTC 2025 x86_64 x86_64 x86_64 GNU/Linux
+846907658d70cffb55ad6e3ad81605a0a5aa6bb1
+riscv64-unknown-elf-gcc (g1b306039ac4) 15.1.0
+Copyright (C) 2025 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+GNU gdb (GDB) 16.3.90.20250610-git
+Copyright (C) 2024 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+GNU gdb (Ubuntu 12.1-0ubuntu1~22.04.2) 12.1
+Copyright (C) 2022 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+QEMU emulator version 7.0.0
+Copyright (c) 2003-2022 Fabrice Bellard and the QEMU Project developers
+Python 3.10.12
+DISPLAY=:0

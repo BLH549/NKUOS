@@ -1,0 +1,29 @@
+
+(guest) set pagination off
+
+(guest) set confirm off
+
+(guest) set print thread-events off
+
+(guest) file bin/kernel
+Reading symbols from bin/kernel...
+
+(guest) set architecture riscv:rv64
+The target architecture is set to "riscv:rv64".
+
+(guest) target remote :1236
+could not connect: Connection timed out.
+
+(guest) hbreak *0x80200008
+No hardware breakpoint support in the target.
+
+(guest) continue
+The program is not being run.
+
+(guest) info registers pc satp t0 a0
+The program has no registers now.
+
+(guest) x/i $pc
+No registers.
+
+(guest) si

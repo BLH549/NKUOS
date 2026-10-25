@@ -1,0 +1,9 @@
+labs/report/report.md: local links, image paths and code fences PASS
+labs/report/C-QEMU地址翻译调试.md: local links, image paths and code fences PASS
+labs/report/C-任务计划.md: local links, image paths and code fences PASS
+labs/report/Lab2-任务分工.md: local links, image paths and code fences PASS
+labs/report/B-截图核对清单.md: local links, image paths and code fences PASS
+labs/code/README.md: local links, image paths and code fences PASS
+Debug scripts and raw logs match recorded SHA-256 values.
+Existing kernel, library and Makefile sources unchanged from base 8469076.
+Current prompt.md contains only the pre-existing record 9 diff; this turn did not write it.

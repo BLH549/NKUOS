@@ -1,0 +1,37 @@
+The target architecture is set to "riscv:rv64".
+0x0000000000001000 in ?? ()
+Hardware assisted breakpoint 1 at 0xffffffffc02000ec: file kern/init/init.c, line 31.
+
+Breakpoint 1, kern_init () at kern/init/init.c:31
+31	    memset(edata, 0, end - edata);
+pc             0xffffffffc02000ec	0xffffffffc02000ec <kern_init>
+satp           0x8000000000080205	-9223372036854251003
+sp             0xffffffffc0205000	0xffffffffc0205000
+$1 = 0xffffffffc0205000
+0xffffffffc0205010:	0x0000000000000000
+0xffffffffc0205ff8:	0x00000000200000cf
+=> 0xffffffffc02000ec <kern_init>:	auipc	a0,0x6
+   0xffffffffc02000f0 <kern_init+4>:	addi	a0,a0,-212
+   0xffffffffc02000f4 <kern_init+8>:	auipc	a2,0x6
+   0xffffffffc02000f8 <kern_init+12>:	addi	a2,a2,140
+   0xffffffffc02000fc <kern_init+16>:	addi	sp,sp,-16
+   0xffffffffc02000fe <kern_init+18>:	sub	a2,a2,a0
+   0xffffffffc0200100 <kern_init+20>:	li	a1,0
+   0xffffffffc0200102 <kern_init+22>:	sd	ra,8(sp)
+   0xffffffffc0200104 <kern_init+24>:	jal	0xffffffffc0201ece <memset>
+   0xffffffffc0200108 <kern_init+28>:	jal	0xffffffffc0200246 <dtb_init>
+   0xffffffffc020010c <kern_init+32>:	jal	0xffffffffc020023c <cons_init>
+   0xffffffffc0200110 <kern_init+36>:	auipc	a0,0x3
+   0xffffffffc0200114 <kern_init+40>:	addi	a0,a0,-1760
+   0xffffffffc0200118 <kern_init+44>:	jal	0xffffffffc020019a <cputs>
+   0xffffffffc020011c <kern_init+48>:	jal	0xffffffffc0200060 <print_kerninfo>
+   0xffffffffc0200120 <kern_init+52>:	jal	0xffffffffc0200fca <pmm_init>
+   0xffffffffc0200000 <kern_entry>:	auipc	t0,0x6
+   0xffffffffc0200004 <kern_entry+4>:	mv	t0,t0
+   0xffffffffc0200008 <kern_entry+8>:	sd	a0,0(t0)
+   0xffffffffc020000c <kern_entry+12>:	auipc	t0,0x6
+   0xffffffffc0200010 <kern_entry+16>:	addi	t0,t0,-4
+   0xffffffffc0200014 <kern_entry+20>:	sd	a1,0(t0)
+$2 = 0xffffffffc0206008
+$3 = 0xffffffffc0206000
+[Inferior 1 (process 1) detached]

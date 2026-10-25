@@ -1,0 +1,6 @@
+first_fit + SLUB, 128 MiB: PASS
+buddy + SLUB, 64 MiB: PASS
+buddy + SLUB, 128 MiB: PASS
+buddy + SLUB, 256 MiB: PASS
+best_fit + SLUB, 128 MiB: PASS
+Teacher grade: 20/20; B QEMU checks: PASS; default restored to Best-Fit

@@ -1,0 +1,28 @@
+{
+  "author": "Liu Huabin (2411238)",
+  "qemu_version": "QEMU emulator version 4.1.1",
+  "qemu": "/home/liu/.local/src/qemu-4.1.1/build-debug/riscv64-softmmu/qemu-system-riscv64",
+  "source": "/home/liu/.local/src/qemu-4.1.1",
+  "kernel_base": "846907658d70cffb55ad6e3ad81605a0a5aa6bb1",
+  "kernel_sha256": "46937acbb42ee89bf3201b2feac3005490093f47c533020b5dd25a0d004c63e9",
+  "image_sha256": "59694a8f82155635c5048b391dabdee5119c56a61d35daaaf14b856a959886bf",
+  "bare_store": {
+    "pc": "0x80200008",
+    "address": "0x80206000",
+    "satp": "0"
+  },
+  "sv39_store": {
+    "pc": "0xffffffffc0200102",
+    "address": "0xffffffffc0204ff8"
+  },
+  "repeat_load": {
+    "pc": "0xffffffffc0200274",
+    "address": "0xffffffffc0206008",
+    "method": "Execute existing sfence.vma, execute ld twice by restoring PC"
+  },
+  "logs": [
+    "host-mmu-gdb.log",
+    "guest-mmu-gdb.log",
+    "dual-qemu-serial.log"
+  ]
+}

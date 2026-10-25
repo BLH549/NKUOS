@@ -1,0 +1,28 @@
+C / Liu Huabin 2411238 / 2026-10-24
+Recorded session excerpt
+Sources: host-mmu-gdb.log / guest-mmu-gdb.log
+
+(guest) info registers pc satp s0
+pc             0xffffffffc0200274	0xffffffffc0200274 <dtb_init+46>
+satp           0x8000000000080205	-9223372036854251003
+s0             0xffffffffc0206008  0xffffffffc0206008
+(guest) x/i $pc
+=> 0xffffffffc0200274 <dtb_init+46>:	ld	a1,0(s0)
+(host) p/x tlb_addr
+$33 = 0xffffffffffffffff
+(host) p/x entry->addr_read
+$34 = 0xffffffffffffffff
+(host) p index
+$35 = 6
+(host) x/gx $host_object
+0x7fffe0006008:	0x0000000082200000
+(guest) p/x $a1
+$1 = 0x82200000
+(guest) p/x $a1
+$2 = 0x82200000
+(host) p $loads
+$40 = 1
+(host) p/x $cte->addr_read
+$42 = 0xffffffffc0206000
+(host) p/x $cte->addend
+$43 = 0x80001fe00000

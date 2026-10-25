@@ -1,0 +1,18 @@
+Bare store: host stopped in real TLB miss
+Sv39 stack store: stepping the root leaf
+Traceback (most recent call last):
+  File "/home/liu/projects/nku-os/labs/code/tools/debug_c.py", line 294, in <module>
+    main()
+    ~~~~^^
+  File "/home/liu/projects/nku-os/labs/code/tools/debug_c.py", line 219, in main
+    host.wait()
+    ~~~~~~~~~^^
+  File "/home/liu/projects/nku-os/labs/code/tools/debug_c.py", line 61, in wait
+    raise RuntimeError(result)
+RuntimeError: Continuing.
+
+Thread 1 "qemu-system-ris" received signal SIGINT, Interrupt.
+[Switching to Thread 0x7ffff726e3c0 (LWP 23595)]
+0x00007ffff7b18e1e in __ppoll (fds=0x5555565d3360, nfds=6, timeout=<optimized out>, sigmask=0x0) at ../sysdeps/unix/sysv/linux/ppoll.c:42
+42	../sysdeps/unix/sysv/linux/ppoll.c: No such file or directory.
+

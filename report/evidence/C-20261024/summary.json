@@ -1,0 +1,240 @@
+{
+  "date": "2026-10-24T20:17:44.867401+08:00",
+  "runner": "Liu Huabin / 刘华彬 / 2411238",
+  "git_base": "846907658d70cffb55ad6e3ad81605a0a5aa6bb1",
+  "kernel_sources_unchanged_from_base": true,
+  "qemu": {
+    "version": "4.1.1",
+    "archive_url": "https://download.qemu.org/qemu-4.1.1.tar.xz",
+    "archive_sha256": "ed6fdbbdd272611446ff8036991e9b9f04a2ab2e3ffa9e79f3bab0eb9a95a1d2",
+    "binary": "/home/liu/.local/src/qemu-4.1.1/build-debug/riscv64-softmmu/qemu-system-riscv64",
+    "binary_sha256": "58810eef837c56d3d346f4eec9f4fe6913558336d5e8e06d10fa0e5f42bfc338",
+    "source": "/home/liu/.local/src/qemu-4.1.1",
+    "configure_log": "qemu-configure.log",
+    "build_log": "qemu-build-final.log",
+    "source_excerpts": "qemu-source-excerpts.log",
+    "source_sha256": {
+      "target/riscv/cpu_helper.c": "ec1d32c8d143b4520d712cfdc9c4c07e97f67be0f59397dc1fb2da8b79cb15be",
+      "accel/tcg/cputlb.c": "09b6e4d97009e1530ff0ad931304731781a7e4b3430e9250a5a7a6eeb0fef754",
+      "tcg/i386/tcg-target.inc.c": "27156ef874280d786fa029bdb02aa4d85b37e42d7ba8cfabdc2896bcb8680956"
+    }
+  },
+  "debug": {
+    "author": "Liu Huabin (2411238)",
+    "qemu_version": "QEMU emulator version 4.1.1",
+    "qemu": "/home/liu/.local/src/qemu-4.1.1/build-debug/riscv64-softmmu/qemu-system-riscv64",
+    "source": "/home/liu/.local/src/qemu-4.1.1",
+    "kernel_base": "846907658d70cffb55ad6e3ad81605a0a5aa6bb1",
+    "kernel_sha256": "46937acbb42ee89bf3201b2feac3005490093f47c533020b5dd25a0d004c63e9",
+    "image_sha256": "59694a8f82155635c5048b391dabdee5119c56a61d35daaaf14b856a959886bf",
+    "bare_store": {
+      "pc": "0x80200008",
+      "address": "0x80206000",
+      "satp": "0"
+    },
+    "sv39_store": {
+      "pc": "0xffffffffc0200102",
+      "address": "0xffffffffc0204ff8"
+    },
+    "repeat_load": {
+      "pc": "0xffffffffc0200274",
+      "address": "0xffffffffc0206008",
+      "method": "Execute existing sfence.vma, execute ld twice by restoring PC"
+    },
+    "logs": [
+      "host-mmu-gdb.log",
+      "guest-mmu-gdb.log",
+      "dual-qemu-serial.log"
+    ]
+  },
+  "observed": {
+    "vm_values": [
+      "0",
+      "8"
+    ],
+    "physical_values": [
+      "0x80206000",
+      "0x80204000"
+    ],
+    "sv39_final_pa": "0x80204ff8",
+    "pte": "0x200000cf",
+    "pte_address": "0x80205ff8",
+    "load_fill_count_after_two_loads": 1,
+    "cold_read_tag": "0xffffffffffffffff",
+    "hot_read_tag": "0xffffffffc0206000"
+  },
+  "checks": {
+    "a_host": "host-a.log",
+    "b_host": "regression/host.log",
+    "teacher_grade": "20/20",
+    "teacher_log": "regression/grade.log",
+    "qemu_runs": [
+      {
+        "manager": "first_fit",
+        "ram_mib": 128,
+        "command": [
+          "/home/liu/.local/src/qemu-4.1.1/build-debug/riscv64-softmmu/qemu-system-riscv64",
+          "-machine",
+          "virt",
+          "-m",
+          "128",
+          "-nographic",
+          "-bios",
+          "default",
+          "-kernel",
+          "bin/ucore.img"
+        ],
+        "log": "first_fit-128M-boot.log",
+        "elf_sha256": "628b27303762c136ddd63a14ef8b92d9c310476b25810a9f75bc53fe61e67aa1",
+        "image_sha256": "e006a73d434285d1b721ce9e9bbfda649d80c61734a8f968b200a3dd2b2d21d0",
+        "passed": true
+      },
+      {
+        "manager": "buddy",
+        "ram_mib": 64,
+        "command": [
+          "/home/liu/.local/src/qemu-4.1.1/build-debug/riscv64-softmmu/qemu-system-riscv64",
+          "-machine",
+          "virt",
+          "-m",
+          "64",
+          "-nographic",
+          "-bios",
+          "default",
+          "-kernel",
+          "bin/ucore.img"
+        ],
+        "log": "buddy-64M-boot.log",
+        "elf_sha256": "6580ef13a8986648cefbdc8e9712bf0a989c6ef22f9bf01a3f192af4d3ea21db",
+        "image_sha256": "d373c0c09219c19ce05593cacef476a58e597bc98e3d56bf4ce9ec94d18b6118",
+        "passed": true
+      },
+      {
+        "manager": "buddy",
+        "ram_mib": 128,
+        "command": [
+          "/home/liu/.local/src/qemu-4.1.1/build-debug/riscv64-softmmu/qemu-system-riscv64",
+          "-machine",
+          "virt",
+          "-m",
+          "128",
+          "-nographic",
+          "-bios",
+          "default",
+          "-kernel",
+          "bin/ucore.img"
+        ],
+        "log": "buddy-128M-boot.log",
+        "elf_sha256": "6580ef13a8986648cefbdc8e9712bf0a989c6ef22f9bf01a3f192af4d3ea21db",
+        "image_sha256": "d373c0c09219c19ce05593cacef476a58e597bc98e3d56bf4ce9ec94d18b6118",
+        "passed": true
+      },
+      {
+        "manager": "buddy",
+        "ram_mib": 256,
+        "command": [
+          "/home/liu/.local/src/qemu-4.1.1/build-debug/riscv64-softmmu/qemu-system-riscv64",
+          "-machine",
+          "virt",
+          "-m",
+          "256",
+          "-nographic",
+          "-bios",
+          "default",
+          "-kernel",
+          "bin/ucore.img"
+        ],
+        "log": "buddy-256M-boot.log",
+        "elf_sha256": "6580ef13a8986648cefbdc8e9712bf0a989c6ef22f9bf01a3f192af4d3ea21db",
+        "image_sha256": "d373c0c09219c19ce05593cacef476a58e597bc98e3d56bf4ce9ec94d18b6118",
+        "passed": true
+      },
+      {
+        "manager": "best_fit",
+        "ram_mib": 128,
+        "command": [
+          "/home/liu/.local/src/qemu-4.1.1/build-debug/riscv64-softmmu/qemu-system-riscv64",
+          "-machine",
+          "virt",
+          "-m",
+          "128",
+          "-nographic",
+          "-bios",
+          "default",
+          "-kernel",
+          "bin/ucore.img"
+        ],
+        "log": "best_fit-128M-boot.log",
+        "elf_sha256": "46937acbb42ee89bf3201b2feac3005490093f47c533020b5dd25a0d004c63e9",
+        "image_sha256": "59694a8f82155635c5048b391dabdee5119c56a61d35daaaf14b856a959886bf",
+        "passed": true
+      }
+    ],
+    "harness_author": "Ke Yunchao (B); executed here by C",
+    "default_restored": "best_fit"
+  },
+  "images": {
+    "method": "Real xterm window screenshots of saved, selected GDB/serial transcripts; source text excerpts are retained.",
+    "paths": [
+      "images/C-01-guest-and-bare.png",
+      "images/C-02-sv39-walk.png",
+      "images/C-03-tlb-cold-and-hot.png",
+      "images/C-04-tcg-fast-path.png",
+      "images/C-05-boot-and-grade.png"
+    ]
+  },
+  "repository_additions": {
+    "code/tools/debug_c.py": "853d318dba313e7588658c2a5b149a0f8b2d69cee976980cc5783b3f7342e727",
+    "code/tools/prepare_qemu_c.sh": "de4f82e1e61834afc186a6f25de00145edb30b60db54ca4104162e9ec2be0c1d",
+    "code/tools/capture_c.py": "af95a8099f40ca94bc23990560f7d07404ea7a9b45333fb510214737b6dd9f22"
+  },
+  "logs_sha256": {
+    "attempt-01/driver.log": "a1d6d3021a8981cc8fafd2008f1e2039f2dbd653e25efa19ff6e34660e7e2cfe",
+    "attempt-01/guest-mmu-gdb.log": "96989510565e8107bb81c49e6a8978ae8a16dc50b1953a942eb83978ec2c0ec2",
+    "attempt-01/host-mmu-gdb.log": "68b09bc31ce96d52ea5aad07074a08aec259384204062c70c19fc855fbdb5b36",
+    "attempt-02/driver.log": "2a2d59501be12b6dd2d8e945dadda864f3adb1698916ddefc0e30f37db4e9293",
+    "attempt-02/dual-qemu-serial.log": "42b1db725d0eb1388bdcaa01bb71346b19e81a1674a7f1b37968ea1479f24852",
+    "attempt-02/guest-mmu-gdb.log": "aa78999255b1dea321c584dfe69e8b21e0c9647c4e042b82b949e0c1df0d2fab",
+    "attempt-02/host-mmu-gdb.log": "6e051977a65040bce6bf8b56eaf39b5a89edd10406b5cb83d1af8a17e98d93b9",
+    "attempt-03/driver.log": "b649537aba5a2fdd122e8328682e60fc72d00cc6a17494b706e2a96368fb8f8f",
+    "attempt-03/dual-qemu-serial.log": "7cd41eb673df5e75f6346361aa909b82124b739cc6916b98cee95d44940f6ffa",
+    "attempt-03/guest-mmu-gdb.log": "b7fe981ac80115f87fe56ab4471bf9e3a88b3ccd70edf730ff761a93eac329d3",
+    "attempt-03/host-mmu-gdb.log": "9ff20147a25f538678cc36dba2adc0ce3d6759be76d709026069417b27026474",
+    "attempt-04/driver.log": "b649537aba5a2fdd122e8328682e60fc72d00cc6a17494b706e2a96368fb8f8f",
+    "attempt-04/dual-qemu-serial.log": "7cd41eb673df5e75f6346361aa909b82124b739cc6916b98cee95d44940f6ffa",
+    "attempt-04/guest-mmu-gdb.log": "b7fe981ac80115f87fe56ab4471bf9e3a88b3ccd70edf730ff761a93eac329d3",
+    "attempt-04/host-mmu-gdb.log": "40973a37c63eb1f6ec64a338da17b3a02dbb7568940cd39494e071b78e499adb",
+    "baseline-7.0-boot.log": "c8b422e487871ff33196d1e42ef5dc8ead1a9f5905f7e1fdd4b25f765d459f97",
+    "baseline-build.log": "cdc204423d2ae7ef9225a8d6d5622763d78148eb85b6de3ed22c2004c3572677",
+    "baseline-guest-gdb.log": "ca3398459fe35e77215f5029d61ab08c1ee8b4a5c273c6da1987d10a4b39a0b2",
+    "baseline-guest-qemu.log": "0c289dd135019ee21498cfb94c7cdbcf7b25e55b9a4c68ef190cb0503706695f",
+    "capture.log": "318e4b31c01a5eb0d59b6c4bb4908d195193570ab0370562a82b8704277c6996",
+    "driver.log": "b649537aba5a2fdd122e8328682e60fc72d00cc6a17494b706e2a96368fb8f8f",
+    "dual-qemu-serial.log": "7cd41eb673df5e75f6346361aa909b82124b739cc6916b98cee95d44940f6ffa",
+    "environment.log": "77487ca998d1e3a5381e2081699cf32e56448a6ac5fa96b4bcb61152195148cd",
+    "guest-mmu-gdb.log": "b7fe981ac80115f87fe56ab4471bf9e3a88b3ccd70edf730ff761a93eac329d3",
+    "host-a.log": "8563ff693f9af04e6bec36f969be8ce2c5d56ca2761001fcf94414cbdd55ef72",
+    "host-b.log": "1aea9980bb11fb65b14e7d1f9cb977a4c0577446e265c40f2bd92feabb0e12c9",
+    "host-mmu-gdb.log": "e16c7fc8abe7238efab473adcfd65bda75dd00618edb5b8aec781a7a8c5415ff",
+    "kernel-disassembly.log": "f31229a663cb31c4b93d1eec80d50632927bb2d23ea9ea8f9eaa0c7e2ce0ec78",
+    "qemu-build-final.log": "30ab01b7da7b2f7651f93212c19d6fd27af4c2f0b398e92cb080598f68384d07",
+    "qemu-build.log": "2ca8a5665482a3102d71393b38b07a053137265cea17ae6e6cfada807670bbfa",
+    "qemu-configure-initial.log": "a1af9409a4fb38054e688fd605c183928436d9baf6b037e9bbfd3e7b0af234b9",
+    "qemu-configure.log": "2239b55e9b77f8ab665359606fe058857dcceb7b55686928b325838f9f82b52c",
+    "qemu-deps.log": "4f07318902b354346d3083688dae6f71ed31e6b9b49c8ca768ce689b5458a7f5",
+    "qemu-source-excerpts.log": "02918c99e6baf65f09cf1f2ca01d18a94d13626303d15a234210f3a79607a009",
+    "regression/best_fit-128M-boot.log": "dcd96bc641859c7db2d6a579076b11cb830b366e06de823c50d3ccbbd0cc7109",
+    "regression/best_fit-build.log": "3bf82a3b69742495d19153333d44cc459a496c9122ed1150e5abd581b560f153",
+    "regression/buddy-128M-boot.log": "f24291a2528ba45d25942dbb24fe3700be64d35d43ef51c22d13f594d3a4d04d",
+    "regression/buddy-256M-boot.log": "1af24c39fa9747c8a29400c1ba8fbbe46a1da05b95ec660d626fbfafb7d40eda",
+    "regression/buddy-64M-boot.log": "981920a76fc863c2e9d7973cd3a92a7e2b7c37d2507565afe8fb374729b4f247",
+    "regression/buddy-build.log": "7ad0a0972f6a2b2d8799a561ebff8d4c4c98436178d16de12af1c26247c18693",
+    "regression/final-best_fit-build.log": "f4f8913f99fa647bc4de8656a24903d2dea42b89d1438ddfe8e9996a6e4d9c8d",
+    "regression/first_fit-128M-boot.log": "5364fcbe358028a9a3785bbd970e4e2720cc69bb815960d8dbf859d21f0f64ad",
+    "regression/first_fit-build.log": "f5308aed6d3824597035cd3f3fa31a76baf03a3aa3359a65073283a6612fd253",
+    "regression/grade.log": "257d728753d2f5e9f18d60cd6065501dab720a3a5fba458c7da9a947414c774a",
+    "regression/host.log": "042273084ce9a4b94c67e8b5a5029d98645fef04df172a00cca3f789b947ac92",
+    "regression-driver.log": "a1a6be587d58aff1c35f61905b6be823475c573f3648bbae875914aa2942ad2d"
+  },
+  "limitations": "Guest layout-specific addresses are checked before debugging; C screenshots show recorded excerpts, not a manual terminal demonstration."
+}

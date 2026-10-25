@@ -1,0 +1,522 @@
+
+(host) set pagination off
+
+(host) set confirm off
+
+(host) set print thread-events off
+
+(host) file /home/liu/.local/src/qemu-4.1.1/build-debug/riscv64-softmmu/qemu-system-riscv64
+Reading symbols from /home/liu/.local/src/qemu-4.1.1/build-debug/riscv64-softmmu/qemu-system-riscv64...
+
+(host) handle SIGPIPE nostop noprint pass
+Signal        Stop	Print	Pass to program	Description
+SIGPIPE       No	No	Yes		Broken pipe
+
+(host) set args -machine virt -m 128 -nographic -monitor none -serial file:/home/liu/projects/nku-os/labs/report/evidence/C-20261024/dual-qemu-serial.log -L /home/liu/.local/src/qemu-4.1.1/pc-bios -bios default -kernel bin/ucore.img -S -gdb tcp:127.0.0.1:1236
+
+(host) break riscv_cpu_tlb_fill if address == 0x80206000 && access_type == 1
+Breakpoint 1 at 0x3ca5ad: file /home/liu/.local/src/qemu-4.1.1/target/riscv/cpu_helper.c, line 438.
+
+(host) break riscv_cpu_tlb_fill if address == 0xffffffffc0204ff8 && access_type == 1
+Note: breakpoint 1 also set at pc 0x3ca5ad.
+Breakpoint 2 at 0x3ca5ad: file /home/liu/.local/src/qemu-4.1.1/target/riscv/cpu_helper.c, line 438.
+
+(host) break riscv_cpu_tlb_fill if address == 0xffffffffc0206008 && access_type == 0
+Note: breakpoints 1 and 2 also set at pc 0x3ca5ad.
+Breakpoint 3 at 0x3ca5ad: file /home/liu/.local/src/qemu-4.1.1/target/riscv/cpu_helper.c, line 438.
+
+(host) disable 2 3
+
+(host) run
+Starting program: /home/liu/.local/src/qemu-4.1.1/build-debug/riscv64-softmmu/qemu-system-riscv64 -machine virt -m 128 -nographic -monitor none -serial file:/home/liu/projects/nku-os/labs/report/evidence/C-20261024/dual-qemu-serial.log -L /home/liu/.local/src/qemu-4.1.1/pc-bios -bios default -kernel bin/ucore.img -S -gdb tcp:127.0.0.1:1236
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+[Switching to Thread 0x7ffff49e8640 (LWP 25001)]
+
+Thread 3 "qemu-system-ris" hit Breakpoint 1, riscv_cpu_tlb_fill (cs=0x555556581700, address=2149605376, size=8, access_type=MMU_DATA_STORE, mmu_idx=1, probe=false, retaddr=140737297420610) at /home/liu/.local/src/qemu-4.1.1/target/riscv/cpu_helper.c:438
+438	{
+
+(host) bt 8
+#0  riscv_cpu_tlb_fill (cs=0x555556581700, address=2149605376, size=8, access_type=MMU_DATA_STORE, mmu_idx=1, probe=false, retaddr=140737297420610) at /home/liu/.local/src/qemu-4.1.1/target/riscv/cpu_helper.c:438
+#1  0x000055555586494f in tlb_fill (cpu=0x555556581700, addr=2149605376, size=8, access_type=MMU_DATA_STORE, mmu_idx=1, retaddr=140737297420610) at /home/liu/.local/src/qemu-4.1.1/accel/tcg/cputlb.c:878
+#2  0x000055555586ae5e in store_helper (big_endian=false, size=8, retaddr=140737297420610, oi=49, val=0, addr=2149605376, env=0x55555658a110) at /home/liu/.local/src/qemu-4.1.1/accel/tcg/cputlb.c:1522
+#3  helper_le_stq_mmu (env=0x55555658a110, addr=2149605376, val=0, oi=49, retaddr=140737297420610) at /home/liu/.local/src/qemu-4.1.1/accel/tcg/cputlb.c:1672
+#4  0x00007ffff49e9142 in code_gen_buffer ()
+#5  0x000055555588957b in cpu_tb_exec (cpu=0x555556581700, itb=0x7ffff49e9040 <code_gen_buffer+19>) at /home/liu/.local/src/qemu-4.1.1/accel/tcg/cpu-exec.c:173
+#6  0x000055555588a3c1 in cpu_loop_exec_tb (cpu=0x555556581700, tb=0x7ffff49e9040 <code_gen_buffer+19>, last_tb=0x7ffff49e78d8, tb_exit=0x7ffff49e78d0) at /home/liu/.local/src/qemu-4.1.1/accel/tcg/cpu-exec.c:621
+#7  0x000055555588a6f6 in cpu_exec (cpu=0x555556581700) at /home/liu/.local/src/qemu-4.1.1/accel/tcg/cpu-exec.c:732
+(More stack frames follow...)
+
+(host) set $cenv = (CPURISCVState *)cs->env_ptr
+
+(host) p/x $cenv->satp
+$1 = 0x0
+
+(host) p $cenv->priv
+$2 = 1
+
+(host) tbreak get_physical_address
+Temporary breakpoint 4 at 0x55555591d998: file /home/liu/.local/src/qemu-4.1.1/target/riscv/cpu_helper.c, line 158.
+
+(host) continue
+Continuing.
+
+Thread 3 "qemu-system-ris" hit Temporary breakpoint 4, get_physical_address (env=0x55555658a110, physical=0x7ffff49e71e0, prot=0x7ffff49e71d4, addr=2149605376, access_type=1, mmu_idx=1) at /home/liu/.local/src/qemu-4.1.1/target/riscv/cpu_helper.c:158
+158	{
+
+(host) info args
+env = 0x55555658a110
+physical = 0x7ffff49e71e0
+prot = 0x7ffff49e71d4
+addr = 2149605376
+access_type = 1
+mmu_idx = 1
+
+(host) until cpu_helper.c:196
+get_physical_address (env=0x55555658a110, physical=0x7ffff49e71e0, prot=0x7ffff49e71d4, addr=2149605376, access_type=1, mmu_idx=1) at /home/liu/.local/src/qemu-4.1.1/target/riscv/cpu_helper.c:197
+197	            *physical = addr;
+
+(host) p vm
+$3 = 0
+
+(host) next
+198	            *prot = PAGE_READ | PAGE_WRITE | PAGE_EXEC;
+
+(host) p/x *physical
+$4 = 0x80206000
+
+(host) finish
+Run till exit from #0  get_physical_address (env=0x55555658a110, physical=0x7ffff49e71e0, prot=0x7ffff49e71d4, addr=2149605376, access_type=1, mmu_idx=1) at /home/liu/.local/src/qemu-4.1.1/target/riscv/cpu_helper.c:198
+0x000055555591e674 in riscv_cpu_tlb_fill (cs=0x555556581700, address=2149605376, size=8, access_type=MMU_DATA_STORE, mmu_idx=1, probe=false, retaddr=140737297420610) at /home/liu/.local/src/qemu-4.1.1/target/riscv/cpu_helper.c:451
+451	    ret = get_physical_address(env, &pa, &prot, address, access_type, mmu_idx);
+Value returned is $5 = 0
+
+(host) p/x pa
+$6 = 0x80206000
+
+(host) p prot
+$7 = 7
+
+(host) tbreak tlb_set_page_with_attrs
+Temporary breakpoint 5 at 0x5555558642f3: file /home/liu/.local/src/qemu-4.1.1/accel/tcg/cputlb.c, line 700.
+
+(host) continue
+Continuing.
+
+Thread 3 "qemu-system-ris" hit Temporary breakpoint 5, tlb_set_page_with_attrs (cpu=0x555556581700, vaddr=2149605376, paddr=2149605376, attrs=..., prot=7, mmu_idx=1, size=4096) at /home/liu/.local/src/qemu-4.1.1/accel/tcg/cputlb.c:700
+700	{
+
+(host) info args
+cpu = 0x555556581700
+vaddr = 2149605376
+paddr = 2149605376
+attrs = {unspecified = 1, secure = 0, user = 0, requester_id = 0, target_tlb_bit0 = 0, target_tlb_bit1 = 0, target_tlb_bit2 = 0}
+prot = 7
+mmu_idx = 1
+size = 4096
+
+(host) until cputlb.c:837
+tlb_set_page_with_attrs (cpu=0x555556581700, vaddr=2149605376, paddr=2149605376, attrs=..., prot=7, mmu_idx=1, size=4096) at /home/liu/.local/src/qemu-4.1.1/accel/tcg/cputlb.c:837
+837	    qemu_spin_unlock(&tlb->c.lock);
+
+(host) p index
+$8 = 6
+
+(host) p/x *te
+$9 = {{{addr_read = 0x80206000, addr_write = 0x80206000, addr_code = 0x80206000, addend = 0x7fff5fe00000}, dummy = {0x0, 0x60, 0x20, 0x80, 0x0, 0x0, 0x0, 0x0, 0x0, 0x60, 0x20, 0x80, 0x0, 0x0, 0x0, 0x0, 0x0, 0x60, 0x20, 0x80, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0xe0, 0x5f, 0xff, 0x7f, 0x0, 0x0}}}
+
+(host) p/x te->addend + vaddr
+$10 = 0x7fffe0006000
+
+(host) finish
+Run till exit from #0  tlb_set_page_with_attrs (cpu=0x555556581700, vaddr=2149605376, paddr=2149605376, attrs=..., prot=7, mmu_idx=1, size=4096) at /home/liu/.local/src/qemu-4.1.1/accel/tcg/cputlb.c:837
+0x0000555555864873 in tlb_set_page (cpu=0x555556581700, vaddr=2149605376, paddr=2149605376, prot=7, mmu_idx=1, size=4096) at /home/liu/.local/src/qemu-4.1.1/accel/tcg/cputlb.c:847
+847	    tlb_set_page_with_attrs(cpu, vaddr, paddr, MEMTXATTRS_UNSPECIFIED,
+
+(host) finish
+Run till exit from #0  0x0000555555864873 in tlb_set_page (cpu=0x555556581700, vaddr=2149605376, paddr=2149605376, prot=7, mmu_idx=1, size=4096) at /home/liu/.local/src/qemu-4.1.1/accel/tcg/cputlb.c:847
+riscv_cpu_tlb_fill (cs=0x555556581700, address=2149605376, size=8, access_type=MMU_DATA_STORE, mmu_idx=1, probe=false, retaddr=140737297420610) at /home/liu/.local/src/qemu-4.1.1/target/riscv/cpu_helper.c:474
+474	        return true;
+
+(host) finish
+Run till exit from #0  riscv_cpu_tlb_fill (cs=0x555556581700, address=2149605376, size=8, access_type=MMU_DATA_STORE, mmu_idx=1, probe=false, retaddr=140737297420610) at /home/liu/.local/src/qemu-4.1.1/target/riscv/cpu_helper.c:474
+0x000055555586494f in tlb_fill (cpu=0x555556581700, addr=2149605376, size=8, access_type=MMU_DATA_STORE, mmu_idx=1, retaddr=140737297420610) at /home/liu/.local/src/qemu-4.1.1/accel/tcg/cputlb.c:878
+878	    ok = cc->tlb_fill(cpu, addr, size, access_type, mmu_idx, false, retaddr);
+Value returned is $11 = true
+
+(host) disable 1
+
+(host) enable 2
+
+(host) continue
+Continuing.
+
+Thread 3 "qemu-system-ris" hit Breakpoint 2, riscv_cpu_tlb_fill (cs=0x555556581700, address=18446744072637927416, size=8, access_type=MMU_DATA_STORE, mmu_idx=1, probe=false, retaddr=140737297420613) at /home/liu/.local/src/qemu-4.1.1/target/riscv/cpu_helper.c:438
+438	{
+
+(host) bt 8
+#0  riscv_cpu_tlb_fill (cs=0x555556581700, address=18446744072637927416, size=8, access_type=MMU_DATA_STORE, mmu_idx=1, probe=false, retaddr=140737297420613) at /home/liu/.local/src/qemu-4.1.1/target/riscv/cpu_helper.c:438
+#1  0x000055555586494f in tlb_fill (cpu=0x555556581700, addr=18446744072637927416, size=8, access_type=MMU_DATA_STORE, mmu_idx=1, retaddr=140737297420613) at /home/liu/.local/src/qemu-4.1.1/accel/tcg/cputlb.c:878
+#2  0x000055555586ae5e in store_helper (big_endian=false, size=8, retaddr=140737297420613, oi=49, val=2147486210, addr=18446744072637927416, env=0x55555658a110) at /home/liu/.local/src/qemu-4.1.1/accel/tcg/cputlb.c:1522
+#3  helper_le_stq_mmu (env=0x55555658a110, addr=18446744072637927416, val=2147486210, oi=49, retaddr=140737297420613) at /home/liu/.local/src/qemu-4.1.1/accel/tcg/cputlb.c:1672
+#4  0x00007ffff49e9145 in code_gen_buffer ()
+#5  0x000055555588957b in cpu_tb_exec (cpu=0x555556581700, itb=0x7ffff49e9040 <code_gen_buffer+19>) at /home/liu/.local/src/qemu-4.1.1/accel/tcg/cpu-exec.c:173
+#6  0x000055555588a3c1 in cpu_loop_exec_tb (cpu=0x555556581700, tb=0x7ffff49e9040 <code_gen_buffer+19>, last_tb=0x7ffff49e78d8, tb_exit=0x7ffff49e78d0) at /home/liu/.local/src/qemu-4.1.1/accel/tcg/cpu-exec.c:621
+#7  0x000055555588a6f6 in cpu_exec (cpu=0x555556581700) at /home/liu/.local/src/qemu-4.1.1/accel/tcg/cpu-exec.c:732
+(More stack frames follow...)
+
+(host) p/x $cenv->satp
+$12 = 0x8000000000080205
+
+(host) p $cenv->priv
+$13 = 1
+
+(host) tbreak get_physical_address
+Temporary breakpoint 6 at 0x55555591d998: file /home/liu/.local/src/qemu-4.1.1/target/riscv/cpu_helper.c, line 158.
+
+(host) continue
+Continuing.
+
+Thread 3 "qemu-system-ris" hit Temporary breakpoint 6, get_physical_address (env=0x55555658a110, physical=0x7ffff49e71e0, prot=0x7ffff49e71d4, addr=18446744072637927416, access_type=1, mmu_idx=1) at /home/liu/.local/src/qemu-4.1.1/target/riscv/cpu_helper.c:158
+158	{
+
+(host) info args
+env = 0x55555658a110
+physical = 0x7ffff49e71e0
+prot = 0x7ffff49e71d4
+addr = 18446744072637927416
+access_type = 1
+mmu_idx = 1
+
+(host) until cpu_helper.c:223
+get_physical_address (env=0x55555658a110, physical=0x7ffff49e71e0, prot=0x7ffff49e71d4, addr=18446744072637927416, access_type=1, mmu_idx=1) at /home/liu/.local/src/qemu-4.1.1/target/riscv/cpu_helper.c:223
+223	    CPUState *cs = env_cpu(env);
+
+(host) p vm
+$14 = 8
+
+(host) p levels
+$15 = 3
+
+(host) p/x base
+$16 = 0x80205000
+
+(host) until cpu_helper.c:244
+get_physical_address (env=0x55555658a110, physical=0x7ffff49e71e0, prot=0x7ffff49e71d4, addr=18446744072637927416, access_type=1, mmu_idx=1) at /home/liu/.local/src/qemu-4.1.1/target/riscv/cpu_helper.c:244
+244	        if (riscv_feature(env, RISCV_FEATURE_PMP) &&
+
+(host) p/x i
+$17 = 0x0
+
+(host) p/x ptshift
+$18 = 0x12
+
+(host) p/x idx
+$19 = 0x1ff
+
+(host) p/x pte_addr
+$20 = 0x80205ff8
+
+(host) until cpu_helper.c:254
+get_physical_address (env=0x55555658a110, physical=0x7ffff49e71e0, prot=0x7ffff49e71d4, addr=18446744072637927416, access_type=1, mmu_idx=1) at /home/liu/.local/src/qemu-4.1.1/target/riscv/cpu_helper.c:254
+254	        target_ulong ppn = pte >> PTE_PPN_SHIFT;
+
+(host) p/x pte
+$21 = 0x200000cf
+
+(host) next
+256	        if (!(pte & PTE_V)) {
+
+(host) p/x ppn
+$22 = 0x80000
+
+(host) until cpu_helper.c:333
+get_physical_address (env=0x55555658a110, physical=0x7ffff49e71e0, prot=0x7ffff49e71d4, addr=18446744072637927416, access_type=1, mmu_idx=1) at /home/liu/.local/src/qemu-4.1.1/target/riscv/cpu_helper.c:333
+333	            target_ulong vpn = addr >> PGSHIFT;
+
+(host) p/x pte & 0xff
+$23 = 0xcf
+
+(host) next
+334	            *physical = (ppn | (vpn & ((1L << ptshift) - 1))) << PGSHIFT;
+
+(host) next
+337	            if ((pte & PTE_R) || ((pte & PTE_X) && mxr)) {
+
+(host) p/x *physical
+$24 = 0x80204000
+
+(host) p/x *physical | (addr & 0xfff)
+$25 = 0x80204ff8
+
+(host) finish
+Run till exit from #0  get_physical_address (env=0x55555658a110, physical=0x7ffff49e71e0, prot=0x7ffff49e71d4, addr=18446744072637927416, access_type=1, mmu_idx=1) at /home/liu/.local/src/qemu-4.1.1/target/riscv/cpu_helper.c:337
+0x000055555591e674 in riscv_cpu_tlb_fill (cs=0x555556581700, address=18446744072637927416, size=8, access_type=MMU_DATA_STORE, mmu_idx=1, probe=false, retaddr=140737297420613) at /home/liu/.local/src/qemu-4.1.1/target/riscv/cpu_helper.c:451
+451	    ret = get_physical_address(env, &pa, &prot, address, access_type, mmu_idx);
+Value returned is $26 = 0
+
+(host) p/x pa
+$27 = 0x80204000
+
+(host) p prot
+$28 = 7
+
+(host) tbreak tlb_set_page_with_attrs
+Temporary breakpoint 7 at 0x5555558642f3: file /home/liu/.local/src/qemu-4.1.1/accel/tcg/cputlb.c, line 700.
+
+(host) continue
+Continuing.
+
+Thread 3 "qemu-system-ris" hit Temporary breakpoint 7, tlb_set_page_with_attrs (cpu=0x555556581700, vaddr=18446744072637923328, paddr=2149597184, attrs=..., prot=7, mmu_idx=1, size=4096) at /home/liu/.local/src/qemu-4.1.1/accel/tcg/cputlb.c:700
+700	{
+
+(host) info args
+cpu = 0x555556581700
+vaddr = 18446744072637923328
+paddr = 2149597184
+attrs = {unspecified = 1, secure = 0, user = 0, requester_id = 0, target_tlb_bit0 = 0, target_tlb_bit1 = 0, target_tlb_bit2 = 0}
+prot = 7
+mmu_idx = 1
+size = 4096
+
+(host) until cputlb.c:837
+tlb_set_page_with_attrs (cpu=0x555556581700, vaddr=18446744072637923328, paddr=2149597184, attrs=..., prot=7, mmu_idx=1, size=4096) at /home/liu/.local/src/qemu-4.1.1/accel/tcg/cputlb.c:837
+837	    qemu_spin_unlock(&tlb->c.lock);
+
+(host) p index
+$29 = 4
+
+(host) p/x *te
+$30 = {{{addr_read = 0xffffffffc0204000, addr_write = 0xffffffffc0204000, addr_code = 0xffffffffc0204000, addend = 0x80001fe00000}, dummy = {0x0, 0x40, 0x20, 0xc0, 0xff, 0xff, 0xff, 0xff, 0x0, 0x40, 0x20, 0xc0, 0xff, 0xff, 0xff, 0xff, 0x0, 0x40, 0x20, 0xc0, 0xff, 0xff, 0xff, 0xff, 0x0, 0x0, 0xe0, 0x1f, 0x0, 0x80, 0x0, 0x0}}}
+
+(host) p/x te->addend + vaddr
+$31 = 0x7fffe0004000
+
+(host) finish
+Run till exit from #0  tlb_set_page_with_attrs (cpu=0x555556581700, vaddr=18446744072637923328, paddr=2149597184, attrs=..., prot=7, mmu_idx=1, size=4096) at /home/liu/.local/src/qemu-4.1.1/accel/tcg/cputlb.c:837
+0x0000555555864873 in tlb_set_page (cpu=0x555556581700, vaddr=18446744072637923328, paddr=2149597184, prot=7, mmu_idx=1, size=4096) at /home/liu/.local/src/qemu-4.1.1/accel/tcg/cputlb.c:847
+847	    tlb_set_page_with_attrs(cpu, vaddr, paddr, MEMTXATTRS_UNSPECIFIED,
+
+(host) finish
+Run till exit from #0  0x0000555555864873 in tlb_set_page (cpu=0x555556581700, vaddr=18446744072637923328, paddr=2149597184, prot=7, mmu_idx=1, size=4096) at /home/liu/.local/src/qemu-4.1.1/accel/tcg/cputlb.c:847
+riscv_cpu_tlb_fill (cs=0x555556581700, address=18446744072637927416, size=8, access_type=MMU_DATA_STORE, mmu_idx=1, probe=false, retaddr=140737297420613) at /home/liu/.local/src/qemu-4.1.1/target/riscv/cpu_helper.c:474
+474	        return true;
+
+(host) finish
+Run till exit from #0  riscv_cpu_tlb_fill (cs=0x555556581700, address=18446744072637927416, size=8, access_type=MMU_DATA_STORE, mmu_idx=1, probe=false, retaddr=140737297420613) at /home/liu/.local/src/qemu-4.1.1/target/riscv/cpu_helper.c:474
+0x000055555586494f in tlb_fill (cpu=0x555556581700, addr=18446744072637927416, size=8, access_type=MMU_DATA_STORE, mmu_idx=1, retaddr=140737297420613) at /home/liu/.local/src/qemu-4.1.1/accel/tcg/cputlb.c:878
+878	    ok = cc->tlb_fill(cpu, addr, size, access_type, mmu_idx, false, retaddr);
+Value returned is $32 = true
+
+(host) disable 2
+
+(host) continue
+Continuing.
+
+Thread 1 "qemu-system-ris" received signal SIGINT, Interrupt.
+[Switching to Thread 0x7ffff726e3c0 (LWP 24987)]
+0x00007ffff7b18e1e in __ppoll (fds=0x5555565d3360, nfds=6, timeout=<optimized out>, sigmask=0x0) at ../sysdeps/unix/sysv/linux/ppoll.c:42
+42	../sysdeps/unix/sysv/linux/ppoll.c: No such file or directory.
+
+(host) enable 3
+
+(host) continue
+Continuing.
+[Switching to Thread 0x7ffff49e8640 (LWP 25001)]
+
+Thread 3 "qemu-system-ris" hit Breakpoint 3, riscv_cpu_tlb_fill (cs=0x555556581700, address=18446744072637931528, size=8, access_type=MMU_DATA_LOAD, mmu_idx=1, probe=false, retaddr=140737297420604) at /home/liu/.local/src/qemu-4.1.1/target/riscv/cpu_helper.c:438
+438	{
+
+(host) bt 8
+#0  riscv_cpu_tlb_fill (cs=0x555556581700, address=18446744072637931528, size=8, access_type=MMU_DATA_LOAD, mmu_idx=1, probe=false, retaddr=140737297420604) at /home/liu/.local/src/qemu-4.1.1/target/riscv/cpu_helper.c:438
+#1  0x000055555586494f in tlb_fill (cpu=0x555556581700, addr=18446744072637931528, size=8, access_type=MMU_DATA_LOAD, mmu_idx=1, retaddr=140737297420604) at /home/liu/.local/src/qemu-4.1.1/accel/tcg/cputlb.c:878
+#2  0x0000555555867c68 in load_helper (full_load=0x555555867a32 <helper_le_ldq_mmu>, code_read=false, big_endian=false, size=8, retaddr=140737297420604, oi=49, addr=18446744072637931528, env=0x55555658a110) at /home/liu/.local/src/qemu-4.1.1/accel/tcg/cputlb.c:1274
+#3  helper_le_ldq_mmu (env=0x55555658a110, addr=18446744072637931528, oi=49, retaddr=140737297420604) at /home/liu/.local/src/qemu-4.1.1/accel/tcg/cputlb.c:1449
+#4  0x00007ffff49e917a in code_gen_buffer ()
+#5  0x000055555588957b in cpu_tb_exec (cpu=0x555556581700, itb=0x7ffff49e9040 <code_gen_buffer+19>) at /home/liu/.local/src/qemu-4.1.1/accel/tcg/cpu-exec.c:173
+#6  0x000055555588a3c1 in cpu_loop_exec_tb (cpu=0x555556581700, tb=0x7ffff49e9040 <code_gen_buffer+19>, last_tb=0x7ffff49e78d8, tb_exit=0x7ffff49e78d0) at /home/liu/.local/src/qemu-4.1.1/accel/tcg/cpu-exec.c:621
+#7  0x000055555588a6f6 in cpu_exec (cpu=0x555556581700) at /home/liu/.local/src/qemu-4.1.1/accel/tcg/cpu-exec.c:732
+(More stack frames follow...)
+
+(host) info args
+cs = 0x555556581700
+address = 18446744072637931528
+size = 8
+access_type = MMU_DATA_LOAD
+mmu_idx = 1
+probe = false
+retaddr = 140737297420604
+
+(host) frame 2
+#2  0x0000555555867c68 in load_helper (full_load=0x555555867a32 <helper_le_ldq_mmu>, code_read=false, big_endian=false, size=8, retaddr=140737297420604, oi=49, addr=18446744072637931528, env=0x55555658a110) at /home/liu/.local/src/qemu-4.1.1/accel/tcg/cputlb.c:1274
+1274	            tlb_fill(env_cpu(env), addr, size,
+
+(host) p/x tlb_addr
+$33 = 0xffffffffffffffff
+
+(host) p/x entry->addr_read
+$34 = 0xffffffffffffffff
+
+(host) p index
+$35 = 6
+
+(host) list 1268,1280
+1268	    }
+1269	
+1270	    /* If the TLB entry is for a different page, reload and try again.  */
+1271	    if (!tlb_hit(tlb_addr, addr)) {
+1272	        if (!victim_tlb_hit(env, mmu_idx, index, tlb_off,
+1273	                            addr & TARGET_PAGE_MASK)) {
+1274	            tlb_fill(env_cpu(env), addr, size,
+1275	                     access_type, mmu_idx, retaddr);
+1276	            index = tlb_index(env, mmu_idx, addr);
+1277	            entry = tlb_entry(env, mmu_idx, addr);
+1278	        }
+1279	        tlb_addr = code_read ? entry->addr_code : entry->addr_read;
+1280	    }
+
+(host) frame 5
+#5  0x000055555588957b in cpu_tb_exec (cpu=0x555556581700, itb=0x7ffff49e9040 <code_gen_buffer+19>) at /home/liu/.local/src/qemu-4.1.1/accel/tcg/cpu-exec.c:173
+173	    ret = tcg_qemu_tb_exec(env, tb_ptr);
+
+(host) p/x itb->tc.ptr
+$36 = 0x7ffff49e9100
+
+(host) x/28i itb->tc.ptr
+   0x7ffff49e9100 <code_gen_buffer+211>:	mov    -0x10(%rbp),%ebx
+   0x7ffff49e9103 <code_gen_buffer+214>:	test   %ebx,%ebx
+   0x7ffff49e9105 <code_gen_buffer+216>:	jl     0x7ffff49e9159 <code_gen_buffer+300>
+   0x7ffff49e910b <code_gen_buffer+222>:	mov    0x40(%rbp),%rbx
+   0x7ffff49e910f <code_gen_buffer+226>:	mov    %rbx,%rdi
+   0x7ffff49e9112 <code_gen_buffer+229>:	shr    $0x7,%rdi
+   0x7ffff49e9116 <code_gen_buffer+233>:	and    -0x40(%rbp),%rdi
+   0x7ffff49e911a <code_gen_buffer+237>:	add    -0x38(%rbp),%rdi
+   0x7ffff49e911e <code_gen_buffer+241>:	lea    0x7(%rbx),%rsi
+   0x7ffff49e9122 <code_gen_buffer+245>:	and    $0xfffffffffffff000,%rsi
+   0x7ffff49e9129 <code_gen_buffer+252>:	cmp    (%rdi),%rsi
+   0x7ffff49e912c <code_gen_buffer+255>:	mov    %rbx,%rsi
+   0x7ffff49e912f <code_gen_buffer+258>:	jne    0x7ffff49e9165 <code_gen_buffer+312>
+   0x7ffff49e9135 <code_gen_buffer+264>:	add    0x18(%rdi),%rsi
+   0x7ffff49e9139 <code_gen_buffer+268>:	mov    (%rsi),%rbx
+   0x7ffff49e913c <code_gen_buffer+271>:	mov    %rbx,0x58(%rbp)
+   0x7ffff49e9140 <code_gen_buffer+275>:	movq   $0xffffffffc0200276,0x200(%rbp)
+   0x7ffff49e914b <code_gen_buffer+286>:	mov    %rbp,%rdi
+   0x7ffff49e914e <code_gen_buffer+289>:	mov    $0x10002,%esi
+   0x7ffff49e9153 <code_gen_buffer+294>:	call   *0x2f(%rip)        # 0x7ffff49e9188 <code_gen_buffer+347>
+   0x7ffff49e9159 <code_gen_buffer+300>:	lea    -0x11d(%rip),%rax        # 0x7ffff49e9043 <code_gen_buffer+22>
+   0x7ffff49e9160 <code_gen_buffer+307>:	jmp    0x7ffff49e9018
+   0x7ffff49e9165 <code_gen_buffer+312>:	mov    %rbp,%rdi
+   0x7ffff49e9168 <code_gen_buffer+315>:	mov    $0x31,%edx
+   0x7ffff49e916d <code_gen_buffer+320>:	lea    -0x38(%rip),%rcx        # 0x7ffff49e913c <code_gen_buffer+271>
+   0x7ffff49e9174 <code_gen_buffer+327>:	call   *0x16(%rip)        # 0x7ffff49e9190 <code_gen_buffer+355>
+   0x7ffff49e917a <code_gen_buffer+333>:	mov    %rax,%rbx
+   0x7ffff49e917d <code_gen_buffer+336>:	jmp    0x7ffff49e913c <code_gen_buffer+271>
+
+(host) frame 0
+#0  riscv_cpu_tlb_fill (cs=0x555556581700, address=18446744072637931528, size=8, access_type=MMU_DATA_LOAD, mmu_idx=1, probe=false, retaddr=140737297420604) at /home/liu/.local/src/qemu-4.1.1/target/riscv/cpu_helper.c:438
+438	{
+
+(host) set $loads = 1
+
+(host) commands 3
+silent
+set $loads = $loads + 1
+printf "EXTRA LOAD FILL count=%d\n", $loads
+continue
+end
+>>>>>
+(host) tbreak tlb_set_page_with_attrs
+Temporary breakpoint 8 at 0x5555558642f3: file /home/liu/.local/src/qemu-4.1.1/accel/tcg/cputlb.c, line 700.
+
+(host) continue
+Continuing.
+
+Thread 3 "qemu-system-ris" hit Temporary breakpoint 8, tlb_set_page_with_attrs (cpu=0x555556581700, vaddr=18446744072637931520, paddr=2149605376, attrs=..., prot=7, mmu_idx=1, size=4096) at /home/liu/.local/src/qemu-4.1.1/accel/tcg/cputlb.c:700
+700	{
+
+(host) info args
+cpu = 0x555556581700
+vaddr = 18446744072637931520
+paddr = 2149605376
+attrs = {unspecified = 1, secure = 0, user = 0, requester_id = 0, target_tlb_bit0 = 0, target_tlb_bit1 = 0, target_tlb_bit2 = 0}
+prot = 7
+mmu_idx = 1
+size = 4096
+
+(host) until cputlb.c:837
+tlb_set_page_with_attrs (cpu=0x555556581700, vaddr=18446744072637931520, paddr=2149605376, attrs=..., prot=7, mmu_idx=1, size=4096) at /home/liu/.local/src/qemu-4.1.1/accel/tcg/cputlb.c:837
+837	    qemu_spin_unlock(&tlb->c.lock);
+
+(host) p/x *te
+$37 = {{{addr_read = 0xffffffffc0206000, addr_write = 0xffffffffc0206000, addr_code = 0xffffffffc0206000, addend = 0x80001fe00000}, dummy = {0x0, 0x60, 0x20, 0xc0, 0xff, 0xff, 0xff, 0xff, 0x0, 0x60, 0x20, 0xc0, 0xff, 0xff, 0xff, 0xff, 0x0, 0x60, 0x20, 0xc0, 0xff, 0xff, 0xff, 0xff, 0x0, 0x0, 0xe0, 0x1f, 0x0, 0x80, 0x0, 0x0}}}
+
+(host) set $cte = te
+
+(host) set $host_object = te->addend + 0xffffffffc0206008
+
+(host) p/x $host_object
+$38 = 0x7fffe0006008
+
+(host) x/gx $host_object
+0x7fffe0006008:	0x0000000082200000
+
+(host) finish
+Run till exit from #0  tlb_set_page_with_attrs (cpu=0x555556581700, vaddr=18446744072637931520, paddr=2149605376, attrs=..., prot=7, mmu_idx=1, size=4096) at /home/liu/.local/src/qemu-4.1.1/accel/tcg/cputlb.c:837
+0x0000555555864873 in tlb_set_page (cpu=0x555556581700, vaddr=18446744072637931520, paddr=2149605376, prot=7, mmu_idx=1, size=4096) at /home/liu/.local/src/qemu-4.1.1/accel/tcg/cputlb.c:847
+847	    tlb_set_page_with_attrs(cpu, vaddr, paddr, MEMTXATTRS_UNSPECIFIED,
+
+(host) finish
+Run till exit from #0  0x0000555555864873 in tlb_set_page (cpu=0x555556581700, vaddr=18446744072637931520, paddr=2149605376, prot=7, mmu_idx=1, size=4096) at /home/liu/.local/src/qemu-4.1.1/accel/tcg/cputlb.c:847
+riscv_cpu_tlb_fill (cs=0x555556581700, address=18446744072637931528, size=8, access_type=MMU_DATA_LOAD, mmu_idx=1, probe=false, retaddr=140737297420604) at /home/liu/.local/src/qemu-4.1.1/target/riscv/cpu_helper.c:474
+474	        return true;
+
+(host) finish
+Run till exit from #0  riscv_cpu_tlb_fill (cs=0x555556581700, address=18446744072637931528, size=8, access_type=MMU_DATA_LOAD, mmu_idx=1, probe=false, retaddr=140737297420604) at /home/liu/.local/src/qemu-4.1.1/target/riscv/cpu_helper.c:474
+0x000055555586494f in tlb_fill (cpu=0x555556581700, addr=18446744072637931528, size=8, access_type=MMU_DATA_LOAD, mmu_idx=1, retaddr=140737297420604) at /home/liu/.local/src/qemu-4.1.1/accel/tcg/cputlb.c:878
+878	    ok = cc->tlb_fill(cpu, addr, size, access_type, mmu_idx, false, retaddr);
+Value returned is $39 = true
+
+(host) continue
+Continuing.
+
+Thread 1 "qemu-system-ris" received signal SIGINT, Interrupt.
+[Switching to Thread 0x7ffff726e3c0 (LWP 24987)]
+0x00007ffff7b18e1e in __ppoll (fds=0x5555565d3360, nfds=6, timeout=<optimized out>, sigmask=0x0) at ../sysdeps/unix/sysv/linux/ppoll.c:42
+42	../sysdeps/unix/sysv/linux/ppoll.c: No such file or directory.
+
+(host) p $loads
+$40 = 1
+
+(host) p/x *$cte
+$41 = {{{addr_read = 0xffffffffc0206000, addr_write = 0xffffffffc0206000, addr_code = 0xffffffffc0206000, addend = 0x80001fe00000}, dummy = {0x0, 0x60, 0x20, 0xc0, 0xff, 0xff, 0xff, 0xff, 0x0, 0x60, 0x20, 0xc0, 0xff, 0xff, 0xff, 0xff, 0x0, 0x60, 0x20, 0xc0, 0xff, 0xff, 0xff, 0xff, 0x0, 0x0, 0xe0, 0x1f, 0x0, 0x80, 0x0, 0x0}}}
+
+(host) p/x $cte->addr_read
+$42 = 0xffffffffc0206000
+
+(host) p/x $cte->addend
+$43 = 0x80001fe00000
+
+(host) p/x $cenv->gpr[11]
+$44 = 0x82200000
+
+(host) list tcg_out_tlb_load
+1697	   First argument register is clobbered.  */
+1698	
+1699	static inline void tcg_out_tlb_load(TCGContext *s, TCGReg addrlo, TCGReg addrhi,
+1700	                                    int mem_index, TCGMemOp opc,
+1701	                                    tcg_insn_unit **label_ptr, int which)
+1702	{
+1703	    const TCGReg r0 = TCG_REG_L0;
+1704	    const TCGReg r1 = TCG_REG_L1;
+1705	    TCGType ttype = TCG_TYPE_I32;
+1706	    TCGType tlbtype = TCG_TYPE_I32;
+
+(host) continue
+Continuing.
+
+Thread 1 "qemu-system-ris" received signal SIGINT, Interrupt.
+0x00007ffff7b18e1e in __ppoll (fds=0x5555565d3360, nfds=6, timeout=<optimized out>, sigmask=0x0) at ../sysdeps/unix/sysv/linux/ppoll.c:42
+42	../sysdeps/unix/sysv/linux/ppoll.c: No such file or directory.
+
+(host) kill
+[Inferior 1 (process 24987) killed]

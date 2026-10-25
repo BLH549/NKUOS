@@ -1,0 +1,15 @@
+make: Entering directory '/home/liu/projects/nku-os/labs/code'
+python3 tools/check_host.py
+best_fit_pmm_manager: framework checks + 10000 bitmap-model operations PASS
+default_pmm_manager: framework checks + 10000 bitmap-model operations PASS
+page_init valid: PASS
+page_init small_unaligned: PASS
+page_init cap: PASS
+page_init empty: PASS
+page_init zero: PASS (expected panic)
+page_init base: PASS (expected panic)
+page_init overflow: PASS (expected panic)
+page_init kernel: PASS (expected panic)
+page_init descriptors: PASS (expected panic)
+Host checks: PASS (ASan + UBSan)
+make: Leaving directory '/home/liu/projects/nku-os/labs/code'
