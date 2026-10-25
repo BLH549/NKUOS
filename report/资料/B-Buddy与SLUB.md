@@ -124,17 +124,17 @@ void slub_check(void);
 
 ## 6. 真实运行证据
 
-证据目录：[evidence/B-20261023](evidence/B-20261023/summary.json)。其中保存工具版本、源码 SHA-256、每次启动的 ELF/镜像 SHA-256 及命令。
+证据目录：[evidence/B-20261023](../evidence/B-20261023/summary.json)。其中保存工具版本、源码 SHA-256、每次启动的 ELF/镜像 SHA-256 及命令。
 
 | 配置 | 验证结果与日志 |
 | --- | --- |
-| First-Fit + SLUB，128 MiB | [原始页分配检查、SLUB 自检通过](evidence/B-20261023/first_fit-128M-boot.log) |
-| Buddy + SLUB，64 MiB | [全部自检通过](evidence/B-20261023/buddy-64M-boot.log) |
-| Buddy + SLUB，128 MiB | [全部自检通过](evidence/B-20261023/buddy-128M-boot.log) |
-| Buddy + SLUB，256 MiB | [实际内存 256 MiB，框架截断管理到 128 MiB，自检通过](evidence/B-20261023/buddy-256M-boot.log) |
-| Best-Fit + SLUB，128 MiB | [原始页分配检查、SLUB 自检通过](evidence/B-20261023/best_fit-128M-boot.log) |
-| 主机诊断与独立测试 | [host.log](evidence/B-20261023/host.log) |
-| 教师评分 | [grade.log](evidence/B-20261023/grade.log)，20/20 |
+| First-Fit + SLUB，128 MiB | [原始页分配检查、SLUB 自检通过](../evidence/B-20261023/first_fit-128M-boot.log) |
+| Buddy + SLUB，64 MiB | [全部自检通过](../evidence/B-20261023/buddy-64M-boot.log) |
+| Buddy + SLUB，128 MiB | [全部自检通过](../evidence/B-20261023/buddy-128M-boot.log) |
+| Buddy + SLUB，256 MiB | [实际内存 256 MiB，框架截断管理到 128 MiB，自检通过](../evidence/B-20261023/buddy-256M-boot.log) |
+| Best-Fit + SLUB，128 MiB | [原始页分配检查、SLUB 自检通过](../evidence/B-20261023/best_fit-128M-boot.log) |
+| 主机诊断与独立测试 | [host.log](../evidence/B-20261023/host.log) |
+| 教师评分 | [grade.log](../evidence/B-20261023/grade.log)，20/20 |
 
 128 MiB Buddy 串口关键输出：
 
@@ -170,37 +170,37 @@ check_alloc_page() succeeded!
 
 截图包含姓名学号、lab2 分支及基线提交、WSL 环境、编译器与 QEMU 版本，以及 `ARCH=rv64imac`。
 
-![B-01 环境与身份](images/B-01-environment.png)
+![B-01 环境与身份](../images/B-01-environment.png)
 
 ### 8.2 B-02：Buddy 全量构建
 
-Buddy、SLUB 源文件均参与编译，完成链接与 objcopy，输出为带调试信息的 64 位 RISC-V ELF。对应 [本人构建日志](evidence/B-manual-buddy-build.log)。
+Buddy、SLUB 源文件均参与编译，完成链接与 objcopy，输出为带调试信息的 64 位 RISC-V ELF。对应 [本人构建日志](../evidence/B-manual-buddy-build.log)。
 
-![B-02 Buddy 全量构建成功](images/B-02-buddy-build.png)
+![B-02 Buddy 全量构建成功](../images/B-02-buddy-build.png)
 
 ### 8.3 B-03：Buddy 与 SLUB 内核运行
 
-实际使用 `buddy_pmm_manager`，Buddy 与 SLUB 检查均通过，空闲页数恢复为 31929。对应 [本人 Buddy 启动日志](evidence/B-manual-buddy-boot.log)。
+实际使用 `buddy_pmm_manager`，Buddy 与 SLUB 检查均通过，空闲页数恢复为 31929。对应 [本人 Buddy 启动日志](../evidence/B-manual-buddy-boot.log)。
 
-![B-03 Buddy 与 SLUB 在 QEMU 中运行](images/B-03-buddy-slub-boot.png)
+![B-03 Buddy 与 SLUB 在 QEMU 中运行](../images/B-03-buddy-slub-boot.png)
 
 ### 8.4 B-04 / B-05：Buddy 与 SLUB 完整主机测试（合并图）
 
-同一张图包含 Buddy 的非对齐区域、伙伴合并、乱序注册与 20,000 次独立模型操作，SLUB 在三种 PMM 上各 5,000 次对象操作，以及三项误释放检查和 ASan/UBSan 最终结果。对应 [本人主机测试日志](evidence/B-manual-host.log)。
+同一张图包含 Buddy 的非对齐区域、伙伴合并、乱序注册与 20,000 次独立模型操作，SLUB 在三种 PMM 上各 5,000 次对象操作，以及三项误释放检查和 ASan/UBSan 最终结果。对应 [本人主机测试日志](../evidence/B-manual-host.log)。
 
-![B-04 与 B-05 合并：Buddy 和 SLUB 完整主机测试](images/B-04-05-host-checks.png)
+![B-04 与 B-05 合并：Buddy 和 SLUB 完整主机测试](../images/B-04-05-host-checks.png)
 
 ### 8.5 B-06：Best-Fit 与 SLUB 回归
 
-实际使用 `best_fit_pmm_manager`，原始页分配检查及 SLUB 检查均通过，空闲页数恢复为 31929。对应 [本人 Best-Fit 启动日志](evidence/B-manual-best-fit-boot.log)。
+实际使用 `best_fit_pmm_manager`，原始页分配检查及 SLUB 检查均通过，空闲页数恢复为 31929。对应 [本人 Best-Fit 启动日志](../evidence/B-manual-best-fit-boot.log)。
 
-![B-06 Best-Fit 与 SLUB 回归](images/B-06-best-fit-boot.png)
+![B-06 Best-Fit 与 SLUB 回归](../images/B-06-best-fit-boot.png)
 
 ### 8.6 B-07：教师评分
 
-Page Init 和 Best-Fit 均为 OK，总分为 20/20。对应 [本人评分日志](evidence/B-manual-grade.log)。教师评分范围与第 6 节一致，不代替 Buddy/SLUB 的独立检查。
+Page Init 和 Best-Fit 均为 OK，总分为 20/20。对应 [本人评分日志](../evidence/B-manual-grade.log)。教师评分范围与第 6 节一致，不代替 Buddy/SLUB 的独立检查。
 
-![B-07 教师评分 20/20](images/B-07-grade.png)
+![B-07 教师评分 20/20](../images/B-07-grade.png)
 
 ### 8.7 验收状态
 

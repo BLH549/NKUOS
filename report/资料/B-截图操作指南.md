@@ -10,7 +10,7 @@
 
 - Linux 源码目录：`/home/kyc/project/os/NKUOS-lab2/code`。
 - Windows 图片目录：`\\wsl.localhost\Ubuntu-22.04\home\kyc\project\os\NKUOS-lab2\report\images`。
-- B 报告：`/home/kyc/project/os/NKUOS-lab2/report/B-Buddy与SLUB.md`。
+- B 报告：`/home/kyc/project/os/NKUOS-lab2/report/资料/B-Buddy与SLUB.md`。
 - 本人重新运行的日志请使用 `B-manual-*` 名称，保留已保存的 `evidence/B-20261023/` 原始自动验证证据。
 
 ### 步骤 0.1：打开正确终端
@@ -238,7 +238,7 @@ python3 tools/check_b_qemu.py --arch rv64imac --output ../report/evidence/B-manu
 
 ## 9. 当前报告的图片引用
 
-`report/B-Buddy与SLUB.md` 第 8 节已经替换完全部占位，当前使用以下六张图片：
+`report/资料/B-Buddy与SLUB.md` 第 8 节已经替换完全部占位，当前使用以下六张图片：
 
 ```markdown
 ![B-01 环境与身份](images/B-01-environment.png)

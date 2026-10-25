@@ -39,7 +39,7 @@ cd /home/liu/.local/src/qemu-4.1.1/build-debug
 make -j12
 ```
 
-配置中 `CFLAGS=-g`，没有开启优化，函数局部变量可以直接观察。我们直接使用构建目录中的可执行文件；已有的 QEMU 7.0.0 继续保留。准备步骤收录在 [prepare_qemu_c.sh](../code/tools/prepare_qemu_c.sh)，初次失败、依赖下载、最终配置和构建分别保存在 [C 证据目录](evidence/C-20261024/summary.json)。
+配置中 `CFLAGS=-g`，没有开启优化，函数局部变量可以直接观察。我们直接使用构建目录中的可执行文件；已有的 QEMU 7.0.0 继续保留。准备步骤收录在 [prepare_qemu_c.sh](../../code/tools/prepare_qemu_c.sh)，初次失败、依赖下载、最终配置和构建分别保存在 [C 证据目录](../evidence/C-20261024/summary.json)。
 
 ## 2. 两个 GDB 怎样配合
 
@@ -82,9 +82,9 @@ si
 tail -f /tmp/lab2-c-serial.log
 ```
 
-这轮把同样的操作次序写进 [debug_c.py](../code/tools/debug_c.py)，脚本通过管道驱动两个真实 GDB，会分别保存 host、guest 与串口日志。它先核对版本和反汇编中的指令，内核布局发生变化时会停止，避免拿旧地址观察另一条指令。
+这轮把同样的操作次序写进 [debug_c.py](../../code/tools/debug_c.py)，脚本通过管道驱动两个真实 GDB，会分别保存 host、guest 与串口日志。它先核对版本和反汇编中的指令，内核布局发生变化时会停止，避免拿旧地址观察另一条指令。
 
-截图使用 [capture_c.py](../code/tools/capture_c.py) 将本轮日志按主题显示在 xterm 中，再截取窗口。完整连续输出保存在 [host 日志](evidence/C-20261024/host-mmu-gdb.log) 和 [guest 日志](evidence/C-20261024/guest-mmu-gdb.log)。
+截图使用 [capture_c.py](../../code/tools/capture_c.py) 将本轮日志按主题显示在 xterm 中，再截取窗口。完整连续输出保存在 [host 日志](../evidence/C-20261024/host-mmu-gdb.log) 和 [guest 日志](../evidence/C-20261024/guest-mmu-gdb.log)。
 
 ## 3. 从 guest 指令确定翻译输入
 
@@ -112,7 +112,7 @@ sp = 0xffffffffc0204ff0
 
 GDB 的 `x` 命令本身也会请求地址转换，它使用 `riscv_cpu_get_phys_page_debug()` 调用 `get_physical_address()`。若只给后者设置地址条件，就可能先观察到调试器自己的读取。我们以实际访存的 `riscv_cpu_tlb_fill()` 为入口，再在其内部临时断到翻译函数。
 
-![C 的 guest 指令与 Bare/Sv39 状态](images/C-01-guest-and-bare.png)
+![C 的 guest 指令与 Bare/Sv39 状态](../images/C-01-guest-and-bare.png)
 
 ## 4. 单步观察 Sv39 页表翻译
 
@@ -182,7 +182,7 @@ vpn = addr >> 12;
 
 返回时 `ret=0`、`prot=7`，随后 `tlb_set_page()` 以 `vaddr=0xffffffffc0204000`、`paddr=0x80204000`、`size=4096` 填充软件 TLB。本次架构页表使用 1 GiB 叶子，而这版 RISC-V 后端按 4 KiB 粒度填软件缓存。
 
-![根层叶子与地址计算](images/C-02-sv39-walk.png)
+![根层叶子与地址计算](../images/C-02-sv39-walk.png)
 
 ## 5. 软件 TLB 的查找、填充和命中
 
@@ -262,9 +262,9 @@ mov (%rsi),%rbx              # 直接读取 host RAM
 
 反汇编只分析该 TB 的指令区。后面紧邻的常量和其他缓冲区内容不能继续当成这条 load 的指令解释。
 
-![冷访问标签与重复访问](images/C-03-tlb-cold-and-hot.png)
+![冷访问标签与重复访问](../images/C-03-tlb-cold-and-hot.png)
 
-![实际生成的 TLB 快路径](images/C-04-tcg-fast-path.png)
+![实际生成的 TLB 快路径](../images/C-04-tcg-fast-path.png)
 
 ## 6. Bare 模式为什么也有软件 TLB
 
@@ -314,7 +314,7 @@ return TRANSLATE_SUCCESS;
 - A 的主机分配模型与初始化边界检查、B 的 Buddy/SLUB 独立模型及 ASan/UBSan。
 - 教师评分 `20/20`，之后重建默认 Best-Fit。
 
-![本轮启动、评分及回归结果](images/C-05-boot-and-grade.png)
+![本轮启动、评分及回归结果](../images/C-05-boot-and-grade.png)
 
 复现入口：
 

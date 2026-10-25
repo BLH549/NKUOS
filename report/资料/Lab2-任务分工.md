@@ -88,7 +88,7 @@ QEMU 调试分支从模拟器内部观察虚拟地址翻译、页表遍历和 TL
 - [x] 初始化、First-Fit、Best-Fit 和内存范围 Challenge 的报告正文。
 - [x] spec、prompt、实际问题与修复记录。
 
-A 的独立代码、分析报告、spec、prompt 与运行验证于 2026-10-23 完成，负责人为匡航逸（2412235），见 [报告入口](report.md)。First-Fit 基线、Best-Fit 原始检查和教师评分 20/20 均已通过。以下公共责任及本人验收仍未完成，不能将 A 的全部职责标记为结束。
+A 的独立代码、分析报告、spec、prompt 与运行验证于 2026-10-23 完成，负责人为匡航逸（2412235），见 [报告入口](../report.md)。First-Fit 基线、Best-Fit 原始检查和教师评分 20/20 均已通过。以下公共责任及本人验收仍未完成，不能将 A 的全部职责标记为结束。
 
 ### 3.6 A 的后续公共责任与本人验收
 
@@ -203,16 +203,25 @@ B 的实现与自动验证于 2026-10-23 完成，见 [B 报告](B-Buddy与SLUB.
 
 ## 7. 报告与证据组织
 
-建议在 `labs/report/` 中按以下结构保存成果，最终以 `report.md` 为提交报告入口：
+`labs/report/` 的两个阅读入口为 `report.md` 和 `prompt.md`，其他 Markdown 统一放在 `资料/`：
 
 ```text
 report/
-├── Lab2-任务分工.md
 ├── report.md
-├── A-初始化与基础分配.md
-├── B-Buddy与SLUB.md
-├── C-QEMU地址翻译调试.md
 ├── prompt.md
+├── 资料/
+│   ├── 运行说明.md
+│   ├── Lab2-任务分工.md
+│   ├── A-初始化与基础分配.md
+│   ├── A-spec.md
+│   ├── B-Buddy与SLUB.md
+│   ├── B-spec.md
+│   ├── B-prompts.md
+│   ├── B-知识点总结.md
+│   ├── B-截图操作指南.md
+│   ├── B-截图核对清单.md
+│   ├── C-任务计划.md
+│   └── C-QEMU地址翻译调试.md
 ├── images/
 └── evidence/
 ```
@@ -250,8 +259,8 @@ report/
 
 以下链接对应本工作区外层的指导书和模板。
 
-- [Lab2 练习](../../_book/lab2/lab2_2_1_exercise.html)
-- [项目组成与运行示例](../../_book/lab2/lab2_2_2_files.html)
-- [QEMU/GDB 调试分支](../../_book/lab2/lab2_4_qemu_mmu_debug.html)
-- [实验报告要求](../../_book/lab2/lab2_5_labs_requirement.html)
-- [老师提供的报告模板](../../materials/实验报告模板.md)
+- [Lab2 练习](../../../_book/lab2/lab2_2_1_exercise.html)
+- [项目组成与运行示例](../../../_book/lab2/lab2_2_2_files.html)
+- [QEMU/GDB 调试分支](../../../_book/lab2/lab2_4_qemu_mmu_debug.html)
+- [实验报告要求](../../../_book/lab2/lab2_5_labs_requirement.html)
+- [老师提供的报告模板](../../../materials/实验报告模板.md)

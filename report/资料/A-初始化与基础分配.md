@@ -1,6 +1,6 @@
 # A：物理内存初始化与基础分配
 
-负责人：匡航逸，2412235。独立模块完成日期：2026-10-23（北京时间）。使用工具：Codex，底层模型 GPT-6。实现前约定见 [A-spec.md](A-spec.md)，实际提示词和迭代见 [prompt.md](prompt.md#记录-5完成-a-部分)。
+负责人：匡航逸，2412235。独立模块完成日期：2026-10-23（北京时间）。使用工具：Codex，底层模型 GPT-6。实现前约定见 [A-spec.md](A-spec.md)，实际提示词和迭代见 [prompt.md](../prompt.md#记录-5完成-a-部分)。
 
 ## 1. 完成范围与实验主线
 
@@ -21,7 +21,7 @@ OpenSBI 将 hartid/DTB 地址传给入口
 
 ## 2. page_init 的地址与边界处理
 
-实现位于 [pmm.c](../code/kern/mm/pmm.c)。设备树解析先于 `pmm_init()`，因此从 `get_memory_base()` 和 `get_memory_size()` 获取输入，而不是回退到固定的 128 MiB。
+实现位于 [pmm.c](../../code/kern/mm/pmm.c)。设备树解析先于 `pmm_init()`，因此从 `get_memory_base()` 和 `get_memory_size()` 获取输入，而不是回退到固定的 128 MiB。
 
 本框架固定 `nbase=DRAM_BASE/PGSIZE`，启动映射和内核链接位置也以 `0x80000000` 为物理基准。因此要求 DTB 起点等于 `DRAM_BASE`，大小非零，且起点与大小相加不溢出。无效时 panic。该校验针对已解析的内存区间；没有将起始 DTB 解析器扩展为任意不可信 DTB 的完整验证器。
 
@@ -57,7 +57,7 @@ check_alloc_page() succeeded!
 
 ## 3. First-Fit 数据结构与过程
 
-[default_pmm.c](../code/kern/mm/default_pmm.c) 维护 `free_area`：双向循环链表 `free_list` 保存每个空闲块的首页，`nr_free` 保存总空闲页数。链表按地址递增，不是按块大小排列。
+[default_pmm.c](../../code/kern/mm/default_pmm.c) 维护 `free_area`：双向循环链表 `free_list` 保存每个空闲块的首页，`nr_free` 保存总空闲页数。链表按地址递增，不是按块大小排列。
 
 `Page.ref` 是页引用计数；`PG_reserved` 表示该页不能作为一般空闲页；`PG_property` 表示该描述符是空闲块首页，此时 `property` 才表示块大小。内部页面没有首页标志，不能通过可能残留的 `property` 数值判断页面是否空闲。
 
@@ -78,7 +78,7 @@ First-Fit 最坏需扫描 F 个空闲块，复杂度 O(F)。可按大小分桶�
 
 ## 4. Best-Fit 实现与接入
 
-完整模块在 [best_fit_pmm.c](../code/kern/mm/best_fit_pmm.c)，通过已有头文件导出 `best_fit_pmm_manager`。注册结构实现初始化、注册内存、分配、释放、空闲计数和检查六个接口。
+完整模块在 [best_fit_pmm.c](../../code/kern/mm/best_fit_pmm.c)，通过已有头文件导出 `best_fit_pmm_manager`。注册结构实现初始化、注册内存、分配、释放、空闲计数和检查六个接口。
 
 仍使用地址有序链表，不改变相邻合并规则。`best_fit_insert_block()` 将块插入合适位置，先合并前邻，再合并后邻，清除被吸收块的首页标志。初始化注册和释放复用此过程，支持乱序注册、相邻注册及乱序回收。
 
@@ -92,7 +92,7 @@ First-Fit 最坏需扫描 F 个空闲块，复杂度 O(F)。可按大小分桶�
 
 当前最坏查找仍为 O(F)，释放除重置 n 个描述符外，插入查找为 O(F)，相邻合并为 O(1)。可同时维护按大小的平衡树和按地址的索引，将最小适配查询和邻接查询降到 O(log F)，代价是更复杂的一致性维护。大小分桶可近似 Best-Fit，减少搜索成本。为小剩余块设置拆分阈值可以控制碎片，但会改变“恰好 n 页”的占用语义，须与释放接口一起设计，不能直接套用当前接口。
 
-原始 `basic_check()` 和 `best_fit_check()` 文本保持不变，脚本逐字比较原分支与当前文件的测试区并记录 SHA-256，见 [summary.json](evidence/A-20261023/summary.json)。
+原始 `basic_check()` 和 `best_fit_check()` 文本保持不变，脚本逐字比较原分支与当前文件的测试区并记录 SHA-256，见 [summary.json](../evidence/A-20261023/summary.json)。
 
 ## 5. Challenge：不知道可用物理内存范围时如何获取
 
@@ -117,7 +117,7 @@ First-Fit 最坏需扫描 F 个空闲块，复杂度 O(F)。可按大小分桶�
 
 ## 6. 运行验证与覆盖
 
-实测环境：macOS arm64、GNU Make 3.81、xPack GCC 15.2.0、binutils 2.45、QEMU 9.2.4、默认 OpenSBI 1.5.1。工具下载自 xPack 官方 GitHub 发布，核对 SHA-256，解压在仓库外；工具配置见 [README](../code/README.md)。
+实测环境：macOS arm64、GNU Make 3.81、xPack GCC 15.2.0、binutils 2.45、QEMU 9.2.4、默认 OpenSBI 1.5.1。工具下载自 xPack 官方 GitHub 发布，核对 SHA-256，解压在仓库外；工具配置见 [README](运行说明.md)。
 
 ### 真实 QEMU 与教师评分
 
@@ -130,7 +130,7 @@ First-Fit 最坏需扫描 F 个空闲块，复杂度 O(F)。可按大小分桶�
 | Best-Fit / 256 MiB | 通过，管理终点截断为 `0x88000000` | 31929 |
 | `make grade` / Best-Fit 默认 128 MiB | Page Init、Best-Fit 均 OK | **20/20** |
 
-证据：[启动检查总日志](evidence/A-20261023/qemu-checks.log)、[First-Fit 启动](evidence/A-20261023/first_fit-128M-boot.log)、[Best-Fit 默认启动](evidence/A-20261023/best_fit-128M-boot.log)、[评分日志](evidence/A-20261023/grade.log)、[评分串口输出](evidence/A-20261023/grade-serial.log)。其余内存配置、源码和镜像校验值见 [summary.json](evidence/A-20261023/summary.json)。
+证据：[启动检查总日志](../evidence/A-20261023/qemu-checks.log)、[First-Fit 启动](../evidence/A-20261023/first_fit-128M-boot.log)、[Best-Fit 默认启动](../evidence/A-20261023/best_fit-128M-boot.log)、[评分日志](../evidence/A-20261023/grade.log)、[评分串口输出](../evidence/A-20261023/grade-serial.log)。其余内存配置、源码和镜像校验值见 [summary.json](../evidence/A-20261023/summary.json)。
 
 教师 Page Init 测试检查偏移、DTB 信息、npage、数组对齐和位置、空闲页、内核/描述符保留及地址转换；教师 Best-Fit 项检查当前注册的管理器。真正的选择、拆分和合并行为还由原始框架检查和独立测试覆盖。教师 npage 断言未考虑上界截断，因此评分在默认 128 MiB 下运行，256 MiB 截断用独立启动检查验证。
 
@@ -138,13 +138,13 @@ First-Fit 最坏需扫描 F 个空闲块，复杂度 O(F)。可按大小分桶�
 
 ### 主机侧边界与模型对照
 
-运行 [check_host.py](../code/tools/check_host.py)，使用 ASan、UBSan 和遇错即终止选项编译真实源文件，不复制分配算法。主机测试不验证 RISC-V 汇编、固件或 MMU，这些由实际启动补足。
+运行 [check_host.py](../../code/tools/check_host.py)，使用 ASan、UBSan 和遇错即终止选项编译真实源文件，不复制分配算法。主机测试不验证 RISC-V 汇编、固件或 MMU，这些由实际启动补足。
 
 - First-Fit、Best-Fit 各执行原始检查及 10,000 次确定性随机操作。独立位图逐次计算应选的连续区间，核对返回地址、计数和保留空洞；最后回收所有分配并验证最大区间恢复。
 - 验证乱序内存注册；Best-Fit 还验证相邻初始区间合并。碎片用“两段各 3 页、请求 4 页”验证总数足够时仍会失败且不改计数；随机操作覆盖最小选择、精确分配、拆分和双向回收合并。
 - 初始化直接调用真实静态 `page_init()`，用模拟 DTB getters 和映射缓冲区覆盖默认、非整页 RAM、上界截断、没有完整空闲页，以及零大小、错误起点、加法溢出、内核放不下、描述符放不下 9 组输入。异常输入必须出现对应 panic。
 
-实际输出见 [host-checks.log](evidence/A-20261023/host-checks.log)，全部通过。
+实际输出见 [host-checks.log](../evidence/A-20261023/host-checks.log)，全部通过。
 
 ## 7. 实际问题与修复
 
@@ -154,11 +154,11 @@ First-Fit 最坏需扫描 F 个空闲块，复杂度 O(F)。可按大小分桶�
 | 主机链接器不能读取默认 SDK | 报告 `arm64e.x1-macos` 未知架构 | 显式选择已安装的 macOS 26.5 SDK |
 | First-Fit 检查卡住 | 主机过程停在 First-Fit；尾部插入后继续遍历自身 | 在 init_memmap/free_pages 的尾部插入分支补 `break` |
 | UBSan 报空指针成员访问 | 原始 `offsetof` 使用 `&((type*)0)->member` | 改用 `__builtin_offsetof`，不改数据布局 |
-| 原 QEMU loader 参数不进入内核 | [初次启动](evidence/A-20261023/initial-loader-boot.log) 的 Next Address 为 0 | 统一 qemu/debug/test/grade 使用 `-kernel bin/ucore.img` |
-| 开启分页后取指缺页 | [修复前 GDB](evidence/A-20261023/paging-before-gdb.log)：`scause=12`，`sepc=stval=0x80200038` | 根表索引 2 临时恒等映射物理执行位置，跳到高地址后清零该项并刷新 TLB |
+| 原 QEMU loader 参数不进入内核 | [初次启动](../evidence/A-20261023/initial-loader-boot.log) 的 Next Address 为 0 | 统一 qemu/debug/test/grade 使用 `-kernel bin/ucore.img` |
+| 开启分页后取指缺页 | [修复前 GDB](../evidence/A-20261023/paging-before-gdb.log)：`scause=12`，`sepc=stval=0x80200038` | 根表索引 2 临时恒等映射物理执行位置，跳到高地址后清零该项并刷新 TLB |
 | 快速切换管理器启动旧镜像 | 同一秒内重编 pmm.o 后，旧 Make 未继续更新完整依赖链 | 配置变化时用 phony 依赖强制更新 pmm.o、ELF 和裸镜像；自动脚本验证实际启动名称 |
 
-分页修复后，[GDB 证据](evidence/A-20261023/paging-after-gdb.log) 显示已进入 `pc=0xffffffffc02000ec`，`satp=0x8000000000080205`，根表第 2 项为 0，第 511 项为 `0x200000cf`。临时映射已经删除，最终保留原计划的高地址 1 GiB 叶子映射。该修复服务于 A 的可运行基线，不替代 C 的 QEMU 源码地址翻译/TLB 调试任务。
+分页修复后，[GDB 证据](../evidence/A-20261023/paging-after-gdb.log) 显示已进入 `pc=0xffffffffc02000ec`，`satp=0x8000000000080205`，根表第 2 项为 0，第 511 项为 `0x200000cf`。临时映射已经删除，最终保留原计划的高地址 1 GiB 叶子映射。该修复服务于 A 的可运行基线，不替代 C 的 QEMU 源码地址翻译/TLB 调试任务。
 
 启动参数也符合 [QEMU virt 平台文档](https://www.qemu.org/docs/master/system/riscv/virt.html) 中使用默认 OpenSBI 和 `-kernel` 加载下一阶段的方式。评分仅调整启动选项复用、退出进程清理和串口日志保留，没有改评分条件。
 
