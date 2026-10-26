@@ -5,10 +5,12 @@ SLASH	:= /
 
 V       := @
 
+# 裸机 RISC-V 工具链前缀；QEMU 是宿主机程序，两者的指令架构不同。
 GCCPREFIX ?= riscv64-unknown-elf-
 
 ifndef QEMU
-QEMU := qemu-system-riscv64
+# Debug build with matching QEMU 4.1.1 sources for the Lab2 defense.
+QEMU := /home/liu/.local/src/qemu-4.1.1/build-debug/riscv64-softmmu/qemu-system-riscv64
 endif
 
 ifndef SPIKE
@@ -28,14 +30,17 @@ HOSTCFLAGS	:= -Wall -O2
 GDB		:= $(GCCPREFIX)gdb
 
 CC		:= $(GCCPREFIX)gcc
+# medany 使代码可通过 PC 相对方式访问符号，入口在低 PA 执行时尤其关键。
 CFLAGS  := -mcmodel=medany -std=gnu99 -Wno-unused -Werror 
 CFLAGS	+= -fno-builtin -Wall -O2 -nostdinc $(DEFS)
 CFLAGS	+= -fno-stack-protector -ffunction-sections -fdata-sections
+# ELF 保留调试信息，供 guest GDB 使用；后面生成的原始镜像用于 OpenSBI 加载。
 CFLAGS	+= -g
 ARCH    ?= rv64imac_zicsr_zifencei
 ABI     ?= lp64
 CFLAGS  += -march=$(ARCH) -mabi=$(ABI) -msmall-data-limit=0
 
+# 仅策略选择变化：pmm.c 读取下面的宏，页接口与对象接口都保持一致。
 PMM     ?= best_fit
 ifeq ($(PMM),first_fit)
 CFLAGS  += -DPMM_FIRST_FIT
@@ -129,6 +134,7 @@ KOBJS	= $(call read_packet,kernel libs)
 # create kernel target
 kernel = $(call totarget,kernel)
 
+# 链接脚本规定高 VA；原始镜像在 QEMU virt 中仍从 PA 0x80200000 启动。
 $(kernel): tools/kernel.ld
 
 $(kernel): $(KOBJS)
@@ -144,6 +150,7 @@ $(call create_target,kernel)
 UCOREIMG	:= $(call totarget,ucore.img)
 
 
+# 去掉 ELF 头和调试信息得到扁平镜像；不能把扁平镜像当带符号文件交给 GDB。
 $(UCOREIMG): $(kernel)
 	$(OBJCOPY) $(kernel) --strip-all -O binary $@
 
@@ -155,6 +162,7 @@ $(call finish_all)
 
 # A manager switch must rebuild pmm.c even when no source file changed.
 PMM_CONFIG := $(OBJDIR)/.pmm-$(PMM)
+# 普通 make 不会仅因 CFLAGS 变化自动重编译；标记文件让策略切换进入依赖图。
 $(PMM_CONFIG): | $(OBJDIR)/
 	@$(RM) $(OBJDIR)/.pmm-*
 	@touch $@
@@ -184,15 +192,18 @@ endif
 TARGETS: $(TARGETS)
 
 .DEFAULT_GOAL := TARGETS
+# virt 选择模拟开发板，默认固件为 OpenSBI；-nographic 把串口输出交给终端。
 QEMUOPTS = -machine virt -nographic -bios default -kernel $(UCOREIMG)
 
 .PHONY: qemu spike test debug gdb check-host check-b
 qemu: $(UCOREIMG) $(SWAPIMG) $(SFSIMG)
 	$(V)$(QEMU) $(QEMUOPTS)
 
+# -s 开放 guest 调试端口 1234；-S 暂停模拟 CPU，等待 guest GDB 继续。
 debug: $(UCOREIMG) $(SWAPIMG) $(SFSIMG)
 	$(V)$(QEMU) $(QEMUOPTS) -s -S
 
+# 这个 GDB 观察 RISC-V 内核；观察 QEMU C 源码应使用宿主机 GDB。
 gdb:
 	$(GDB) \
     -ex 'file bin/kernel' \
@@ -202,6 +213,7 @@ gdb:
 test: $(UCOREIMG) $(SWAPIMG) $(SFSIMG)
 	$(V)$(QEMU) $(QEMUOPTS)
 
+# 主机测试编译实际分配器源码，配合模型和 ASan/UBSan 检查页边界及状态。
 check-host:
 	python3 tools/check_host.py
 check-b:
@@ -221,6 +233,7 @@ MAKEOPTS		:= --quiet --no-print-directory
 
 GRADE_TMP	:= /tmp/lab2_grade
 
+# 教师评分在临时副本中注入检查；20/20 不能代替 Buddy/SLUB 专项验证。
 grade:
 	$(V)$(MAKE) $(MAKEOPTS) clean
 	$(V)$(RM) -rf $(GRADE_TMP)
