@@ -2,5 +2,5 @@
 /bin/
 /obj/
 /.gdb.in
-/.qemu.out
+/.qemu*.out
 /proj*-handin.tar.gz

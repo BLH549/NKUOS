@@ -1,0 +1,4 @@
+PASS: 33 local Markdown links
+PASS: fenced code blocks paired
+PASS: report trap addresses match saved GDB results
+PASS: tested trapentry.S SHA-256 matches current source

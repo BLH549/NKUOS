@@ -1,0 +1,14 @@
+{
+  "date": "2026-11-04",
+  "branch": "lab3",
+  "build": "PASS",
+  "baseline_memory_check": "PASS",
+  "A_traps": 7,
+  "A_result": "PASS",
+  "local_links_checked": 33,
+  "B_interrupt_handler": "pending",
+  "C_exception_handler": "pending",
+  "teacher_grade": "pending B/C integration",
+  "baseline_kernel_sha256": "c1c2a4249af8748da242ed660e1e40027331c8734c7cffae91550bd17256c73b",
+  "baseline_image_sha256": "1710058cbcaa2db0f43cac3059b9986a2c43e2b57c1327b415a33e801632699c"
+}
