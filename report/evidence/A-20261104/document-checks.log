@@ -1,4 +1,5 @@
-PASS: 33 local Markdown links
+PASS: 20 local links in report.md, prompt.md, A-spec.md and run instructions
 PASS: fenced code blocks paired
 PASS: report trap addresses match saved GDB results
-PASS: tested trapentry.S SHA-256 matches current source
+PASS: task assignment matches aac79ef byte for byte
+PASS: implementation unchanged

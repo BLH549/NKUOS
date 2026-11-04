@@ -1,14 +1,14 @@
 # Lab3 三人任务分工
 
-我们依据 [Lab3 练习](../../_book/lab3/lab3_2_1_exercise.html)、[项目组成和执行流](../../_book/lab3/lab3_2_2_files.html)及[报告要求](../../_book/lab3/lab3_4_lab_requirement.html)安排任务，沿用 Lab2 的 A/B/C 对应关系。A 的实现和独立验证已完成，B/C 继续按下列函数边界推进。
+依据：2026-10-29 同步后的 [Lab3 练习](../../../_book/lab3/lab3_2_1_exercise.html)、[项目组成和执行流](../../../_book/lab3/lab3_2_2_files.html)及[报告要求](../../../_book/lab3/lab3_4_lab_requirement.html)。成员沿用 Lab2 的 A/B/C 对应关系。本文件是任务安排，各项实现和验证均待开展。
 
 ## 0. 工作区状态（2026-11-04 核对）
 
-- 我们在 `E:/NKUOS` 沿用 `code/`、`report/` 布局，本地 `lab3` 跟踪 `origin/lab3`。Lab2 的代码和报告可从 `origin/lab2` 查阅。
-- 我已导入教师 `lab3.zip`，迁移 `page_init()`、Best-Fit 和启动映射，保留 Lab3 页管理接口的中断保护。
-- 我已完成 `RESTORE_ALL`、`__alltraps`，通过帧布局、全部整数寄存器、四次异常返回和三次时钟中断返回检查。实现、spec、日志和复现入口见 [report.md](../report.md)、[A-spec.md](A-spec.md)和[运行说明](运行说明.md)。
-- `trap.c` 中 B/C 的两个函数保留待填标记。我们在临时验证副本中用处理桩检查 A，正式中断与异常处理继续按分工实现。
-- 报告入口为 `report.md`、`prompt.md`；其余 Markdown 放 `report/资料/`，日志和图片分别放 `evidence/`、`images/`。
+- `labs/` 是独立实验仓库，外层仓库只维护指导书和资料；继续沿用 `code/`、`report/` 布局。
+- 已执行 `git fetch origin`：远端仅有 `lab1`、`lab2`，没有 `lab3`；因此从当前 Lab2 提交 `9e934c6` 创建并切换到本地 `lab3` 分支。Lab2 分支和历史保留。
+- 创建分支时内层工作区干净；本次清空继承的 Lab2 报告、截图和日志，将本分工文档移入 `report/资料/`，作为 Lab3 报告编写的起点。Lab2 材料保留在 `lab2` 分支。
+- **新分支目前仍继承 Lab2 的源码，尚未导入 Lab3 原始框架；继承的 Lab2 报告已清空。** 当前没有 `code/kern/trap/trapentry.S` 和 `trap.c`；下文文件和接口是指导书规定的目标，不能当作当前代码已经具备的功能。
+- 后续先导入教师 Lab3 原始框架，再迁移要求的 Lab2 必填实现；沿用报告两个入口 `report.md`、`prompt.md`，其余 Markdown 放 `report/资料/`，日志和截图分别放 `evidence/`、`images/`。`report.md` 和 `prompt.md` 待后续编写时创建，当前仅保留任务分工。
 
 ## 1. 三份任务总览
 
@@ -46,10 +46,10 @@
 
 ### 验证与验收
 
-- [x] Lab2 必填项补齐，Lab3 基线能够构建。
-- [x] 对照汇编与结构体核对帧大小、字段偏移及栈对齐。
-- [x] 在 `__alltraps`、`trap()`、`__trapret` 设置断点，记录同一次 Trap 的栈指针、帧地址、返回地址与关键 CSR。
-- [x] 验证传入 `trap()` 的指针确实指向已保存的现场；验证通用寄存器与原 `sp` 恢复正确。
+- [ ] Lab2 必填项补齐，Lab3 基线能够构建。
+- [ ] 对照汇编与结构体核对帧大小、字段偏移及栈对齐。
+- [ ] 在 `__alltraps`、`trap()`、`__trapret` 设置断点，记录同一次 Trap 的栈指针、帧地址、返回地址与关键 CSR。
+- [ ] 验证传入 `trap()` 的指针确实指向已保存的现场；验证通用寄存器与原 `sp` 恢复正确。
 - [ ] 与 B/C 集成后，验证时钟中断和异常都能经过同一返回路径；C 修改的 `tf->epc` 能成为实际返回地址。
 
 独立准备阶段可先做反汇编、帧布局检查，并在单独验证版本中使用最小处理桩检查入口/返回；这些检查之后仍需真实 Trap 验证。
@@ -124,7 +124,7 @@ B/C 虽然修改同一个 `trap.c`，但分别拥有不同函数，不互相格�
 
 ### 开展顺序
 
-1. **共同起点**：我们已取得 Lab3 原始框架并建立 A 的可编译基线，三人基于当前版本继续实现。来源和校验值见 [framework.json](../evidence/A-20261104/framework.json)。
+1. **共同起点**：取得同一版 Lab3 原始框架，核对实际常量、输出要求、待填位置和评分脚本。当前内层 `labs/` 已切换到本地 `lab3` 分支，但仍继承 Lab2 内容；A 先导入教师 Lab3 原始框架，三人基于同一版本开展实现。
 2. **并行准备**：A 整理 Lab2 衔接和汇编布局；B 准备中断处理及计数边界验证；C 准备异常处理和触发指令。B/C 的实现和函数级验证可以先进行。
 3. **短暂共享基线**：A 提交 Lab2 必填项基线及入口/恢复补丁，B/C 引入后各自完成 QEMU 实际验证。A 的基础补丁应优先交付，无需等 A 的报告写完。
 4. **合并收尾**：B 合并三份代码补丁并运行整体回归；A 核对集成后的现场与返回，C 核对异常后继续执行，并组装最终报告。
@@ -151,7 +151,7 @@ B/C 虽然修改同一个 `trap.c`，但分别拥有不同函数，不互相格�
 
 参考阅读：
 
-- A：[中断入口点](../../_book/lab3/lab3_3_2_trapentry.html)。
-- B：[中断处理程序](../../_book/lab3/lab3_3_3_trap.html)、[时钟中断](../../_book/lab3/lab3_3_4_clock.html)、[中断关闭和开启](../../_book/lab3/lab3_3_5_atomic.html)。
-- C：[中断介绍](../../_book/lab3/lab3_3_1_introduce.html)、[练习要求](../../_book/lab3/lab3_2_1_exercise.html)。
-- 全体：[报告要求](../../_book/lab3/lab3_4_lab_requirement.html)、[在线指导书](http://oslab.mobisys.top/lab2026/_book/)。
+- A：[中断入口点](../../../_book/lab3/lab3_3_2_trapentry.html)。
+- B：[中断处理程序](../../../_book/lab3/lab3_3_3_trap.html)、[时钟中断](../../../_book/lab3/lab3_3_4_clock.html)、[中断关闭和开启](../../../_book/lab3/lab3_3_5_atomic.html)。
+- C：[中断介绍](../../../_book/lab3/lab3_3_1_introduce.html)、[练习要求](../../../_book/lab3/lab3_2_1_exercise.html)。
+- 全体：[报告要求](../../../_book/lab3/lab3_4_lab_requirement.html)、[老师报告模板](../../../materials/实验报告模板.md)、[在线指导书](http://oslab.mobisys.top/lab2026/_book/)。
