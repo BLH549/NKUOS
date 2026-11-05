@@ -1,0 +1,12 @@
+$ /tmp/nkuos-lab3-b-s9cayozl/host
+PASS: 13 named non-timer IRQ branches; ticks and frame unchanged
+PASS: unknown IRQ 15 prints cause then dumps frame
+PASS: ticks 0 -> 1, order=A
+PASS: ticks 98 -> 99, order=A
+PASS: ticks 99 -> 100, order=AP
+PASS: ticks 100 -> 101, order=A
+PASS: ticks 998 -> 999, order=A
+PASS: ticks 999 -> 1000, order=APS
+PASS: 1000 calls, 1000 re-arms, 10 prints, shutdown after final print
+
+EXIT_CODE=0

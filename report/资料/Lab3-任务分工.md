@@ -1,8 +1,15 @@
 # Lab3 三人任务分工
 
-依据：2026-10-29 同步后的 [Lab3 练习](../../../_book/lab3/lab3_2_1_exercise.html)、[项目组成和执行流](../../../_book/lab3/lab3_2_2_files.html)及[报告要求](../../../_book/lab3/lab3_4_lab_requirement.html)。成员沿用 Lab2 的 A/B/C 对应关系。本文件是任务安排，各项实现和验证均待开展。
+依据：2026-10-29 同步后的 [Lab3 练习](../../../NKU-OS-book/_book/lab3/lab3_2_1_exercise.html)、[项目组成和执行流](../../../NKU-OS-book/_book/lab3/lab3_2_2_files.html)及[报告要求](../../../NKU-OS-book/_book/lab3/lab3_4_lab_requirement.html)。成员沿用 Lab2 的 A/B/C 对应关系。本文保留原任务安排，当前进度见下方更新。
 
-## 0. 工作区状态（2026-11-04 核对）
+### 2026-11-04 B 更新
+
+- 从最新 `origin/lab3` 的 `7df2517` 建立 `/home/kyc/project/os/NKUOS-lab3`；A 已导入框架并完成入口/恢复，不再处于“尚无 trap.c”的阶段。下方第 0 节为分工创建时的历史记录。
+- B（柯云超，2413575）完成 `interrupt_handler()`、所有已定义中断分类、连续时钟和十次输出后关机。分支与边界、正式 QEMU、GDB 帧和 epc 检查均通过。
+- 教师评分原样运行结果为 40/100，持续时钟组通过；C 的异常函数仍待完成。全组三部分最终回归与 100/100 验收继续待办。
+- B 的 [报告](B-中断与时钟.md)、[spec](B-spec.md)、[prompt](B-prompts.md)、[截图指南](B-截图操作指南.md)及 `evidence/B-20261104/` 已补齐。六处截图使用占位符，本人截图、复现和答辩尚待本人确认。
+
+## 0. 分工创建时的工作区历史状态（2026-11-04）
 
 - `labs/` 是独立实验仓库，外层仓库只维护指导书和资料；继续沿用 `code/`、`report/` 布局。
 - 已执行 `git fetch origin`：远端仅有 `lab1`、`lab2`，没有 `lab3`；因此从当前 Lab2 提交 `9e934c6` 创建并切换到本地 `lab3` 分支。Lab2 分支和历史保留。
@@ -70,10 +77,10 @@
 
 ### 验证与验收
 
-- [ ] 连续多次时钟中断都能到达，排除只设置第一次事件的问题。
-- [ ] 核对 `TICK_NUM - 1`、`TICK_NUM`、`TICK_NUM + 1` 附近的计数和输出行为。
-- [ ] 核对关机阈值前后：打印次数正确、没有提前关机或少打印一次。
-- [ ] 已列非时钟中断分支和未知中断兜底符合要求；时钟处理中不人为跳过被打断的指令。
+- [x] 连续多次时钟中断都能到达，排除只设置第一次事件的问题。
+- [x] 核对 `TICK_NUM - 1`、`TICK_NUM`、`TICK_NUM + 1` 附近的计数和输出行为。
+- [x] 核对关机阈值前后：打印次数正确、没有提前关机或少打印一次。
+- [x] 已列非时钟中断分支和未知中断兜底符合要求；时钟处理中不人为跳过被打断的指令。
 - [ ] 三部分合并后完成构建、`make qemu` 和框架提供的 `make grade`，保存真实日志与截图；额外核对评分脚本未覆盖的验收项。
 
 独立准备阶段可用单独测试入口构造 Trap frame，并替代定时器、打印和关机接口检查分支与计数；此时只证明处理函数逻辑，持续硬件中断和真实关机需在 QEMU 中验证。
@@ -151,7 +158,7 @@ B/C 虽然修改同一个 `trap.c`，但分别拥有不同函数，不互相格�
 
 参考阅读：
 
-- A：[中断入口点](../../../_book/lab3/lab3_3_2_trapentry.html)。
-- B：[中断处理程序](../../../_book/lab3/lab3_3_3_trap.html)、[时钟中断](../../../_book/lab3/lab3_3_4_clock.html)、[中断关闭和开启](../../../_book/lab3/lab3_3_5_atomic.html)。
-- C：[中断介绍](../../../_book/lab3/lab3_3_1_introduce.html)、[练习要求](../../../_book/lab3/lab3_2_1_exercise.html)。
-- 全体：[报告要求](../../../_book/lab3/lab3_4_lab_requirement.html)、[老师报告模板](../../../materials/实验报告模板.md)、[在线指导书](http://oslab.mobisys.top/lab2026/_book/)。
+- A：[中断入口点](../../../NKU-OS-book/_book/lab3/lab3_3_2_trapentry.html)。
+- B：[中断处理程序](../../../NKU-OS-book/_book/lab3/lab3_3_3_trap.html)、[时钟中断](../../../NKU-OS-book/_book/lab3/lab3_3_4_clock.html)、[中断关闭和开启](../../../NKU-OS-book/_book/lab3/lab3_3_5_atomic.html)。
+- C：[中断介绍](../../../NKU-OS-book/_book/lab3/lab3_3_1_introduce.html)、[练习要求](../../../NKU-OS-book/_book/lab3/lab3_2_1_exercise.html)。
+- 全体：[报告要求](../../../NKU-OS-book/_book/lab3/lab3_4_lab_requirement.html)、[老师报告模板](../../../实验报告模板.md)、[在线指导书](http://oslab.mobisys.top/lab2026/_book/)。

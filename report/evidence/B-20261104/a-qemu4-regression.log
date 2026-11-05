@@ -1,0 +1,13 @@
+$ python3 tools/check_a.py --output /home/kyc/project/os/NKUOS-lab3/report/evidence/B-20261104/a-regression
+Traceback (most recent call last):
+  File "/home/kyc/project/os/NKUOS-lab3/code/tools/check_a.py", line 246, in <module>
+    main()
+  File "/home/kyc/project/os/NKUOS-lab3/code/tools/check_a.py", line 228, in main
+    run([debugger, '-q', '-nx', '-batch', '-x', str(script_path)],
+  File "/home/kyc/project/os/NKUOS-lab3/code/tools/check_a.py", line 158, in run
+    subprocess.run(command, cwd=cwd, stdout=output,
+  File "/usr/lib/python3.10/subprocess.py", line 526, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['gdb-multiarch', '-q', '-nx', '-batch', '-x', '/tmp/nkuos-lab3-a-_eygtanc/verify.gdb']' returned non-zero exit status 1.
+
+EXIT_CODE=1

@@ -53,3 +53,7 @@ GDB 在复位阶段读取高地址反汇编时报告内存不可访问，改为�
 临时副本中触发四次指令异常和三次时钟中断，逐次比较全部整数寄存器、帧布局和返回位置，七次返回均通过。最终 `ticks=3`，执行到后续标记，QEMU 正常关机。正式基线的 Best-Fit 自检和时钟初始化通过。
 
 实现约定见 [A-spec.md](资料/A-spec.md)，分析与实验结果见 [report.md](report.md)，连续输出与逐次比较见 [GDB 日志](evidence/A-20261104/trap-gdb.log)和[验证汇总](evidence/A-20261104/trap-summary.json)。
+
+## B：中断与时钟（柯云超，2413575）
+
+本轮用户输入、四段式实现约束和测试约束见 [B-prompts.md](资料/B-prompts.md)，实现前的接口与验收约定见 [B-spec.md](资料/B-spec.md)。正式完成 `interrupt_handler()`，C 的 `exception_handler()` 保留待填。环境兼容问题、测试桩声明修复及真实验证结果见 [B 报告](资料/B-中断与时钟.md)。本轮属于同一个 Codex 会话，结构化提示词为输入和实现约束的整理，不冒充额外的独立模型调用。

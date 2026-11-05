@@ -1,0 +1,8 @@
+{
+  "kern/trap/trap.c": "bcd2ae933c686e62f03f72c645544bfc2965e5c18892e61f383e138e75027b0b",
+  "kern/trap/trapentry.S": "45d06a1d66569917397175f549eb24b39d265f4f6ae44f5c9b267cfa92a3d694",
+  "kern/init/init.c": "06b335a95d24fc5f3f3fbbde7416dac7a07a908afba924ca122b280d7ee040fc",
+  "kern/driver/clock.c": "3efd7894db9d8294d030a5ace39566883b6e80596329bc741263cb39438e774d",
+  "tools/grade.sh": "fd190416357ba17db180ef80bdc4babfe94b2f6979c874d11eb2841d1971dd42",
+  "tools/test_lab3.c": "56dd62f1729f25c96e94870f282ac1b2e942888928a6d2d035df8ae228190ac3"
+}

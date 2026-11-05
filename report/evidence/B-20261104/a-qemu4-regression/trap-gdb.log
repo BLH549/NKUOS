@@ -1,0 +1,33 @@
+The target architecture is set to "riscv:rv64".
+0x0000000000001000 in ?? ()
+Hardware assisted breakpoint 1 at 0xffffffffc0200126: file kern/init/init.c, line 20.
+
+Temporary breakpoint 1, kern_init () at kern/init/init.c:20
+20	    memset(edata, 0, end - edata);
+Hardware assisted breakpoint 2 at 0xffffffffc0200c20: file kern/trap/trapentry.S, line 104.
+Hardware assisted breakpoint 3 at 0xffffffffc0200bc2: file kern/trap/trap.c, line 99.
+Hardware assisted breakpoint 4 at 0xffffffffc0200c88: file kern/trap/trapentry.S, line 113.
+Hardware assisted breakpoint 5 at 0xffffffffc0200cd2: file kern/trap/trapentry.S, line 115.
+Hardware assisted breakpoint 6 at 0xffffffffc020018a: file kern/init/init.c, line 44.
+LAYOUT: size=288, status=256, epc=264, badvaddr=272, cause=280
+
+Breakpoint 2, __alltraps () at kern/trap/trapentry.S:104
+104	    SAVE_ALL
+
+Breakpoint 3, trap_dispatch (tf=0xffffffffc0204e50) at kern/trap/trap.c:99
+99	    if ((intptr_t)tf->cause < 0) {
+
+Breakpoint 4, __trapret () at kern/trap/trapentry.S:113
+113	    RESTORE_ALL
+
+Breakpoint 5, __trapret () at kern/trap/trapentry.S:115
+115	    sret
+Hardware assisted breakpoint 7 at 0xffffffffc02000f2: file kern/init/a_context.S, line 52.
+
+Temporary breakpoint 7, a_break16 () at kern/init/a_context.S:52
+52	nop
+Traceback (most recent call last):
+  File "<string>", line 76, in <module>
+  File "<string>", line 20, in check
+AssertionError: SPP/SPIE after sret
+[Inferior 1 (process 1) detached]

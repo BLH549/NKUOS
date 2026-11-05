@@ -163,9 +163,12 @@ TARGETS: $(TARGETS)
 
 .DEFAULT_GOAL := TARGETS
 .PHONY: qemu spike test
-.PHONY: check-a
+.PHONY: check-a check-b
 check-a:
 	python3 tools/check_a.py
+
+check-b:
+	python3 tools/check_b.py
 
 qemu: $(UCOREIMG) $(SWAPIMG) $(SFSIMG)
 	$(V)$(QEMU) \

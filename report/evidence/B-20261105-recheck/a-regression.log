@@ -1,0 +1,4 @@
+$ env QEMU=/usr/bin/qemu-system-riscv64 python3 tools/check_a.py --output /home/kyc/project/os/NKUOS-lab3/report/evidence/B-20261105-recheck/a-regression
+PASS: frame layout, 32 registers, 4 exceptions, 3 timer returns, S privilege
+
+EXIT_CODE=0

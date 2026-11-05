@@ -176,7 +176,7 @@ def main():
                         ignore=shutil.ignore_patterns('bin', 'obj', '__pycache__'))
         trap = fixture / 'kern/trap/trap.c'
         source = trap.read_text()
-        start = source.index('//lab3 function2 YOUR CODE')
+        start = source.index('//lab3 function2')
         end = source.index('static inline void trap_dispatch', start)
         trap.write_text(source[:start] + HANDLERS + '\n' + source[end:])
         init = fixture / 'kern/init/init.c'
