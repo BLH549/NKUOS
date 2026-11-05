@@ -1,0 +1,16 @@
+{
+  "b_passed": true,
+  "host": true,
+  "production_qemu": true,
+  "timer_gdb": true,
+  "timer_prints": 10,
+  "shutdown_ticks": 1000,
+  "teacher_grade": {
+    "exit_code": 2,
+    "score": 40,
+    "c_handler_pending": true
+  },
+  "a_regression_qemu": "/usr/bin/qemu-system-riscv64",
+  "a_regression_qemu_version": "QEMU emulator version 6.2.0 (Debian 1:6.2+dfsg-2ubuntu6.31)",
+  "a_regression_passed": true
+}

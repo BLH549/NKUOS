@@ -1,0 +1,8 @@
+{
+  "b_passed": true,
+  "host": true,
+  "production_qemu": true,
+  "timer_gdb": true,
+  "timer_prints": 10,
+  "shutdown_ticks": 1000
+}

@@ -1,0 +1,4 @@
+PASS: host IRQ branches, boundaries, call order and frame invariance
+PASS: production QEMU, ten timer prints and natural shutdown
+PASS: real GDB timer boundaries and unchanged EPC/frame
+B verification: PASS; evidence in /home/kyc/project/os/NKUOS-lab3/report/evidence/B-manual

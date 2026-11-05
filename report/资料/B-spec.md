@@ -22,4 +22,4 @@
 | 教师评分 | 原样运行 `make grade` | 记录全部组分结果；C 未实现时不得报告 100/100 |
 | A 回归 | 原样运行 `check_a.py` 的临时处理桩验证 | A 保存/恢复未退化；此项使用测试桩，不代表 C 正式实现完成 |
 
-验证脚本新增在 `code/tools/check_b.py`，日志保存到 `report/evidence/B-20261104/`。截图由本人按操作指南采集，本轮仅放文字占位符。
+验证脚本新增在 `code/tools/check_b.py`，日志保存到 `report/evidence/B-20261104/`。2026-11-05 本人已按操作指南提供六张截图并接入报告，补充复现日志位于 `report/evidence/B-manual/` 和 `report/evidence/B-final/`。

@@ -1,0 +1,54 @@
+$ gdb-multiarch -q -nx -batch -x /home/kyc/project/os/NKUOS-lab3/report/evidence/B-manual/timer.gdb
+The target architecture is set to "riscv:rv64".
+0x0000000000001000 in ?? ()
+Hardware assisted breakpoint 1 at 0xffffffffc0200a88: file kern/trap/trap.c, line 91.
+
+Breakpoint 1, interrupt_handler (tf=0xffffffffc0205ed0) at kern/trap/trap.c:91
+91	    uintptr_t cause = tf->cause & ~((uintptr_t)1 << (sizeof(uintptr_t) * 8 - 1));
+Hardware assisted breakpoint 2 at 0xffffffffc0200c10: file kern/trap/trapentry.S, line 113.
+
+Temporary breakpoint 2, __trapret () at kern/trap/trapentry.S:113
+113	    RESTORE_ALL
+PASS: ticks 0 -> 1, cause=0x8000000000000005, epc=0xffffffffc02000a8 unchanged, reached __trapret
+
+Breakpoint 1, interrupt_handler (tf=0xffffffffc0205ed0) at kern/trap/trap.c:91
+91	    uintptr_t cause = tf->cause & ~((uintptr_t)1 << (sizeof(uintptr_t) * 8 - 1));
+Hardware assisted breakpoint 3 at 0xffffffffc0200c10: file kern/trap/trapentry.S, line 113.
+
+Temporary breakpoint 3, __trapret () at kern/trap/trapentry.S:113
+113	    RESTORE_ALL
+PASS: ticks 98 -> 99, cause=0x8000000000000005, epc=0xffffffffc02000a8 unchanged, reached __trapret
+
+Breakpoint 1, interrupt_handler (tf=0xffffffffc0205ed0) at kern/trap/trap.c:91
+91	    uintptr_t cause = tf->cause & ~((uintptr_t)1 << (sizeof(uintptr_t) * 8 - 1));
+Hardware assisted breakpoint 4 at 0xffffffffc0200c10: file kern/trap/trapentry.S, line 113.
+
+Temporary breakpoint 4, __trapret () at kern/trap/trapentry.S:113
+113	    RESTORE_ALL
+PASS: ticks 99 -> 100, cause=0x8000000000000005, epc=0xffffffffc02000a8 unchanged, reached __trapret
+
+Breakpoint 1, interrupt_handler (tf=0xffffffffc0205ed0) at kern/trap/trap.c:91
+91	    uintptr_t cause = tf->cause & ~((uintptr_t)1 << (sizeof(uintptr_t) * 8 - 1));
+Hardware assisted breakpoint 5 at 0xffffffffc0200c10: file kern/trap/trapentry.S, line 113.
+
+Temporary breakpoint 5, __trapret () at kern/trap/trapentry.S:113
+113	    RESTORE_ALL
+PASS: ticks 100 -> 101, cause=0x8000000000000005, epc=0xffffffffc02000a8 unchanged, reached __trapret
+
+Breakpoint 1, interrupt_handler (tf=0xffffffffc0205ed0) at kern/trap/trap.c:91
+91	    uintptr_t cause = tf->cause & ~((uintptr_t)1 << (sizeof(uintptr_t) * 8 - 1));
+Hardware assisted breakpoint 6 at 0xffffffffc0200c10: file kern/trap/trapentry.S, line 113.
+
+Temporary breakpoint 6, __trapret () at kern/trap/trapentry.S:113
+113	    RESTORE_ALL
+PASS: ticks 998 -> 999, cause=0x8000000000000005, epc=0xffffffffc02000a8 unchanged, reached __trapret
+
+Breakpoint 1, interrupt_handler (tf=0xffffffffc0205ed0) at kern/trap/trap.c:91
+91	    uintptr_t cause = tf->cause & ~((uintptr_t)1 << (sizeof(uintptr_t) * 8 - 1));
+Hardware assisted breakpoint 7 at 0xffffffffc0201e3e: file libs/sbi.c, line 17.
+
+Temporary breakpoint 7, sbi_call (arg2=0, arg1=0, arg0=0, sbi_type=8) at libs/sbi.c:17
+17	    __asm__ volatile (
+PASS: ticks 999 -> 1000, cause=0x8000000000000005, epc=0xffffffffc02000a8 unchanged, reached sbi_shutdown
+
+EXIT_CODE=0

@@ -2,7 +2,7 @@
 
 负责人：柯云超，2413575。工作目录：`/home/kyc/project/os/NKUOS-lab3`。
 
-本轮未采集截图。报告中的 B-01～B-06 都是明确的文字占位符，按下面流程亲自运行后替换。自动验证日志已放入 `report/evidence/B-20261104/`，它们是真实运行记录，但不作为本人已经截图或答辩的证明。
+2026-11-05 已收到本人提供的 B-01～B-06 六张截图，全部接入报告；本人复现日志位于 `report/evidence/B-manual/` 和 `report/evidence/B-final/`。以下步骤保留供重新复现和后续更新使用，截图完成不代表答辩已完成。
 
 ## 0. 打开正确的终端与目录
 
@@ -95,7 +95,7 @@ printf 'build exit=%s\n' "$?"
 printf 'Lab3 B | 柯云超 | 2413575 | production QEMU\n'
 make qemu 2>&1 | tee ../report/evidence/B-manual/qemu.log
 printf 'qemu exit=%s\n' "$?"
-grep -c '^100 ticks$' ../report/evidence/B-manual/qemu.log
+tr -d '\r' < ../report/evidence/B-manual/qemu.log | grep -c '^100 ticks$'
 ```
 
 等待约 10～15 秒，必须让它自行退出回到 Bash 提示符。正常应出现：
@@ -111,6 +111,8 @@ qemu exit=0
 ```
 
 `100 ticks` 每行表示本轮新增 100 次中断，累计中断达到 1000 时关机。截图至少包含时钟初始化、十行输出、退出码和行数 10；适当向上滚动也保留 Best-Fit 自检成功。
+
+串口原始输出可能含 CRLF 行尾，因此先用 `tr -d '\r'` 去掉回车符再计数。旧命令直接用 `^100 ticks$` 匹配时可能显示 0，这不表示没有时钟输出。
 
 保存为 `B-03-qemu-shutdown.png`，对应 B-03。此步骤不要按 Ctrl+C 或 Ctrl+A、X 提前退出，否则无法证明正常关机。
 
@@ -216,7 +218,7 @@ python3 tools/check_b.py --integration --a-qemu /usr/bin/qemu-system-riscv64 \
 
 ## 7. 替换报告占位符
 
-打开 `report/资料/B-中断与时钟.md`，逐一将 B-01～B-06 的整行文字占位符替换为下列对应图片语法：
+当前 `report/资料/B-中断与时钟.md` 已替换全部六处占位符。后续更新截图时沿用下列图片路径：
 
 ```markdown
 ![B-01 环境](../images/B-01-environment.png)

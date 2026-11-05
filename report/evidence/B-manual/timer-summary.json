@@ -1,0 +1,59 @@
+{
+  "passed": true,
+  "boundaries": [
+    {
+      "before": 0,
+      "after": 1,
+      "epc": "0xffffffffc02000a8",
+      "cause": "0x8000000000000005",
+      "frame": "0xffffffffc0205ed0",
+      "destination": "__trapret",
+      "passed": true
+    },
+    {
+      "before": 98,
+      "after": 99,
+      "epc": "0xffffffffc02000a8",
+      "cause": "0x8000000000000005",
+      "frame": "0xffffffffc0205ed0",
+      "destination": "__trapret",
+      "passed": true
+    },
+    {
+      "before": 99,
+      "after": 100,
+      "epc": "0xffffffffc02000a8",
+      "cause": "0x8000000000000005",
+      "frame": "0xffffffffc0205ed0",
+      "destination": "__trapret",
+      "passed": true
+    },
+    {
+      "before": 100,
+      "after": 101,
+      "epc": "0xffffffffc02000a8",
+      "cause": "0x8000000000000005",
+      "frame": "0xffffffffc0205ed0",
+      "destination": "__trapret",
+      "passed": true
+    },
+    {
+      "before": 998,
+      "after": 999,
+      "epc": "0xffffffffc02000a8",
+      "cause": "0x8000000000000005",
+      "frame": "0xffffffffc0205ed0",
+      "destination": "__trapret",
+      "passed": true
+    },
+    {
+      "before": 999,
+      "after": 1000,
+      "epc": "0xffffffffc02000a8",
+      "cause": "0x8000000000000005",
+      "frame": "0xffffffffc0205ed0",
+      "destination": "sbi_shutdown",
+      "passed": true
+    }
+  ]
+}

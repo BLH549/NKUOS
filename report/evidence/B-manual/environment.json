@@ -1,0 +1,28 @@
+{
+  "os_release": "PRETTY_NAME=\"Ubuntu 22.04.5 LTS\"\nNAME=\"Ubuntu\"\nVERSION_ID=\"22.04\"\nVERSION=\"22.04.5 LTS (Jammy Jellyfish)\"\nVERSION_CODENAME=jammy\nID=ubuntu\nID_LIKE=debian\nHOME_URL=\"https://www.ubuntu.com/\"\nSUPPORT_URL=\"https://help.ubuntu.com/\"\nBUG_REPORT_URL=\"https://bugs.launchpad.net/ubuntu/\"\nPRIVACY_POLICY_URL=\"https://www.ubuntu.com/legal/terms-and-policies/privacy-policy\"\nUBUNTU_CODENAME=jammy\n",
+  "tools": {
+    "gcc": {
+      "path": "/usr/bin/gcc",
+      "version": "gcc (Ubuntu 12.3.0-1ubuntu1~22.04.3) 12.3.0"
+    },
+    "make": {
+      "path": "/usr/bin/make",
+      "version": "GNU Make 4.3"
+    },
+    "riscv64-unknown-elf-gcc": {
+      "path": "/home/kyc/.local/bin/riscv64-unknown-elf-gcc",
+      "version": "riscv64-unknown-elf-gcc (SiFive GCC-Metal 10.2.0-2020.12.8) 10.2.0"
+    },
+    "qemu-system-riscv64": {
+      "path": "/home/kyc/.local/bin/qemu-system-riscv64",
+      "version": "QEMU emulator version 4.1.1"
+    },
+    "gdb-multiarch": {
+      "path": "/usr/bin/gdb-multiarch",
+      "version": "GNU gdb (Ubuntu 12.1-0ubuntu1~22.04.2) 12.1"
+    }
+  },
+  "makeflags": "ARCH=rv64imac",
+  "qemu": "qemu-system-riscv64",
+  "debugger": "gdb-multiarch"
+}
