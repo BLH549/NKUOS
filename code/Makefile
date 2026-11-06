@@ -32,6 +32,8 @@ CFLAGS  := -mcmodel=medany -std=gnu99 -Wno-unused -Werror
 CFLAGS	+= -fno-builtin -Wall -O2 -nostdinc $(DEFS)
 CFLAGS	+= -fno-stack-protector -ffunction-sections -fdata-sections
 CFLAGS	+= -g
+# Modern binutils uses stval for CSR 0x143; preserve the framework's old spelling.
+CFLAGS  += -Dsbadaddr=stval
 ARCH ?= rv64imac_zicsr_zifencei
 ABI ?= lp64
 CFLAGS += -march=$(ARCH) -mabi=$(ABI) -msmall-data-limit=0
@@ -163,12 +165,15 @@ TARGETS: $(TARGETS)
 
 .DEFAULT_GOAL := TARGETS
 .PHONY: qemu spike test
-.PHONY: check-a check-b
+.PHONY: check-a check-b check-c
 check-a:
 	python3 tools/check_a.py
 
 check-b:
 	python3 tools/check_b.py
+
+check-c:
+	python3 tools/check_c.py
 
 qemu: $(UCOREIMG) $(SWAPIMG) $(SFSIMG)
 	$(V)$(QEMU) \

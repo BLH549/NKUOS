@@ -1,0 +1,5 @@
+{
+  "trapentry_sha256": "45d06a1d66569917397175f549eb24b39d265f4f6ae44f5c9b267cfa92a3d694",
+  "trap_c_sha256": "8d38102b4c2874e667c6236bf7e3bea2e301e16c907398892c8dfd991acb6ab1",
+  "handlers": "production A/B/C"
+}

@@ -1,0 +1,8 @@
+{
+  "passed": true,
+  "teacher_score": "100/100",
+  "production_timer_lines": 10,
+  "production_natural_shutdown": true,
+  "c_summary": "summary.json",
+  "b_summary": "b-regression/summary.json"
+}

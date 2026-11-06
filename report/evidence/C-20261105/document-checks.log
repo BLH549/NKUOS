@@ -1,0 +1,5 @@
+PASS: all report local links exist
+PASS: git diff --check
+PASS: evidence source hashes match current files
+PASS: B handler and shared dispatch unchanged
+PASS: teacher score 100/100 and final production shutdown

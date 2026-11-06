@@ -1,0 +1,7 @@
+PASS: cause=2 encoding=0x0000 length=2, exact output and only EPC changed
+PASS: cause=2 encoding=0x9002 length=2, exact output and only EPC changed
+PASS: cause=2 encoding=0x007b length=4, exact output and only EPC changed
+PASS: cause=3 encoding=0x0000 length=2, exact output and only EPC changed
+PASS: cause=3 encoding=0x9002 length=2, exact output and only EPC changed
+PASS: cause=3 encoding=0x007b length=4, exact output and only EPC changed
+PASS: 13 fallback causes dump once, preserve full frame, never fetch EPC=1

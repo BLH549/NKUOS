@@ -80,7 +80,7 @@ void print_regs(struct pushregs *gpr) {
     cprintf("  t6       0x%08x\n", gpr->t6);
 }
 
-//lab3 function2 (B: 2413575; C: pending)
+//lab3 function2 (B: 2413575; C: 2411238)
 #include <sbi.h>
 
 #define SHUTDOWN_AFTER 10
@@ -148,7 +148,25 @@ void interrupt_handler(struct trapframe *tf) {
 
 /* C: exception handling. */
 void exception_handler(struct trapframe *tf) {
-    //lab3 exception_handler YOUR CODE
+    //lab3 exception_handler 2411238
+    switch (tf->cause) {
+    case CAUSE_ILLEGAL_INSTRUCTION:
+    case CAUSE_BREAKPOINT: {
+        if (tf->cause == CAUSE_ILLEGAL_INSTRUCTION) {
+            cprintf("Illegal instruction at 0x%016lx\n", (unsigned long)tf->epc);
+        } else {
+            cprintf("Breakpoint at 0x%016lx\n", (unsigned long)tf->epc);
+        }
+        /* The RV64IMAC lab triggers contain 16- or 32-bit instructions.
+         * Read only the first halfword, even at a two-byte-aligned EPC. */
+        unsigned short insn = *(const unsigned short *)tf->epc;
+        tf->epc += (insn & 3) == 3 ? 4 : 2;
+        break;
+    }
+    default:
+        print_trapframe(tf);
+        break;
+    }
 }
 
 

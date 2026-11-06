@@ -1,0 +1,8 @@
+{
+  "kern/trap/trap.c": "8d38102b4c2874e667c6236bf7e3bea2e301e16c907398892c8dfd991acb6ab1",
+  "kern/trap/trapentry.S": "45d06a1d66569917397175f549eb24b39d265f4f6ae44f5c9b267cfa92a3d694",
+  "Makefile": "503c538ce3efc3709add9bb6762eb41d49ef3808e947572e8a2f285209c4d688",
+  "tools/check_a.py": "263c5ac7b649254e6f13bb6f0c29dacde9f3c4decb6fef960e03fbde153fe843",
+  "tools/check_c.py": "f07b681245ddd32dfb6b41338234cc964dbc8538ae4fb59d5cd00950f631a4e5",
+  "tools/check_c_handler.c": "49ea561622ad526471191aec44df95308b63f41aabf99172b5008adebdcae4e0"
+}

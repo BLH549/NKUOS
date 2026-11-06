@@ -1,0 +1,112 @@
+{
+  "layout": {
+    "gpr": 0,
+    "status": 256,
+    "epc": 264,
+    "badvaddr": 272,
+    "cause": 280
+  },
+  "frame_bytes": 288,
+  "traps": [
+    {
+      "index": 1,
+      "cause": "0x3",
+      "instruction_bytes": 2,
+      "frame": "0xffffffffc0205e50",
+      "old_sp": "0xffffffffc0205f70",
+      "epc_before": "0xffffffffc02000f0",
+      "epc_after": "0xffffffffc02000f2",
+      "status_trap": "0x8000000200006100",
+      "status_after": "0x8000000200006020",
+      "registers_checked": 32,
+      "privilege": "S",
+      "passed": true
+    },
+    {
+      "index": 2,
+      "cause": "0x3",
+      "instruction_bytes": 4,
+      "frame": "0xffffffffc0205e50",
+      "old_sp": "0xffffffffc0205f70",
+      "epc_before": "0xffffffffc02000f4",
+      "epc_after": "0xffffffffc02000f8",
+      "status_trap": "0x8000000200006100",
+      "status_after": "0x8000000200006020",
+      "registers_checked": 32,
+      "privilege": "S",
+      "passed": true
+    },
+    {
+      "index": 3,
+      "cause": "0x2",
+      "instruction_bytes": 2,
+      "frame": "0xffffffffc0205e50",
+      "old_sp": "0xffffffffc0205f70",
+      "epc_before": "0xffffffffc02000fa",
+      "epc_after": "0xffffffffc02000fc",
+      "status_trap": "0x8000000200006100",
+      "status_after": "0x8000000200006020",
+      "registers_checked": 32,
+      "privilege": "S",
+      "passed": true
+    },
+    {
+      "index": 4,
+      "cause": "0x2",
+      "instruction_bytes": 4,
+      "frame": "0xffffffffc0205e50",
+      "old_sp": "0xffffffffc0205f70",
+      "epc_before": "0xffffffffc02000fe",
+      "epc_after": "0xffffffffc0200102",
+      "status_trap": "0x8000000200006100",
+      "status_after": "0x8000000200006020",
+      "registers_checked": 32,
+      "privilege": "S",
+      "passed": true
+    },
+    {
+      "index": 5,
+      "cause": "0x8000000000000005",
+      "instruction_bytes": 0,
+      "frame": "0xffffffffc0205ed0",
+      "old_sp": "0xffffffffc0205ff0",
+      "epc_before": "0xffffffffc0200184",
+      "epc_after": "0xffffffffc0200184",
+      "status_trap": "0x8000000200006120",
+      "status_after": "0x8000000200006022",
+      "registers_checked": 32,
+      "privilege": "S",
+      "passed": true
+    },
+    {
+      "index": 6,
+      "cause": "0x8000000000000005",
+      "instruction_bytes": 0,
+      "frame": "0xffffffffc0205ed0",
+      "old_sp": "0xffffffffc0205ff0",
+      "epc_before": "0xffffffffc0200184",
+      "epc_after": "0xffffffffc0200184",
+      "status_trap": "0x8000000200006120",
+      "status_after": "0x8000000200006022",
+      "registers_checked": 32,
+      "privilege": "S",
+      "passed": true
+    },
+    {
+      "index": 7,
+      "cause": "0x8000000000000005",
+      "instruction_bytes": 0,
+      "frame": "0xffffffffc0205ed0",
+      "old_sp": "0xffffffffc0205ff0",
+      "epc_before": "0xffffffffc0200184",
+      "epc_after": "0xffffffffc0200184",
+      "status_trap": "0x8000000200006120",
+      "status_after": "0x8000000200006022",
+      "registers_checked": 32,
+      "privilege": "S",
+      "passed": true
+    }
+  ],
+  "timer_ticks": 3,
+  "passed": true
+}

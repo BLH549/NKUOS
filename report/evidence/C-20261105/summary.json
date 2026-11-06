@@ -1,0 +1,9 @@
+{
+  "passed": true,
+  "production_handlers": true,
+  "host_cases": 19,
+  "real_exceptions": 4,
+  "timer_returns": 3,
+  "registers_per_return": 32,
+  "output_addresses_checked": true
+}

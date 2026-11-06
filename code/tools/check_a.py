@@ -94,6 +94,14 @@ try:
         check(val('$pc') == val('&__alltraps'), 'entry breakpoint')
         before, hardware = regs(), csr()
         check(hardware['scause'] == cause, 'trap cause')
+        if PRODUCTION_HANDLERS and index < 4:
+            symbol, encoding = [('a_break16', 0x9002),
+                                ('a_break32', 0x00100073),
+                                ('a_illegal16', 0x0000),
+                                ('a_illegal32', 0x0000007b)][index]
+            check(hardware['sepc'] == val('&' + symbol), 'trigger address')
+            raw = bytes(gdb.selected_inferior().read_memory(hardware['sepc'], length))
+            check(int.from_bytes(raw, 'little') == encoding, 'trigger encoding')
         check(hardware['sstatus'] & 0x100 != 0, 'SPP=S')
         check(hardware['sstatus'] & 2 == 0, 'SIE cleared on trap')
         advance()
@@ -163,6 +171,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', type=Path,
                         default=Path('../report/evidence/A-20261104'))
+    parser.add_argument('--production-handlers', action='store_true',
+                        help='verify A/B/C together without replacing real handlers')
     args = parser.parse_args()
     code = Path(__file__).resolve().parents[1]
     out = args.output.resolve()
@@ -178,7 +188,8 @@ def main():
         source = trap.read_text()
         start = source.index('//lab3 function2')
         end = source.index('static inline void trap_dispatch', start)
-        trap.write_text(source[:start] + HANDLERS + '\n' + source[end:])
+        if not args.production_handlers:
+            trap.write_text(source[:start] + HANDLERS + '\n' + source[end:])
         init = fixture / 'kern/init/init.c'
         source = init.read_text().replace('#include <dtb.h>',
                                          '#include <dtb.h>\n#include <sbi.h>')
@@ -205,6 +216,7 @@ def main():
                   f'file {fixture}/bin/kernel\n'
                   f'target remote 127.0.0.1:{port}\npython\n'
                   f'RESULT_PATH = {str(out / "trap-summary.json")!r}\n' +
+                  f'PRODUCTION_HANDLERS = {args.production_handlers!r}\n' +
                   GDB_SCRIPT + '\nend\nquit\n')
         script_path = Path(directory) / 'verify.gdb'
         script_path.write_text(script)
@@ -238,7 +250,9 @@ def main():
                     process.wait(timeout=10)
         digest = hashlib.sha256((code / 'kern/trap/trapentry.S').read_bytes()).hexdigest()
         (out / 'tested-source.json').write_text(json.dumps(
-            {'trapentry_sha256': digest, 'handlers': 'temporary A fixtures'}, indent=2)+'\n')
+            {'trapentry_sha256': digest,
+             'trap_c_sha256': hashlib.sha256((code / 'kern/trap/trap.c').read_bytes()).hexdigest(),
+             'handlers': 'production A/B/C' if args.production_handlers else 'temporary A fixtures'}, indent=2)+'\n')
     print('PASS: frame layout, 32 registers, 4 exceptions, 3 timer returns, S privilege')
 
 
