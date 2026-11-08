@@ -47,6 +47,7 @@ static void init_memmap(struct Page *base, size_t n) {
 
 // alloc_pages - call pmm->alloc_pages to allocate a continuous n*PAGESIZE
 // memory
+/* 分配连续物理页：暂时屏蔽本 hart 中断，保护分配器的数据结构。 */
 struct Page *alloc_pages(size_t n) {
     struct Page *page = NULL;
     bool intr_flag;
@@ -59,6 +60,7 @@ struct Page *alloc_pages(size_t n) {
 }
 
 // free_pages - call pmm->free_pages to free a continuous n*PAGESIZE memory
+/* 释放连续物理页；恢复进入临界区前的中断状态。 */
 void free_pages(struct Page *base, size_t n) {
     bool intr_flag;
     local_intr_save(intr_flag);
@@ -70,6 +72,7 @@ void free_pages(struct Page *base, size_t n) {
 
 // nr_free_pages - call pmm->nr_free_pages to get the size (nr*PAGESIZE)
 // of current free memory
+/* 在相同的中断保护下读取空闲物理页数量。 */
 size_t nr_free_pages(void) {
     size_t ret;
     bool intr_flag;

@@ -3,6 +3,7 @@
 
 #include <defs.h>
 
+/* 字段顺序严格对应 trapentry.S 的 x0～x31 槽位。 */
 struct pushregs {
     uintptr_t zero;  // Hard-wired zero
     uintptr_t ra;    // Return address
@@ -38,12 +39,13 @@ struct pushregs {
     uintptr_t t6;    // Temporary
 };
 
+/* 栈上的完整 Trap 帧：32 个通用寄存器后接 4 个 CSR。 */
 struct trapframe {
     struct pushregs gpr;
-    uintptr_t status;
-    uintptr_t epc;
-    uintptr_t badvaddr;
-    uintptr_t cause;
+    uintptr_t status; /* sstatus：含原特权级及中断状态。 */
+    uintptr_t epc; /* sepc：返回地址，异常处理可修改。 */
+    uintptr_t badvaddr; /* stval：异常相关地址或其他辅助信息。 */
+    uintptr_t cause; /* scause：最高位区分中断和异常。 */
 };
 
 void trap(struct trapframe *tf);

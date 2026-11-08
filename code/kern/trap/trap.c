@@ -9,8 +9,10 @@
 #include <stdio.h>
 #include <trap.h>
 
+/* 每累计 100 次时钟中断输出一次统计。 */
 #define TICK_NUM 100
 
+/* 输出一轮时钟统计；评分构建可能在此提前结束。 */
 static void print_ticks() {
     cprintf("%d ticks\n", TICK_NUM);
 #ifdef DEBUG_GRADE
@@ -19,23 +21,24 @@ static void print_ticks() {
 #endif
 }
 
-/* idt_init - initialize IDT to each of the entry points in kern/trap/vectors.S
- */
+/* 初始化 S 态统一 Trap 入口；这里使用 stvec 直接模式，并非 x86 IDT。 */
 void idt_init(void) {
 
     extern void __alltraps(void);
     /* Set sup0 scratch register to 0, indicating to exception vector
        that we are presently executing in the kernel */
-    write_csr(sscratch, 0);
+    write_csr(sscratch, 0); /* 本阶段约定内核态下 scratch 初值为零。 */
     /* Set the exception vector address */
-    write_csr(stvec, &__alltraps);
+    write_csr(stvec, &__alltraps); /* 对齐地址低两位为 0，选择直接模式。 */
 }
 
 /* trap_in_kernel - test if trap happened in kernel */
+/* 根据硬件保存的 SPP 判断发生 Trap 前是否处于 S 态。 */
 bool trap_in_kernel(struct trapframe *tf) {
     return (tf->status & SSTATUS_SPP) != 0;
 }
 
+/* 输出 Trap 帧及关键 CSR，便于定位未处理的 Trap。 */
 void print_trapframe(struct trapframe *tf) {
     cprintf("trapframe at %p\n", tf);
     print_regs(&tf->gpr);
@@ -45,6 +48,7 @@ void print_trapframe(struct trapframe *tf) {
     cprintf("  cause    0x%08x\n", tf->cause);
 }
 
+/* 按 ABI 名称输出全部已保存的通用寄存器。 */
 void print_regs(struct pushregs *gpr) {
     cprintf("  zero     0x%08x\n", gpr->zero);
     cprintf("  ra       0x%08x\n", gpr->ra);
@@ -83,12 +87,14 @@ void print_regs(struct pushregs *gpr) {
 //lab3 function2 (B: 2413575; C: 2411238)
 #include <sbi.h>
 
+/* 输出 10 轮统计后请求固件关机。 */
 #define SHUTDOWN_AFTER 10
 
-/* B: interrupt handling. */
+/* 按 scause 的原因码分发异步中断；高位中断标志先被清除。 */
 void interrupt_handler(struct trapframe *tf) {
     //lab3 interrupt_handler 2413575
     uintptr_t cause = tf->cause & ~((uintptr_t)1 << (sizeof(uintptr_t) * 8 - 1));
+    /* 各非时钟分支仅打印类型，并不确认或清除设备中断。 */
     switch (cause) {
     case IRQ_U_SOFT:
         cprintf("User software interrupt\n");
@@ -106,12 +112,12 @@ void interrupt_handler(struct trapframe *tf) {
         cprintf("User timer interrupt\n");
         break;
     case IRQ_S_TIMER:
-        clock_set_next_event();
-        ++ticks;
-        if (ticks % TICK_NUM == 0) {
+        clock_set_next_event(); /* SBI 定时事件是一次性的，须预约下一次。 */
+        ++ticks; /* 每收到一次 S 态时钟中断计数一次。 */
+        if (ticks % TICK_NUM == 0) { /* 达到一个统计周期。 */
             print_ticks();
-            if (ticks / TICK_NUM >= SHUTDOWN_AFTER) {
-                sbi_shutdown();
+            if (ticks / TICK_NUM >= SHUTDOWN_AFTER) { /* 达到要求的输出次数。 */
+                sbi_shutdown(); /* 通过 OpenSBI 请求关机。 */
             }
         }
         break;
@@ -146,7 +152,7 @@ void interrupt_handler(struct trapframe *tf) {
     }
 }
 
-/* C: exception handling. */
+/* 处理同步异常；其他异常只打印帧，并未提供通用恢复策略。 */
 void exception_handler(struct trapframe *tf) {
     //lab3 exception_handler 2411238
     switch (tf->cause) {
@@ -159,7 +165,9 @@ void exception_handler(struct trapframe *tf) {
         }
         /* The RV64IMAC lab triggers contain 16- or 32-bit instructions.
          * Read only the first halfword, even at a two-byte-aligned EPC. */
+        /* 低两位非 11 表示 16 位压缩指令；11 在本实验中按 32 位处理。 */
         unsigned short insn = *(const unsigned short *)tf->epc;
+        /* 修改帧中的 sepc，防止 sret 后再次执行同一异常指令。 */
         tf->epc += (insn & 3) == 3 ? 4 : 2;
         break;
     }
@@ -171,6 +179,7 @@ void exception_handler(struct trapframe *tf) {
 
 
 
+/* scause 最高位为 1 表示中断；否则是同步异常。 */
 static inline void trap_dispatch(struct trapframe *tf) {
     if ((intptr_t)tf->cause < 0) {
         // interrupts
@@ -181,12 +190,7 @@ static inline void trap_dispatch(struct trapframe *tf) {
     }
 }
 
-/* *
- * trap - handles or dispatches an exception/interrupt. if and when trap()
- * returns,
- * the code in kern/trap/trapentry.S restores the old CPU state saved in the
- * trapframe and then uses the iret instruction to return from the exception.
- * */
+/* 汇编入口传入当前帧；分发完成后由汇编恢复现场并执行 sret。 */
 void trap(struct trapframe *tf) {
     // dispatch based on what type of trap occurred
     trap_dispatch(tf);

@@ -12,9 +12,11 @@ unsigned long sbi_query_memory(unsigned long id, memory_block_info *p);
 unsigned long sbi_hart_id(void);
 unsigned long sbi_num_harts(void);
 unsigned long sbi_timebase(void);
+/* 设置绝对时间定时事件；触发后需重新设置。 */
 void sbi_set_timer(unsigned long long stime_value);
 void sbi_send_ipi(unsigned long hart_id);
 unsigned long sbi_clear_ipi(void);
+/* 调用 SBI 关机服务。 */
 void sbi_shutdown(void);
 
 void sbi_console_putchar(unsigned char ch);
