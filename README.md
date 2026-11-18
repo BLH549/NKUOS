@@ -5,10 +5,10 @@
 - [ABC 任务划分](report/资料/Lab4-任务分工.md)
 - [报告入口](report/report.md)
 
-本分支位于 `/home/liu/projects/nku-os/labs-lab4`，原 `labs/` 工作区仍在 Lab3。进入本目录操作，不在旧目录直接 checkout。
+本仓库为提交给助教查看的 GitHub 仓库 `BLH549/NKUOS`，当前使用 `lab4` 分支。`code/` 与网站 Lab4 ZIP 的 `lab4_new/` 一致，报告位于 `report/`。Lab3 成果保存在 `lab3` 分支。
 
 ```bash
-cd /home/liu/projects/nku-os/labs-lab4
+cd /home/liu/projects/nku-os/labs
 source ../scripts/env.sh
 cd code
 # 补齐前置依赖及本次练习后：

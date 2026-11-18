@@ -6,7 +6,7 @@
 
 应以当次网站的 Lab4 代码包为代码起点，将以前完成的实现按本次接口重新生成或适配到 `lab2`/`lab3` 标记处。Git 分支可以保留 Lab3 的提交历史，但当前代码树要采用新的 Lab4 框架。这两个“起点”并不矛盾。
 
-已建立本地 `lab4` 分支，独立工作区为 `../../`，其中 `code/` 对应新压缩包的 `lab4_new/`，`report/` 为本次报告。原 `../../../labs/` 仍在 Lab3，保留未提交修改。新分支保存原始教学框架，Lab2/3 空缺和 Lab4 作业均待实现；这不是已经可以运行或已经通过评分的版本。
+已在提交仓库 `labs/` 中建立并切换到 `lab4` 分支，`code/` 对应新压缩包的 `lab4_new/`，`report/` 为本次报告。Lab3 成果保存在 `lab3` 分支，原有一处未提交注释修改已保存到 Git stash。新分支保存原始教学框架，Lab2/3 空缺和 Lab4 作业均待实现；这不是已经可以运行或已经通过评分的版本。
 
 本次新增 `kmalloc`、VMA、进程结构、`forkrets`、调度和评分注入工具，不能直接复制旧代码树，也不能整文件覆盖本次 `pmm.c`、`trap.c` 或 `trapentry.S`。例如新的 `idt_init()` 设置 `SSTATUS_SUM`，`trapentry.S` 末尾有新线程启动所需的 `forkrets`，都需要保留。
 
@@ -95,4 +95,4 @@ B 的六个函数构成一个完整的资源生命周期，代码与回滚逻辑
 
 新版 `make grade` 会将源码复制到 `/tmp/lab4_grade`，运行 `tools/inject.py` 注入 `tools/test_lab4.c`，再执行 `tools/grade.sh`。三组测试为 PMM、Process Create、Schedule。保留这些教师文件；不要通过修改测试得到通过结果。同一台机器并行评分会共用该临时路径，应串行运行。
 
-参考：[练习](../../../_book/lab4/lab4_2_1_exercises.html)、[报告要求](../../../_book/lab4/lab4_5_labs_requirement.html)、[报告模板](../../../materials/实验报告模板.md)、[代码包来源](../../../materials/upstream/2026-11-18/manifest.json)。以上任务尚未标记为实现完成。
+参考：[练习](http://oslab.mobisys.top/lab2026/_book/lab4/lab4_2_1_exercises.html)、[报告要求](http://oslab.mobisys.top/lab2026/_book/lab4/lab4_5_labs_requirement.html)、[报告模板](http://oslab.mobisys.top/lab2026/_book/lab4/lab4_5_labs_requirement.html)、[代码包来源](../../UPSTREAM.md)。以上任务尚未标记为实现完成。
