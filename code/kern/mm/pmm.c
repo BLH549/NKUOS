@@ -12,6 +12,7 @@
 #include <vmm.h>
 #include <riscv.h>
 #include <dtb.h>
+#include <string.h>
 
 // virtual address of physical page array
 struct Page *pages;
@@ -87,7 +88,54 @@ size_t nr_free_pages(void)
     return ret;
 }
 
-//lab2 请补充你在lab2中的代码
+// lab2: migrated page_init from lab2; bounds use the Lab4 direct map.
+static void page_init(void) {
+    uint64_t mem_base = get_memory_base();
+    uint64_t mem_size = get_memory_size();
+    if (mem_base != DRAM_BASE || mem_size == 0 ||
+        mem_size > (uint64_t)-1 - mem_base) {
+        panic("page_init: invalid DTB memory range");
+    }
+
+    va_pa_offset = PHYSICAL_MEMORY_OFFSET;
+    uintptr_t mem_end = mem_base + mem_size;
+    uintptr_t managed_end = mem_end;
+    if (managed_end > PADDR(KERNTOP)) {
+        managed_end = PADDR(KERNTOP);
+    }
+    managed_end = ROUNDDOWN(managed_end, PGSIZE);
+    if (managed_end <= PADDR(KERNBASE)) {
+        panic("page_init: RAM does not contain the kernel");
+    }
+    npage = PPN(managed_end);
+
+    extern char end[];
+    uintptr_t pages_va = ROUNDUP((uintptr_t)end, PGSIZE);
+    uintptr_t pages_pa = PADDR(pages_va);
+    size_t descriptor_bytes = (npage - nbase) * sizeof(struct Page);
+    if (pages_pa >= managed_end ||
+        descriptor_bytes > managed_end - pages_pa) {
+        panic("page_init: not enough RAM for page descriptors");
+    }
+    pages = (struct Page *)pages_va;
+    memset(pages, 0, descriptor_bytes);
+    for (size_t i = 0; i < npage - nbase; i++) {
+        SetPageReserved(&pages[i]);
+        list_init(&pages[i].page_link);
+        list_init(&pages[i].pra_page_link);
+    }
+
+    uintptr_t free_begin = ROUNDUP(pages_pa + descriptor_bytes, PGSIZE);
+    cprintf("physical memory: [0x%016lx, 0x%016lx)\n", mem_base, mem_end);
+    cprintf("managed memory:  [0x%016lx, 0x%016lx)\n", mem_base, managed_end);
+    cprintf("page descriptors: [0x%016lx, 0x%016lx), %lu entries\n",
+            pages_pa, pages_pa + descriptor_bytes, npage - nbase);
+    cprintf("free memory:     [0x%016lx, 0x%016lx), %lu pages\n",
+            free_begin, managed_end, (managed_end - free_begin) / PGSIZE);
+    if (free_begin < managed_end) {
+        init_memmap(pa2page(free_begin), (managed_end - free_begin) / PGSIZE);
+    }
+}
 
 static void enable_paging(void)
 {

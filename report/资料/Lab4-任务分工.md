@@ -2,11 +2,14 @@
 
 依据：2026-11-18 下载的课程指导书与 `lab4.zip`。ABC 仅代表任务包，不绑定姓名、学号或此前 Lab 的分工。此文件是待实施计划。
 
+
+2026-11-19 更新：Lab2/3 前置依赖已完成迁移与适配，不再要求 A/C 从零重复搬运；A/C 负责复核并在各自新功能中验证。三份任务的 Lab4 实现、边界测试、思考题和整合职责继续按下文执行。迁移后的源码不再与原始 ZIP 逐文件一致。
+
 ## 起点与分支
 
 应以当次网站的 Lab4 代码包为代码起点，将以前完成的实现按本次接口重新生成或适配到 `lab2`/`lab3` 标记处。Git 分支可以保留 Lab3 的提交历史，但当前代码树要采用新的 Lab4 框架。这两个“起点”并不矛盾。
 
-已在提交仓库 `labs/` 中建立并切换到 `lab4` 分支，`code/` 对应新压缩包的 `lab4_new/`，`report/` 为本次报告。Lab3 成果保存在 `lab3` 分支，原有一处未提交注释修改已保存到 Git stash。新分支保存原始教学框架，Lab2/3 空缺和 Lab4 作业均待实现；这不是已经可以运行或已经通过评分的版本。
+已在提交仓库 `labs/` 中建立并切换到 `lab4` 分支，`code/` 对应新压缩包的 `lab4_new/`，`report/` 为本次报告。Lab3 成果保存在 `lab3` 分支，原有一处未提交注释修改已保存到 Git stash。初始提交保存原始教学框架；当前 Lab2/3 空缺已适配迁移，Lab4 作业待实现；这不是已经可以运行或已经通过评分的版本。
 
 本次新增 `kmalloc`、VMA、进程结构、`forkrets`、调度和评分注入工具，不能直接复制旧代码树，也不能整文件覆盖本次 `pmm.c`、`trap.c` 或 `trapentry.S`。例如新的 `idt_init()` 设置 `SSTATUS_SUM`，`trapentry.S` 末尾有新线程启动所需的 `forkrets`，都需要保留。
 
@@ -20,7 +23,6 @@
 
 B 的六个函数构成一个完整的资源生命周期，代码与回滚逻辑较多，因此公共收尾主要由 A 承担；C 包含汇编切换和 Trap 适配；A 的两个新函数较少，增加内存基线、边界验证、分页题和整合工作。按实现、调试、分析和收尾一起衡量，不能只按函数数量分。
 
-每人都负责自己的 spec、实际 prompt、迭代记录、测试日志、截图和报告正文。A 只做最终报告的链接和格式组装，不代写 B/C 的内容。
 
 ## A：页映射与内存基线
 
@@ -95,4 +97,4 @@ B 的六个函数构成一个完整的资源生命周期，代码与回滚逻辑
 
 新版 `make grade` 会将源码复制到 `/tmp/lab4_grade`，运行 `tools/inject.py` 注入 `tools/test_lab4.c`，再执行 `tools/grade.sh`。三组测试为 PMM、Process Create、Schedule。保留这些教师文件；不要通过修改测试得到通过结果。同一台机器并行评分会共用该临时路径，应串行运行。
 
-参考：[练习](http://oslab.mobisys.top/lab2026/_book/lab4/lab4_2_1_exercises.html)、[报告要求](http://oslab.mobisys.top/lab2026/_book/lab4/lab4_5_labs_requirement.html)、[报告模板](http://oslab.mobisys.top/lab2026/_book/lab4/lab4_5_labs_requirement.html)、[代码包来源](../../UPSTREAM.md)。以上任务尚未标记为实现完成。
+参考：[练习](http://oslab.mobisys.top/lab2026/_book/lab4/lab4_2_1_exercises.html)、[报告要求](http://oslab.mobisys.top/lab2026/_book/lab4/lab4_5_labs_requirement.html)、[报告模板](http://oslab.mobisys.top/lab2026/_book/lab4/lab4_5_labs_requirement.html)、[课程代码包](http://oslab.mobisys.top/lab2026/lab4.zip)。以上任务尚未标记为实现完成。

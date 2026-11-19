@@ -1,7 +1,7 @@
 #include <mmu.h>
 #include <memlayout.h>
 
-    .section .text,"ax",%progbits
+    .section .text.kern_entry,"ax",%progbits
     .globl kern_entry
 kern_entry:
     # a0: hartid
@@ -28,6 +28,14 @@ kern_entry:
     # 将算出的 t0(即新的MODE|页表基址物理页号) 覆盖到 satp 中
     csrw    satp, t0
     # 使用 sfence.vma 指令刷新 TLB
+    sfence.vma
+    # lab2: migrate the verified low-to-high transition from lab3.
+    lui t0, %hi(.Lvirtual_entry)
+    addi t0, t0, %lo(.Lvirtual_entry)
+    jr t0
+.Lvirtual_entry:
+    lui t0, %hi(boot_page_table_sv39)
+    sd zero, 16(t0)
     sfence.vma
     # 从此，我们给内核搭建出了一个完美的虚拟内存空间！
     #nop # 可能映射的位置有些bug。。插入一个nop
@@ -57,8 +65,11 @@ bootstacktop:
 # 分配 4KiB 内存给预设的三级页表
 boot_page_table_sv39:
     # 0xffffffff_c0000000 map to 0x80000000 (1G)
-    # 前 511 个页表项均设置为 0 ，因此 V=0 ，意味着是空的(unmapped)
-    .zero 8 * 511
+    # Only VPN2=2 (temporary) and VPN2=511 (high mapping) are valid.
+    # Temporary identity map until execution reaches the high VA.
+    .zero 8 * 2
+    .quad (0x80000 << 10) | 0xcf
+    .zero 8 * 508
     # 设置最后一个页表项，PPN=0x80000，标志位 VRWXAD 均为 1
     .quad (0x80000 << 10) | 0xcf # VRWXAD
 

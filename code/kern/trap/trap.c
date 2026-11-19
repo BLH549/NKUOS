@@ -83,7 +83,93 @@ void print_regs(struct pushregs *gpr)
 
 extern struct mm_struct *check_mm_struct;
 
-//lab3 请补充你在lab3中的代码
+// lab3: migrated handlers; Lab3-only timed shutdown is not used in Lab4.
+void interrupt_handler(struct trapframe *tf) {
+    //lab3 interrupt_handler 2413575
+    uintptr_t cause = tf->cause & ~((uintptr_t)1 << (sizeof(uintptr_t) * 8 - 1));
+    /* 各非时钟分支仅打印类型，并不确认或清除设备中断。 */
+    switch (cause) {
+    case IRQ_U_SOFT:
+        cprintf("User software interrupt\n");
+        break;
+    case IRQ_S_SOFT:
+        cprintf("Supervisor software interrupt\n");
+        break;
+    case IRQ_H_SOFT:
+        cprintf("Hypervisor software interrupt\n");
+        break;
+    case IRQ_M_SOFT:
+        cprintf("Machine software interrupt\n");
+        break;
+    case IRQ_U_TIMER:
+        cprintf("User timer interrupt\n");
+        break;
+    case IRQ_S_TIMER:
+        clock_set_next_event(); /* SBI 定时事件是一次性的，须预约下一次。 */
+        ++ticks; /* 每收到一次 S 态时钟中断计数一次。 */
+        if (ticks % TICK_NUM == 0) { /* 达到一个统计周期。 */
+            print_ticks();
+        }
+        break;
+    case IRQ_H_TIMER:
+        cprintf("Hypervisor timer interrupt\n");
+        break;
+    case IRQ_M_TIMER:
+        cprintf("Machine timer interrupt\n");
+        break;
+    case IRQ_U_EXT:
+        cprintf("User external interrupt\n");
+        break;
+    case IRQ_S_EXT:
+        cprintf("Supervisor external interrupt\n");
+        break;
+    case IRQ_H_EXT:
+        cprintf("Hypervisor external interrupt\n");
+        break;
+    case IRQ_M_EXT:
+        cprintf("Machine external interrupt\n");
+        break;
+    case IRQ_COP:
+        cprintf("Coprocessor interrupt\n");
+        break;
+    case IRQ_HOST:
+        cprintf("Host interrupt\n");
+        break;
+    default:
+        cprintf("Unknown interrupt: cause %lu\n", (unsigned long)cause);
+        print_trapframe(tf);
+        break;
+    }
+}
+
+/* 处理同步异常；其他异常只打印帧，并未提供通用恢复策略。 */
+void exception_handler(struct trapframe *tf) {
+    //lab3 exception_handler 2411238
+    switch (tf->cause) {
+    case CAUSE_ILLEGAL_INSTRUCTION:
+    case CAUSE_BREAKPOINT: {
+        if (tf->cause == CAUSE_ILLEGAL_INSTRUCTION) {
+            cprintf("Illegal instruction at 0x%016lx\n", (unsigned long)tf->epc);
+        } else {
+            cprintf("Breakpoint at 0x%016lx\n", (unsigned long)tf->epc);
+        }
+        /* The RV64IMAC lab triggers contain 16- or 32-bit instructions.
+         * Read only the first halfword, even at a two-byte-aligned EPC. */
+        /* 低两位非 11 表示 16 位压缩指令；11 在本实验中按 32 位处理。 */
+        unsigned short insn = *(const unsigned short *)tf->epc;
+        /* 修改帧中的 sepc，防止 sret 后再次执行同一异常指令。 */
+        tf->epc += (insn & 3) == 3 ? 4 : 2;
+        break;
+    }
+    default:
+        print_trapframe(tf);
+        break;
+    }
+}
+
+
+
+
 
 
 
