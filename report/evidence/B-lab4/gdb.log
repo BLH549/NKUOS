@@ -1,0 +1,37 @@
+0x0000000000001000 in ?? ()
+Hardware assisted breakpoint 1 at 0xffffffffc0202fa8: file kern/process/lab4_b_fixture.c.inc, line 177.
+
+Temporary breakpoint 1, test_lab4_b_run () at kern/process/lab4_b_fixture.c.inc:177
+177	    struct proc_struct *fresh = alloc_proc();
+[B PCB] current==idle 1 idle pid=0 state=2 stack=0xffffffffc0207000 bootstack=0xffffffffc0207000
+[B PCB] init pid=1 state=2 parent==idle 1 mm=(nil) pgdir=0x80209000
+[B frame] size=288 init tf=0xffffffffc0412ee0 context.sp=0xffffffffc0412ee0 context.ra=0xffffffffc02022be
+[B frame] tf alignment remainder=0 stack_top=0xffffffffc0413000 tf.sp=0xffffffffc0413000
+Hardware assisted breakpoint 2 at 0xffffffffc02022be: file kern/process/proc.c, line 153.
+
+Temporary breakpoint 2, forkret () at kern/process/proc.c:153
+153	    forkrets(current->tf);
+[B trace] forkret pid=2 context.sp=0xffffffffc0414ee0 sp=0xffffffffc0414ee0
+Hardware assisted breakpoint 3 at 0xffffffffc0200d7c: file kern/trap/trapentry.S, line 120.
+
+Temporary breakpoint 3, forkrets () at kern/trap/trapentry.S:120
+120	    move sp, a0
+[B trace] forkrets a0=0xffffffffc0414ee0 tf=0xffffffffc0414ee0
+Hardware assisted breakpoint 4 at 0xffffffffc0200d2e: file kern/trap/trapentry.S, line 113.
+
+Temporary breakpoint 4, __trapret () at kern/trap/trapentry.S:113
+113	    RESTORE_ALL
+[B trace] __trapret sp=0xffffffffc0414ee0 tf=0xffffffffc0414ee0
+Hardware assisted breakpoint 5 at 0xffffffffc0202270: file kern/process/entry.S, line 4.
+
+Temporary breakpoint 5, kernel_thread_entry () at kern/process/entry.S:4
+4		move a0, s1
+[B trace] kernel_thread_entry sp=0xffffffffc0415000 tf.sp=0xffffffffc0415000 a0=0 SIE=1
+[B trace] s0=0xffffffffc02024d6 s1=0xffffffffc0206338 s1_arg=2413575
+Hardware assisted breakpoint 6 at 0xffffffffc02024d6: file kern/process/lab4_b_fixture.c.inc, line 156.
+
+Temporary breakpoint 6, b_worker (arg=0xffffffffc0206338 <b_arg1>) at kern/process/lab4_b_fixture.c.inc:156
+156	    bool first = current->pid == 2;
+[B trace] b_worker pid=2 a0=0xffffffffc0206338 arg=2413575
+[B trace] PASS
+[Inferior 1 (process 1) detached]

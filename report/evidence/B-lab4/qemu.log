@@ -1,0 +1,78 @@
+
+OpenSBI v0.9
+   ____                    _____ ____ _____
+  / __ \                  / ____|  _ \_   _|
+ | |  | |_ __   ___ _ __ | (___ | |_) || |
+ | |  | | '_ \ / _ \ '_ \ \___ \|  _ < | |
+ | |__| | |_) |  __/ | | |____) | |_) || |_
+  \____/| .__/ \___|_| |_|_____/|____/_____|
+        | |
+        |_|
+
+Platform Name             : riscv-virtio,qemu
+Platform Features         : timer,mfdeleg
+Platform HART Count       : 1
+Firmware Base             : 0x80000000
+Firmware Size             : 100 KB
+Runtime SBI Version       : 0.2
+
+Domain0 Name              : root
+Domain0 Boot HART         : 0
+Domain0 HARTs             : 0*
+Domain0 Region00          : 0x0000000080000000-0x000000008001ffff ()
+Domain0 Region01          : 0x0000000000000000-0xffffffffffffffff (R,W,X)
+Domain0 Next Address      : 0x0000000080200000
+Domain0 Next Arg1         : 0x0000000087000000
+Domain0 Next Mode         : S-mode
+Domain0 SysReset          : yes
+
+Boot HART ID              : 0
+Boot HART Domain          : root
+Boot HART ISA             : rv64imafdcsu
+Boot HART Features        : scounteren,mcounteren,time
+Boot HART PMP Count       : 16
+Boot HART PMP Granularity : 4
+Boot HART PMP Address Bits: 54
+Boot HART MHPM Count      : 0
+Boot HART MHPM Count      : 0
+Boot HART MIDELEG         : 0x0000000000000222
+Boot HART MEDELEG         : 0x000000000000b109
+DTB Init
+HartID: 0
+DTB Address: 0x87000000
+Physical Memory from DTB:
+  Base: 0x0000000080000000
+  Size: 0x0000000008000000 (128 MB)
+  End:  0x0000000087ffffff
+DTB init completed
+(THU.CST) os is loading ...
+
+Special kernel symbols:
+  entry  0xc0200060 (virtual)
+  etext  0xc0203caa (virtual)
+  edata  0xc020a030 (virtual)
+  end    0xc020e51c (virtual)
+Kernel executable memory footprint: 58KB
+memory management: best_fit_pmm_manager
+physical memory: [0x0000000080000000, 0x0000000088000000)
+managed memory:  [0x0000000080000000, 0x0000000088000000)
+page descriptors: [0x000000008020f000, 0x000000008040f000), 32768 entries
+free memory:     [0x000000008040f000, 0x0000000088000000), 31729 pages
+check_alloc_page() succeeded!
+use SLOB allocator
+kmalloc_init() succeeded!
+check_vma_struct() succeeded!
+check_vmm() succeeded.
+[Test Process Create] PASS
+[B PCB] alloc_proc, idle (pid=0), init (pid=1) PASS
+[B frame] pid=1 bytes=288 kstack=0xffffffffc0411000 tf=0xffffffffc0412ee0 sp=0xffffffffc0413000 status=0x8000000000046120
+[B rollback] PCB PASS ret=-4 pcb=1/0 stack=0/0 pages_delta=0 count_delta=0
+[B rollback] kernel stack PASS ret=-4 pcb=1/1 stack=1/0 pages_delta=0 count_delta=0
+[B rollback] copy_mm PASS ret=-3 pcb=1/1 stack=1/1 pages_delta=0 count_delta=0
+[B rollback] process limit PASS ret=-5 pcb=0/0 stack=0/0 pages_delta=0 count_delta=0
+[B frame] pid=2 bytes=288 kstack=0xffffffffc0413000 tf=0xffffffffc0414ee0 sp=0xffffffffc0415000 status=0x8000000000046120
+[B frame] pid=3 bytes=288 kstack=0xffffffffc0415000 tf=0xffffffffc0416ee0 sp=0xffffffffc0417000 status=0x8000000000046120
+[B create] PIDs 2/3/4, PID hash, explicit SP and SIE restoration PASS
+[B first-run] pid=2 arg=2413575 SIE=1 PASS
+[B first-run] pid=3 arg=20261120 SIE=1 PASS
+[B result] PASS
