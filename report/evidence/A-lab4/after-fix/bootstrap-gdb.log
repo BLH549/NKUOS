@@ -1,0 +1,25 @@
+0x0000000000001000 in ?? ()
+Hardware assisted breakpoint 1 at 0xffffffffc0202544: file kern/mm/pmm.c, line 427.
+
+Breakpoint 1, check_boot_pgdir () at kern/mm/pmm.c:427
+427	    strcpy((void *)0x100, str);
+pc             0xffffffffc0202544	0xffffffffc0202544 <pmm_init+1302>
+a0             0x0	0
+a1             0x1100	4352
+satp           0x800000000008020b	-9223372036854250997
+stvec          0x80200000	2149580800
+scause         0x0	0
+sepc           0x0	0
+stval          0x0	0
+$1 = 0x20104801
+Hardware assisted breakpoint 2 at 0xffffffffc0204b88: file kern/test/lab4_a_probe.S, line 16.
+Hardware assisted breakpoint 3 at 0xffffffffc0202554: file kern/mm/pmm.c, line 428.
+
+Breakpoint 3, check_boot_pgdir () at kern/mm/pmm.c:428
+428	    assert(strcmp((void *)0x100, (void *)(0x100 + PGSIZE)) == 0);
+pc             0xffffffffc0202554	0xffffffffc0202554 <pmm_init+1318>
+scause         0x0	0
+sepc           0x0	0
+stval          0x0	0
+stvec          0xffffffffc0204b88	-1071625336
+[Inferior 1 (process 1) detached]

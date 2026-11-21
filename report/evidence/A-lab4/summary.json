@@ -1,0 +1,36 @@
+{
+  "cases": [
+    {
+      "memory": "64M",
+      "passed": true,
+      "log": "qemu-64M.log"
+    },
+    {
+      "memory": "128M",
+      "passed": true,
+      "log": "qemu-128M.log"
+    },
+    {
+      "memory": "256M",
+      "passed": true,
+      "log": "qemu-256M.log"
+    }
+  ],
+  "random_operations_per_case": 4096,
+  "model_seed": "0x2412235",
+  "sources_sha256": {
+    "kern/mm/pmm.c": "93702aa4d6247794dd6c14ef8b72681266ae2003719ae7159794602d61d593af",
+    "kern/mm/default_pmm.c": "37168b956a482b83fa629c17fccad73ac550fb46ea189d084988c704a7c058d1",
+    "kern/mm/pmm.h": "045f073bfc709678654698c0bcaabf984443ee7b43e83104490191cf265996b6",
+    "kern/process/proc.c": "ef857df7c686ae964490ccd9f344b2900f45c9adc00465458769ba143df5eeab",
+    "tools/test_lab4.c": "eefbba9a5a72c02a60210dd67282b5a133ff27ba7c6a9c96909923d4f51dfbea",
+    "tools/inject.py": "7e63cff66ccc4bb624f7a033227220915c3c4e18d5dcd67359890e042b505608",
+    "tools/lab4_a_fixture.c": "92f63737114e4765dbe01b104425a21cd915b0db7b5370142b99743b55cf46be",
+    "tools/lab4_a_probe.S": "7002e1ca0e9b45a77fb0d3113cf827a5f3af982528b14f3c03d697973f8081c4",
+    "tools/check_a.py": "b08e12f3fce4f351d648b4e7b36f6ca8fed74f009d7cde6dcd8f1914c8787848",
+    "Makefile": "a6705e7b287968710268dbd665c87bf09d573f6587f2ebee7528c98fe8d32d6e"
+  },
+  "fixture_kernel_sha256": "3e99b74dfe3aeb43bff0cc1263c2864bc34d98b643a1a50acfaaeb75ac4ee55f",
+  "C_schedule": "not invoked; cpu_idle wrapped by temporary verification entry",
+  "teacher_tests": "PMM and Process Create active; Schedule not invoked"
+}

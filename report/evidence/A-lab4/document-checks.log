@@ -1,0 +1,6 @@
+PASS: 39 local links in five edited documents
+PASS: code fences and source syntax
+PASS: task assignment, B/C source and B materials unchanged
+PASS: teacher test/inject/grade files unchanged
+PASS: implementation, fixture and driver SHA-256 match tested sources
+PASS: all three RAM cases complete

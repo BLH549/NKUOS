@@ -166,6 +166,10 @@ TARGETS: $(TARGETS)
 
 .DEFAULT_GOAL := TARGETS
 
+.PHONY: check-a
+check-a:
+	python3 tools/check_a.py --memory 64M 128M 256M
+
 .PHONY: qemu spike
 qemu: $(UCOREIMG) $(SWAPIMG) $(SFSIMG)
 #	$(V)$(QEMU) -kernel $(UCOREIMG) -nographic
