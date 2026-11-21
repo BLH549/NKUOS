@@ -1,0 +1,8 @@
+[fixture under kern/init]
+ffffffffc02005f0 T test_c_schedule
+ffffffffc0200aec T check_saved_registers
+ffffffffc0200bea T kern_entry
+[fixture under kern/schedule]
+ffffffffc0200000 T kern_entry
+ffffffffc0203e7e T test_c_schedule
+ffffffffc0204378 T check_saved_registers

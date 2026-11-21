@@ -1,0 +1,103 @@
+[C symbol] ffffffffc0200000 T kern_entry
+[C symbol] ffffffffc0200d0e T __trapret
+[C symbol] ffffffffc0200d5c T forkrets
+[C symbol] ffffffffc02031f6 T kernel_thread_entry
+[C symbol] ffffffffc0203244 t forkret
+[C symbol] ffffffffc02037bc T proc_run
+[C symbol] ffffffffc0203824 T switch_to
+
+OpenSBI v1.0
+   ____                    _____ ____ _____
+  / __ \                  / ____|  _ \_   _|
+ | |  | |_ __   ___ _ __ | (___ | |_) || |
+ | |  | | '_ \ / _ \ '_ \ \___ \|  _ < | |
+ | |__| | |_) |  __/ | | |____) | |_) || |_
+  \____/| .__/ \___|_| |_|_____/|____/_____|
+        | |
+        |_|
+
+Platform Name             : riscv-virtio,qemu
+Platform Features         : medeleg
+Platform HART Count       : 1
+Platform IPI Device       : aclint-mswi
+Platform Timer Device     : aclint-mtimer @ 10000000Hz
+Platform Console Device   : uart8250
+Platform HSM Device       : ---
+Platform Reboot Device    : sifive_test
+Platform Shutdown Device  : sifive_test
+Firmware Base             : 0x80000000
+Firmware Size             : 252 KB
+Runtime SBI Version       : 0.3
+
+Domain0 Name              : root
+Domain0 Boot HART         : 0
+Domain0 HARTs             : 0*
+Domain0 Region00          : 0x0000000002000000-0x000000000200ffff (I)
+Domain0 Region01          : 0x0000000080000000-0x000000008003ffff ()
+Domain0 Region02          : 0x0000000000000000-0xffffffffffffffff (R,W,X)
+Domain0 Next Address      : 0x0000000080200000
+Domain0 Next Arg1         : 0x0000000087000000
+Domain0 Next Mode         : S-mode
+Domain0 SysReset          : yes
+
+Boot HART ID              : 0
+Boot HART Domain          : root
+Boot HART ISA             : rv64imafdcsuh
+Boot HART Features        : scounteren,mcounteren,time
+Boot HART PMP Count       : 16
+Boot HART PMP Granularity : 4
+Boot HART PMP Address Bits: 54
+Boot HART MHPM Count      : 0
+Boot HART MIDELEG         : 0x0000000000001666
+Boot HART MEDELEG         : 0x0000000000f0b509
+DTB Init
+HartID: 0
+DTB Address: 0x87000000
+Physical Memory from DTB:
+  Base: 0x0000000080000000
+  Size: 0x0000000008000000 (128 MB)
+  End:  0x0000000087ffffff
+DTB init completed
+(THU.CST) os is loading ...
+
+Special kernel symbols:
+  entry  0xc0200060 (virtual)
+  etext  0xc0204a14 (virtual)
+  edata  0xc020a030 (virtual)
+  end    0xc020e50c (virtual)
+Kernel executable memory footprint: 58KB
+memory management: best_fit_pmm_manager
+physical memory: [0x0000000080000000, 0x0000000088000000)
+managed memory:  [0x0000000080000000, 0x0000000088000000)
+page descriptors: [0x000000008020f000, 0x000000008040f000), 32768 entries
+free memory:     [0x000000008040f000, 0x0000000088000000), 31729 pages
+check_alloc_page() succeeded!
+check_pgdir() succeeded!
+check_boot_pgdir() succeeded!
+use SLOB allocator
+kmalloc_init() succeeded!
+check_vma_struct() succeeded!
+check_vmm() succeeded.
+++ setup timer interrupts
+[C scheduler] empty, all sleeping, self-selection and direct proc_run PASS
+[C first entry] pid=4 runs=1 pgdir=0x000000008041b000 satp=0x800000000008041b sp=0xffffffffc0420f80 sie=1
+[C context] kstack=0xffffffffc041f000 ra=0xffffffffc0203244 sp=0xffffffffc0420ee0 s0=0x0000000000000000 s11=0x0000000000000000
+[C first entry] pid=3 runs=1 pgdir=0x0000000080415000 satp=0x8000000000080415 sp=0xffffffffc041af80 sie=1
+[C context] kstack=0xffffffffc0419000 ra=0xffffffffc0203244 sp=0xffffffffc041aee0 s0=0x0000000000000000 s11=0x0000000000000000
+[C resumed] pid=4 runs=2 pgdir=0x000000008041b000 satp=0x800000000008041b sp=0xffffffffc0420f80 sie=0
+[C context] kstack=0xffffffffc041f000 ra=0xffffffffc02037fa sp=0xffffffffc0420ee0 s0=0x2200000022000000 s11=0x220000002200000b
+[C resumed] pid=3 runs=2 pgdir=0x0000000080415000 satp=0x8000000000080415 sp=0xffffffffc041af80 sie=1
+[C context] kstack=0xffffffffc0419000 ra=0xffffffffc02037fa sp=0xffffffffc041aee0 s0=0x1100000011000000 s11=0x110000001100000b
+[C resumed] pid=4 runs=9 pgdir=0x000000008041b000 satp=0x800000000008041b sp=0xffffffffc0420f80 sie=1
+[C context] kstack=0xffffffffc041f000 ra=0xffffffffc02037fa sp=0xffffffffc0420ee0 s0=0x2200000022000070 s11=0x220000002200007b
+[C resumed] pid=3 runs=9 pgdir=0x0000000080415000 satp=0x8000000000080415 sp=0xffffffffc041af80 sie=0
+[C context] kstack=0xffffffffc0419000 ra=0xffffffffc02037fa sp=0xffffffffc041aee0 s0=0x1100000011000070 s11=0x110000001100007b
+[C back to idle] pid=0 runs=4 pgdir=0x0000000080209000 satp=0x8000000000080209 sp=0xffffffffc0208fa0 sie=0
+[C context] kstack=0xffffffffc0207000 ra=0xffffffffc02037fa sp=0xffffffffc0208f70 s0=0xffffffffc040f010 s11=0x0000000000000000
+[C scheduler] 16 ordered yields, s0-s11, stack, SIE and Sv39 aliases PASS
+Breakpoint at 0xffffffffc0204454
+Breakpoint at 0xffffffffc0204456
+Illegal instruction at 0xffffffffc020445a
+100 ticks
+[C trap] mixed-width exceptions and 101 timer interrupts returned PASS
+[C result] PASS

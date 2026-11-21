@@ -15,10 +15,6 @@
 static void print_ticks()
 {
     cprintf("%d ticks\n", TICK_NUM);
-#ifdef DEBUG_GRADE
-    cprintf("End of Test.\n");
-    panic("EOT: kernel seems ok.");
-#endif
 }
 
 /* idt_init - initialize IDT to each of the entry points in kern/trap/vectors.S
@@ -177,7 +173,7 @@ void exception_handler(struct trapframe *tf) {
  * trap - handles or dispatches an exception/interrupt. if and when trap()
  * returns,
  * the code in kern/trap/trapentry.S restores the old CPU state saved in the
- * trapframe and then uses the iret instruction to return from the exception.
+ * trapframe and then uses sret to return from the trap.
  * */
 void trap(struct trapframe *tf)
 {
